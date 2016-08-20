@@ -5,7 +5,7 @@
 # include <ft2build.h>
 # include FT_FREETYPE_H
 
-# define UTILS_FONT_CHARS_NUMBER 10000
+# define UTILS_FONT_CHARS_NUMBER 1300
 
 namespace librender
 {
