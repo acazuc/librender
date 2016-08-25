@@ -15,6 +15,31 @@ namespace librender
 		}
 		if (FT_New_Face(FontModel::ftLib, filename.c_str(), 0, &this->ftFace))
 			throw std::exception();
+	}
+
+	FontModel::FontModel(char *ttfData, size_t ttfLen)
+	{
+		if (FontModel::ftLib == NULL)
+		{
+			if (FT_Init_FreeType(&FontModel::ftLib))
+				throw std::exception();
+		}
+		if (FT_New_Memory_Face(FontModel::ftLib, reinterpret_cast<FT_Byte*>(ttfData), ttfLen, 0, &this->ftFace))
+			throw std::exception();
+	}
+
+	FontModel::~FontModel()
+	{
+		if (FontModel::ftLib)
+		{
+			FT_Done_FreeType(FontModel::ftLib);
+			FontModel::ftLib = NULL;
+		}
+		FT_Done_Face(this->ftFace);
+	}
+
+	void FontModel::_load()
+	{
 		if (FT_Select_Charmap(this->ftFace, ft_encoding_unicode))
 			throw std::exception();
 		if (FT_Set_Pixel_Sizes(this->ftFace, 0, 100))
@@ -30,15 +55,6 @@ namespace librender
 				this->availableChars[i] = false;
 			else
 				this->availableChars[i] = true;
-		}
-	}
-
-	FontModel::~FontModel()
-	{
-		if (FontModel::ftLib)
-		{
-			FT_Done_FreeType(FontModel::ftLib);
-			FontModel::ftLib = NULL;
 		}
 	}
 

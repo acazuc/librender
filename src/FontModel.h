@@ -19,9 +19,11 @@ namespace librender
 		static FT_Library ftLib;
 		FT_Face ftFace;
 		bool availableChars[UTILS_FONT_CHARS_NUMBER];
+		void _load();
 
 	public:
 		FontModel(std::string filename);
+		FontModel(char *ttfData, size_t ttfLen);
 		~FontModel();
 		Font *derive(int size);
 		bool isAvailable(unsigned int c) {return (this->availableChars[c]);};
