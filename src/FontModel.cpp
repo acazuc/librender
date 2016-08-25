@@ -15,6 +15,7 @@ namespace librender
 		}
 		if (FT_New_Face(FontModel::ftLib, filename.c_str(), 0, &this->ftFace))
 			throw std::exception();
+		_load();
 	}
 
 	FontModel::FontModel(char *ttfData, size_t ttfLen)
@@ -26,6 +27,7 @@ namespace librender
 		}
 		if (FT_New_Memory_Face(FontModel::ftLib, reinterpret_cast<FT_Byte*>(ttfData), ttfLen, 0, &this->ftFace))
 			throw std::exception();
+		_load();
 	}
 
 	FontModel::~FontModel()
@@ -35,7 +37,6 @@ namespace librender
 			FT_Done_FreeType(FontModel::ftLib);
 			FontModel::ftLib = NULL;
 		}
-		FT_Done_Face(this->ftFace);
 	}
 
 	void FontModel::_load()
