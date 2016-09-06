@@ -151,6 +151,34 @@ namespace librender
 		return (this->glyphs[c]->advance);
 	}
 
+	unsigned int Font::getCharRenderWidth(uint32_t c)
+	{
+		if (c >= UTILS_FONT_CHARS_NUMBER || !this->glyphs[c])
+			return (0);
+		return (this->glyphs[c]->width);
+	}
+
+	unsigned int Font::getCharRenderHeight(uint32_t c)
+	{
+		if (c >= UTILS_FONT_CHARS_NUMBER || !this->glyphs[c])
+			return (0);
+		return (this->glyphs[c]->height);
+	}
+
+	unsigned int Font::getCharRenderOffsetX(uint32_t c)
+	{
+		if (c >= UTILS_FONT_CHARS_NUMBER || !this->glyphs[c])
+			return (0);
+		return (this->glyphs[c]->offsetX);
+	}
+
+	unsigned int Font::getCharRenderOffsetY(uint32_t c)
+	{
+		if (c >= UTILS_FONT_CHARS_NUMBER || !this->glyphs[c])
+			return (0);
+		return (this->glyphs[c]->offsetY);
+	}
+
 	unsigned int Font::getWidth(std::string &text)
 	{
 		unsigned int currentWidth;
@@ -203,10 +231,26 @@ namespace librender
 		glVertex2f(x, y);
 		glTexCoord2f(textureSrcX, textureSrcY + renderHeight);
 		glVertex2f(x, y + height);
-		glTexCoord2f(textureSrcX+renderWidth, textureSrcY + renderHeight);
-		glVertex2f(x+width, y + height);
+		glTexCoord2f(textureSrcX + renderWidth, textureSrcY + renderHeight);
+		glVertex2f(x + width, y + height);
 		glTexCoord2f(textureSrcX + renderWidth, textureSrcY);
-		glVertex2f(x+width, y);
+		glVertex2f(x + width, y);
+	}
+
+	void Font::glArrayQuad(int texX, int texY, int texWidth, int texHeight, float *texCoords)
+	{
+		float textureSrcX = (float)texX / this->textureWidth;
+		float textureSrcY = (float)texY / this->textureHeight;
+		float renderWidth = (float)texWidth / this->textureWidth;
+		float renderHeight = (float)texHeight / this->textureHeight;
+		texCoords[0] = textureSrcX;
+		texCoords[1] = textureSrcY;
+		texCoords[2] = textureSrcX + renderWidth;
+		texCoords[3] = textureSrcY;
+		texCoords[4] = textureSrcX + renderWidth;
+		texCoords[5] = textureSrcY + renderHeight;
+		texCoords[6] = textureSrcX;
+		texCoords[7] = textureSrcY + renderHeight;
 	}
 
 	void Font::drawChar(float x, float y, uint32_t character, Color &color, float scaleX, float scaleY, float opacity)
@@ -229,6 +273,14 @@ namespace librender
 		}
 	}
 
+	void Font::glArrayCharPart(uint32_t character, float *texCoords)
+	{
+		if (character < UTILS_FONT_CHARS_NUMBER && character != '\n' && this->glyphs[character])
+		{
+			glArrayQuad(this->glyphs[character]->x, this->glyphs[character]->y, this->glyphs[character]->width, this->glyphs[character]->height, texCoords);
+		}
+	}
+
 	void Font::drawStringPart(float x, float y, std::string &text, Color &color, float opacity)
 	{
 		drawStringPart(x, y, text, color, 1, 1, opacity);
@@ -246,7 +298,8 @@ namespace librender
 		{
 			glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() * opacity);
 			currentChar = utf8::next(iter, (char*)text.c_str() + text.length());
-			if (currentChar == '\n') {
+			if (currentChar == '\n')
+			{
 				totalHeight += this->height * scaleY;
 				totalWidth = 0;
 			}

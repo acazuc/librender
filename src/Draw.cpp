@@ -149,7 +149,7 @@ namespace librender
 	{
 		for (int i = 0; i < nbSeg + 1; ++i)
 		{
-			glVertex2d(rayon * cos(angle * i / nbSeg + startAngle) + x, rayon * sin(angle * i / nbSeg + startAngle) + y);
+			glVertex2d(rayon * cos(angle * i / nbSeg + startAngle) + x + .5, rayon * sin(angle * i / nbSeg + startAngle) + y + .5);
 		}
 	}
 
@@ -170,7 +170,7 @@ namespace librender
 		glEnable(GL_LINE_SMOOTH);
 		color.bind();
 		glBegin(GL_LINE_STRIP);
-		drawCirclePart(x + .5f, y + .5f, rayon, nbSeg, angle, startAngle);
+		drawCirclePart(x, y, rayon, nbSeg, angle, startAngle);
 		glEnd();
 		glDisable(GL_LINE_SMOOTH);
 	}

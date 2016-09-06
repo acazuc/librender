@@ -43,17 +43,24 @@ namespace librender
 		char *imageCrop(char *data, int32_t size, int32_t height);
 		void buildGLTexture(char *data, uint32_t width, uint32_t height);
 		void drawQuad(float x, float y, float width, float height, int texX, int texY, int texWidth, int texHeight);
+		void glArrayQuad(int texX, int texY, int texWidth, int texHeight, float *texCoords);
 
 	public:
 		Font(FontModel *parent, FT_Face ftFace, int size);
 		~Font();
 		unsigned int getWidth(uint32_t c);
+		unsigned int getCharRenderWidth(uint32_t c);
+		unsigned int getCharRenderHeight(uint32_t c);
+		unsigned int getCharRenderOffsetX(uint32_t c);
+		unsigned int getCharRenderOffsetY(uint32_t c);
 		unsigned int getWidth(std::string &text);
 		inline unsigned int getLineHeight() {return (this->height);};
 		unsigned int getHeight(std::string &text);
 		inline void bind() {glBindTexture(GL_TEXTURE_2D, this->textureID);};
+		inline GLuint getTextureId() {return (this->textureID);};
 		void drawChar(float x, float y, uint32_t character, Color &color, float scaleX = 1, float scaleY = 1, float opacity = 1);
 		void drawCharPart(float x, float y, uint32_t character, float scaleX = 1, float scaleY = 1);
+		void glArrayCharPart(uint32_t character, float *texCoords);
 		void drawStringPart(float x, float y, std::string &text, Color &color, float opacity = 1);
 		void drawStringPart(float x, float y, std::string &text, Color &color, float scaleX, float scaleY, float opacity = 1);
 		void drawString(float x, float y, std::string &text, Color &color, float opacity = 1);
