@@ -50,7 +50,7 @@ namespace librender
 			FT_UInt glyph;
 			if (i <= 0x1F || i == 0x7F || (i >= 0x80 && i <= 0x9F) || !(glyph = FT_Get_Char_Index(this->ftFace, i)))
 				this->availableChars[i] = false;
-			else if (FT_Load_Glyph(this->ftFace, glyph, FT_LOAD_RENDER | FT_LOAD_RENDER))
+			else if (FT_Load_Glyph(this->ftFace, glyph, FT_LOAD_RENDER))
 					this->availableChars[i] = false;
 			else if (this->ftFace->glyph->advance.x == 0)
 				this->availableChars[i] = false;

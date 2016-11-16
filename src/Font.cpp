@@ -40,7 +40,7 @@ namespace librender
 			this->glyphs[i] = NULL;
 			if (!this->parent->isAvailable(i))
 				continue;
-			if (FT_Load_Char(this->ftFace, i, FT_LOAD_RENDER | FT_LOAD_RENDER))
+			if (FT_Load_Char(this->ftFace, i, FT_LOAD_RENDER))
 				continue;
 			this->glyphs[i] = new t_utils_font_glyph();
 			this->glyphs[i]->width = this->ftFace->glyph->bitmap.width;
@@ -81,8 +81,8 @@ namespace librender
 		size = std::sqrt(totalWidth * (maxHeight + 2)) + maxWidth + (maxHeight + 2);
 		data = new char[size * size * 4];
 		std::memset(data, 0, size * size * 4);
-		x = 0;
-		y = 0;
+		x = 1;
+		y = 1;
 		lineHeight = 0;
 		for (uint32_t i = 0; i < UTILS_FONT_CHARS_NUMBER; ++i)
 		{
@@ -90,8 +90,8 @@ namespace librender
 				continue;
 			if (x + this->glyphs[i]->width + 2 >= size)
 			{
-				x = 0;
-				y += lineHeight + 2;
+				x = 1;
+				y += lineHeight + 1;
 				lineHeight = 0;
 			}
 			this->glyphs[i]->x = x;
@@ -100,10 +100,12 @@ namespace librender
 				lineHeight = this->glyphs[i]->height;
 			copyChar(x, y, data, size, this->glyphs[i], this->glyphs_datas[i]);
 			delete[] (this->glyphs_datas[i]);
-			x += this->glyphs[i]->width + 2;
+			x += this->glyphs[i]->width + 1;
 		}
-		data = imageCrop(data, size, y + lineHeight);
-		buildGLTexture(data, size, y + lineHeight);
+		if (x == 1)
+			y -= lineHeight + 1;
+		data = imageCrop(data, size, y + lineHeight + 1);
+		buildGLTexture(data, size, y + lineHeight + 1);
 		delete[] (data);
 	}
 
@@ -129,7 +131,7 @@ namespace librender
 		{
 			for (uint32_t tX = 0; tX < glyph->width; ++tX)
 			{
-				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = (255 << 24) | (255 << 16) | (255 << 8) | 255;
+				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffffff;
 				data[((y + tY) * size + x + tX) * 4 + 3] = glyph_data[tY * glyph->width + tX];
 			}
 		}
@@ -255,6 +257,8 @@ namespace librender
 
 	void Font::drawChar(float x, float y, uint32_t character, Color &color, float scaleX, float scaleY, float opacity)
 	{
+		if (!opacity)
+			return;
 		bind();
 		glBegin(GL_QUADS);
 		glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() * opacity);
@@ -288,6 +292,8 @@ namespace librender
 
 	void Font::drawStringPart(float x, float y, std::string &text, Color &color, float scaleX, float scaleY, float opacity)
 	{
+		if (!opacity)
+			return;
 		float totalHeight = 0;
 		float totalWidth = 0;
 		uint32_t currentChar;
@@ -318,6 +324,8 @@ namespace librender
 
 	void Font::drawString(float x, float y, std::string &text, Color &color, float scaleX, float scaleY, float opacity)
 	{
+		if (!opacity)
+			return;
 		bind();
 		glBegin(GL_QUADS);
 		drawStringPart(x, y, text, color, scaleX, scaleY, opacity);
@@ -341,6 +349,8 @@ namespace librender
 
 	void Font::drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY, float scaleX, float scaleY, float opacity)
 	{
+		if (!opacity)
+			return;
 		bind();
 		glBegin(GL_QUADS);
 		drawStringShadowPart(x, y, text, color, shadowColor, shadowSize, shadowX, shadowY, scaleX, scaleY, opacity);
@@ -364,6 +374,8 @@ namespace librender
 
 	void Font::drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY, float scaleX, float scaleY, float opacity)
 	{
+		if (!opacity)
+			return;
 		for (float xx = x - shadowSize * scaleX + shadowX;xx <= x + shadowSize * scaleX + shadowX;xx += scaleX)
 		{
 			for (float yy = y - shadowSize * scaleY + shadowY;yy <= y + shadowSize * scaleY + shadowY;yy += scaleY)

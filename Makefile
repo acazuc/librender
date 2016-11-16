@@ -6,9 +6,13 @@ ARCH = -m64
 
 AR = ar
 
+ARFLAGS =
+
 RANLIB = ranlib
 
-CLFAGS = -Wall -Wextra -Werror -Ofast -pipe -march=x86-64 -mtune=generic -flto=8
+RANLIBFLAGS =
+
+CLFAGS = -g -Wall -Wextra -Werror -Ofast -pipe -mtune=generic -funroll-loops -flto=8
 
 INCLUDES_PATH = -I src
 INCLUDES_PATH+= -I lib
@@ -18,10 +22,10 @@ INCLUDES_PATH+= -I lib/freetype/include
 SRCS_PATH = src/
 
 SRCS_NAME = Color.cpp \
-			Draw.cpp \
-			Font.cpp \
-			FontModel.cpp \
-			Texture.cpp \
+		Draw.cpp \
+		Font.cpp \
+		FontModel.cpp \
+		Texture.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
@@ -35,8 +39,8 @@ all: odir $(NAME)
 
 $(NAME): $(OBJS)
 	@echo " - Making $(NAME)"
-	@$(AR) -rc $(NAME) $(OBJS)
-	@$(RANLIB) $(NAME)
+	@$(AR) -rc $(ARFLAGS) $(NAME) $(OBJS)
+	@$(RANLIB) $(RANLIBFLAGS) $(NAME)
 
 $(OBJS_PATH)%.opp: $(SRCS_PATH)%.cpp
 	@echo " - Compiling $<"
