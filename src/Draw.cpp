@@ -207,7 +207,8 @@ namespace librender
 	{
 		glLineWidth(lineWeight);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		if(x1 != x2 && y1 != y2) {
+		if (x1 != x2 && y1 != y2)
+		{
 			glEnable(GL_LINE_SMOOTH);
 		}
 		glBegin(GL_LINES);
