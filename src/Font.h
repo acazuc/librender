@@ -13,7 +13,7 @@
 namespace librender
 {
 
-	typedef struct s_utils_font_glyph
+	typedef struct SFontGlyph
 	{
 		unsigned short x;
 		unsigned short y;
@@ -22,20 +22,20 @@ namespace librender
 		unsigned short advance;
 		unsigned short offsetY;
 		short offsetX;
-	} t_utils_font_glyph;
+	} FontGlyph;
 
 	class Font
 	{
 
 	private:
 		static FT_Library ftLib;
-		t_utils_font_glyph **glyphs;
-		char **glyphs_datas;
+		FontGlyph **glyphs;
 		FontModel *parent;
-		GLuint textureID;
-		int textureWidth;
-		int textureHeight;
 		FT_Face ftFace;
+		GLuint textureID;
+		char **glyphs_datas;
+		int textureHeight;
+		int textureWidth;
 		int height;
 		void loadList(int32_t size);
 		void createSet();

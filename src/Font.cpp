@@ -15,7 +15,7 @@ namespace librender
 		this->ftFace = ftFace;
 		if (FT_Set_Pixel_Sizes(this->ftFace, 0, size))
 			throw std::exception();
-		this->glyphs = new t_utils_font_glyph*[UTILS_FONT_CHARS_NUMBER];
+		this->glyphs = new FontGlyph*[UTILS_FONT_CHARS_NUMBER];
 		this->glyphs_datas = new char*[UTILS_FONT_CHARS_NUMBER];
 		loadList(size);
 		createSet();
@@ -42,7 +42,7 @@ namespace librender
 				continue;
 			if (FT_Load_Char(this->ftFace, i, FT_LOAD_RENDER))
 				continue;
-			this->glyphs[i] = new t_utils_font_glyph();
+			this->glyphs[i] = new FontGlyph();
 			this->glyphs[i]->width = this->ftFace->glyph->bitmap.width;
 			this->glyphs[i]->height = this->ftFace->glyph->bitmap.rows;
 			this->glyphs[i]->advance = this->ftFace->glyph->advance.x >> 6;

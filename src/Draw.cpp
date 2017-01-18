@@ -8,17 +8,15 @@
 namespace librender
 {
 
-	void drawColorQuad(int x, int y, int width, int height, Color &topLeft, Color &topRight, Color &bottomRight, Color &bottomLeft)
+	void drawColorQuadBegin()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBegin(GL_QUADS);
-		drawColorQuadPart(x, y, width, height, topLeft, topRight, bottomRight, bottomLeft);
-		glEnd();
 	}
 
-	void drawColorQuad(int x, int y, int width, int height, Color &color)
+	void drawColorQuadEnd()
 	{
-		drawColorQuad(x, y, width, height, color, color, color, color);
+		glEnd();
 	}
 
 	void drawColorQuadPart(int x, int y, int width, int height, Color &topLeft, Color &topRight, Color &bottomRight, Color &bottomLeft)
@@ -38,19 +36,29 @@ namespace librender
 		drawColorQuadPart(x, y, width, height, color, color, color, color);
 	}
 
-	void drawColorQuadBorder(int x, int y, int width, int height, Color &topLeftColor, Color &topRightColor, Color &bottomRightColor, Color &bottomLeftColor, int lineWeight)
+	void drawColorQuad(int x, int y, int width, int height, Color &topLeft, Color &topRight, Color &bottomRight, Color &bottomLeft)
+	{
+		drawColorQuadBegin();
+		drawColorQuadPart(x, y, width, height, topLeft, topRight, bottomRight, bottomLeft);
+		drawColorQuadEnd();
+	}
+
+	void drawColorQuad(int x, int y, int width, int height, Color &color)
+	{
+		drawColorQuad(x, y, width, height, color, color, color, color);
+	}
+
+	void drawColorQuadBorderBegin(float lineWidth)
 	{
 		glDisable(GL_LINE_SMOOTH);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glLineWidth(lineWeight);
+		glLineWidth(lineWidth);
 		glBegin(GL_LINE_LOOP);
-		drawColorQuadBorderPart(x, y, width, height, topLeftColor, topRightColor, bottomRightColor, bottomLeftColor);
-		glEnd();
 	}
 
-	void drawColorQuadBorder(int x, int y, int width, int height, Color &color, int lineWeight)
+	void drawColorQuadBorderEnd()
 	{
-		drawColorQuadBorder(x, y, width, height, color, color, color, color, lineWeight);
+		glEnd();
 	}
 
 	void drawColorQuadBorderPart(int x, int y, int width, int height, Color &topLeftColor, Color &topRightColor, Color &bottomRightColor, Color &bottomLeftColor)
@@ -68,6 +76,32 @@ namespace librender
 	void drawColorQuadBorderPart(int x, int y, int width, int height, Color &color)
 	{
 		drawColorQuadBorderPart(x, y, width, height, color, color, color, color);
+	}
+
+	void drawColorQuadBorder(int x, int y, int width, int height, Color &topLeftColor, Color &topRightColor, Color &bottomRightColor, Color &bottomLeftColor, float lineWidth)
+	{
+		drawColorQuadBorderBegin(lineWidth);
+		drawColorQuadBorderPart(x, y, width, height, topLeftColor, topRightColor, bottomRightColor, bottomLeftColor);
+		drawColorQuadBorderEnd();
+	}
+
+	void drawColorQuadBorder(int x, int y, int width, int height, Color &color, int lineWeight)
+	{
+		drawColorQuadBorder(x, y, width, height, color, color, color, color, lineWeight);
+	}
+
+	void drawQuadBegin(Texture *texture)
+	{
+		if (texture)
+		{
+			texture->bind();
+		}
+		glBegin(GL_QUADS);
+	}
+
+	void drawQuadEnd()
+	{
+		glEnd();
 	}
 
 	void drawQuadPart(Texture *texture, int x, float y, int width, int height, int texXOrg, int texYOrg, int texCoWidth, int texCoHeight)
@@ -91,26 +125,18 @@ namespace librender
 
 	void drawQuad(Texture *texture, int x, int y, int width, int height, int texXOrg, int texYOrg, int texCoWidth, int texCoHeight, Color &color)
 	{
-		if (texture)
-		{
-			texture->bind();
-			glBegin(GL_QUADS);
-			color.bind();
-			drawQuadPart(texture, x, y, width, height, texXOrg, texYOrg, texCoWidth, texCoHeight);
-			glEnd();
-		}
+		drawQuadBegin(texture);
+		color.bind();
+		drawQuadPart(texture, x, y, width, height, texXOrg, texYOrg, texCoWidth, texCoHeight);
+		drawQuadEnd();
 	}
 
 	void drawQuad(Texture *texture, int x, int y, int width, int height, int texXOrg, int texYOrg, int texCoWidth, int texCoHeight, float alpha)
 	{
-		if (texture)
-		{
-			texture->bind();
-			glBegin(GL_QUADS);
-			glColor4f(1, 1, 1, alpha);
-			drawQuadPart(texture, x, y, width, height, texXOrg, texYOrg, texCoWidth, texCoHeight);
-			glEnd();
-		}
+		drawQuadBegin(texture);
+		glColor4f(1, 1, 1, alpha);
+		drawQuadPart(texture, x, y, width, height, texXOrg, texYOrg, texCoWidth, texCoHeight);
+		drawQuadEnd();
 	}
 
 	void drawQuad(Texture *texture, int x, int y, int width, int height, Color &color)
@@ -145,6 +171,20 @@ namespace librender
 		}
 	}
 
+	void drawCircleBegin(float lineWidth)
+	{
+		glLineWidth(lineWidth);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glEnable(GL_LINE_SMOOTH);
+		glBegin(GL_LINE_STRIP);
+	}
+
+	void drawCircleEnd()
+	{
+		glEnd();
+		glDisable(GL_LINE_SMOOTH);
+	}
+
 	void drawCirclePart(int x, int y, int rayon, int nbSeg, float angle, float startAngle)
 	{
 		for (int i = 0; i < nbSeg + 1; ++i)
@@ -163,21 +203,17 @@ namespace librender
 		drawCirclePart(x, y, rayon, (int)(M_PI * rayon), 2 * (float)M_PI, 0);
 	}
 
-	void drawCircle(int x, int y, int rayon, Color &color, int nbSeg, float lineWeight, float angle, float startAngle)
+	void drawCircle(int x, int y, int rayon, Color &color, int nbSeg, float lineWidth, float angle, float startAngle)
 	{
-		glLineWidth(lineWeight);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glEnable(GL_LINE_SMOOTH);
+		drawCircleBegin(lineWidth);
 		color.bind();
-		glBegin(GL_LINE_STRIP);
 		drawCirclePart(x, y, rayon, nbSeg, angle, startAngle);
-		glEnd();
-		glDisable(GL_LINE_SMOOTH);
+		drawCircleEnd();
 	}
 
-	void drawCircle(int x, int y, int rayon, Color &color, int nbSeg, float lineWeight)
+	void drawCircle(int x, int y, int rayon, Color &color, int nbSeg, float lineWidth)
 	{
-		drawCircle(x, y, rayon, color, nbSeg, lineWeight, 2 * (float)M_PI, 0);
+		drawCircle(x, y, rayon, color, nbSeg, lineWidth, 2 * (float)M_PI, 0);
 	}
 
 	void drawCircle(int x, int y, int rayon, Color &color, int nbSeg)
@@ -232,14 +268,29 @@ namespace librender
 		drawLine(x1, y1, x2, y2, color, color, 1);
 	}
 
-	void drawPoint(int x, int y, Color &color, float size)
+	void drawPointBegin(float size)
 	{
 		glPointSize(size);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		color.bind();
 		glBegin(GL_POINTS);
-		glVertex2f(x + .5f, y + .5f);
+	}
+
+	void drawPointEnd()
+	{
 		glEnd();
+	}
+
+	void drawPointPart(int x, int y, Color &color)
+	{
+		color.bind();
+		glVertex2f(x + .5f, y + .5f);
+	}
+
+	void drawPoint(int x, int y, Color &color, float size)
+	{
+		drawPointBegin(size);
+		drawPointPart(x, y, color);
+		drawPointEnd();
 	}
 
 	void drawPoint(float x, float y, Color &color)
