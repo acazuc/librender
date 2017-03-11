@@ -125,7 +125,7 @@ namespace librender
 		return (data);
 	}
 
-	void Font::copyChar(int32_t x, int32_t y, char *data, uint32_t size, t_utils_font_glyph *glyph, char *glyph_data)
+	void Font::copyChar(int32_t x, int32_t y, char *data, uint32_t size, SFontGlyph *glyph, char *glyph_data)
 	{
 		for (uint32_t tY = 0; tY < glyph->height; ++tY)
 		{

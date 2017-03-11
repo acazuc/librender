@@ -39,7 +39,7 @@ namespace librender
 		int height;
 		void loadList(int32_t size);
 		void createSet();
-		void copyChar(int32_t x, int32_t y, char *data, uint32_t size, t_utils_font_glyph *glyph, char *glyph_data);
+		void copyChar(int32_t x, int32_t y, char *data, uint32_t size, SFontGlyph *glyph, char *glyph_data);
 		char *imageCrop(char *data, int32_t size, int32_t height);
 		void buildGLTexture(char *data, uint32_t width, uint32_t height);
 		void drawQuad(float x, float y, float width, float height, int texX, int texY, int texWidth, int texHeight);

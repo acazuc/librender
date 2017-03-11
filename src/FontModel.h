@@ -5,7 +5,7 @@
 # include <ft2build.h>
 # include FT_FREETYPE_H
 
-# define UTILS_FONT_CHARS_NUMBER 1300
+# define LIBRENDER_FONT_MODEL_CHARS_NUMBER 1300
 
 namespace librender
 {
@@ -18,7 +18,7 @@ namespace librender
 	private:
 		static FT_Library ftLib;
 		FT_Face ftFace;
-		bool availableChars[UTILS_FONT_CHARS_NUMBER];
+		bool availableChars[LIBRENDER_FONT_MODEL_CHARS_NUMBER];
 		void _load();
 
 	public:
