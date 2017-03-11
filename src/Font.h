@@ -34,9 +34,9 @@ namespace librender
 		FT_Face ftFace;
 		GLuint textureID;
 		char **glyphs_datas;
-		int textureHeight;
-		int textureWidth;
-		int height;
+		uint32_t textureHeight;
+		uint32_t textureWidth;
+		uint32_t height;
 		void loadList(int32_t size);
 		void createSet();
 		void copyChar(int32_t x, int32_t y, char *data, uint32_t size, SFontGlyph *glyph, char *glyph_data);
@@ -48,13 +48,13 @@ namespace librender
 	public:
 		Font(FontModel *parent, FT_Face ftFace, int size);
 		~Font();
-		unsigned int getWidth(uint32_t c);
-		unsigned int getCharRenderWidth(uint32_t c);
-		unsigned int getCharRenderHeight(uint32_t c);
-		unsigned int getCharRenderOffsetX(uint32_t c);
-		unsigned int getCharRenderOffsetY(uint32_t c);
-		unsigned int getWidth(std::string &text);
-		inline unsigned int getLineHeight() {return (this->height);};
+		uint32_t getWidth(uint32_t c);
+		uint32_t getCharRenderWidth(uint32_t c);
+		uint32_t getCharRenderHeight(uint32_t c);
+		uint32_t getCharRenderOffsetX(uint32_t c);
+		uint32_t getCharRenderOffsetY(uint32_t c);
+		uint32_t getWidth(std::string &text);
+		inline uint32_t getLineHeight() {return (this->height);};
 		unsigned int getHeight(std::string &text);
 		inline void bind() {glBindTexture(GL_TEXTURE_2D, this->textureID);};
 		inline GLuint getTextureId() {return (this->textureID);};
