@@ -197,9 +197,10 @@ namespace librender
 
 	void drawCirclePart(int x, int y, int rayon, int nbSeg, float angle, float startAngle)
 	{
+		double step = angle / nbSeg;
 		for (int i = 0; i < nbSeg + 1; ++i)
 		{
-			glVertex2d(rayon * cos(angle * i / nbSeg + startAngle) + x + .5, rayon * sin(angle * i / nbSeg + startAngle) + y + .5);
+			glVertex2d(rayon * cos(step * i + startAngle) + x + .5, rayon * sin(step * i + startAngle) + y + .5);
 		}
 	}
 
