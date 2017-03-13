@@ -22,6 +22,8 @@ namespace librender
 	void drawQuadBegin(Texture *texture);
 	void drawQuadEnd();
 	void drawQuadPart(Texture *texture, int x, float y, int width, int height, int texXOrg, int texYOrg, int texCoWidth, int texCoHeight);
+	void drawQuadPart(Texture *texture, int x, float y, int width, int height);
+	void drawQuadPart(Texture *texture, int x, float y);
 	void drawQuad(Texture *texture, int x, int y, int width, int height, int texXOrg, int texYOrg, int texCoWidth, int texCoHeight, Color &color);
 	void drawQuad(Texture *texture, int x, int y, int width, int height, int texXOrg, int texYOrg, int texCoWidth, int texCoHeight, float alpha = 1);
 	void drawQuad(Texture *texture, int x, int y, int width, int height, Color &color);

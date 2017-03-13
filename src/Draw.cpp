@@ -123,6 +123,20 @@ namespace librender
 		}
 	}
 
+	void drawQuadPart(Texture *texture, int x, float y, int width, int height)
+	{
+		if (!texture)
+			return;
+		drawQuadPart(texture, x, y, width, height, 0, 0, texture->getWidth(), texture->getHeight());
+	}
+
+	void drawQuadPart(Texture *texture, int x, float y)
+	{
+		if (!texture)
+			return;
+		drawQuadPart(texture, x, y, texture->getWidth(), texture->getHeight(), 0, 0, texture->getWidth(), texture->getHeight());
+	}
+
 	void drawQuad(Texture *texture, int x, int y, int width, int height, int texXOrg, int texYOrg, int texCoWidth, int texCoHeight, Color &color)
 	{
 		drawQuadBegin(texture);
@@ -141,34 +155,30 @@ namespace librender
 
 	void drawQuad(Texture *texture, int x, int y, int width, int height, Color &color)
 	{
-		if (texture)
-		{
-			drawQuad(texture, x, y, width, height, 0, 0, texture->getWidth(), texture->getHeight(), color);
-		}
+		if (!texture)
+			return;
+		drawQuad(texture, x, y, width, height, 0, 0, texture->getWidth(), texture->getHeight(), color);
 	}
 
 	void drawQuad(Texture *texture, int x, int y, int width, int height, float alpha)
 	{
-		if (texture)
-		{
-			drawQuad(texture, x, y, width, height, 0, 0, texture->getWidth(), texture->getHeight(), alpha);
-		}
+		if (!texture)
+			return;
+		drawQuad(texture, x, y, width, height, 0, 0, texture->getWidth(), texture->getHeight(), alpha);
 	}
 
 	void drawQuad(Texture *texture, int x, int y, Color &color)
 	{
-		if (texture)
-		{
-			drawQuad(texture, x, y, texture->getWidth(), texture->getHeight(), 0, 0, texture->getWidth(), texture->getHeight(), color);
-		}
+		if (!texture)
+			return;
+		drawQuad(texture, x, y, texture->getWidth(), texture->getHeight(), 0, 0, texture->getWidth(), texture->getHeight(), color);
 	}
 
 	void drawQuad(Texture *texture, int x, int y, float alpha)
 	{
-		if (texture)
-		{
-			drawQuad(texture, x, y, texture->getWidth(), texture->getHeight(), 0, 0, texture->getWidth(), texture->getHeight(), alpha);
-		}
+		if (!texture)
+			return;
+		drawQuad(texture, x, y, texture->getWidth(), texture->getHeight(), 0, 0, texture->getWidth(), texture->getHeight(), alpha);
 	}
 
 	void drawCircleBegin(float lineWidth)
@@ -223,7 +233,10 @@ namespace librender
 
 	void drawCircle(int x, float y, int rayon, Color &color)
 	{
-		drawCircle(x, y, rayon, color, (int)(M_PI * rayon), 1, 2 * (float)M_PI, 0);
+		if (rayon < 30)
+			drawCircle(x, y, rayon, color, M_PI * rayon, 1, 2 * (float)M_PI, 0);
+		else
+			drawCircle(x, y, rayon, color, rayon, 1, 2 * (float)M_PI, 0);
 	}
 
 	void drawLinePart(int x1, int y1, int x2, int y2, Color &color1, Color &color2)
