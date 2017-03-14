@@ -240,6 +240,18 @@ namespace librender
 			drawCircle(x, y, rayon, color, rayon, 1, 2 * (float)M_PI, 0);
 	}
 
+	void drawLineBegin(float lineWidth)
+	{
+		glLineWidth(lineWidth);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBegin(GL_LINES);
+	}
+
+	void drawLineEnd()
+	{
+		glEnd();
+	}
+
 	void drawLinePart(int x1, int y1, int x2, int y2, Color &color1, Color &color2)
 	{
 		color1.bind();
@@ -253,18 +265,15 @@ namespace librender
 		drawLinePart(x1, y1, x2, y2, color1, color1);
 	}
 
-	void drawLine(int x1, int y1, int x2, int y2, Color &color1, Color &color2, float lineWeight)
+	void drawLine(int x1, int y1, int x2, int y2, Color &color1, Color &color2, float lineWidth)
 	{
-		glLineWidth(lineWeight);
-		glBindTexture(GL_TEXTURE_2D, 0);
 		if (x1 != x2 && y1 != y2)
-		{
 			glEnable(GL_LINE_SMOOTH);
-		}
-		glBegin(GL_LINES);
+		drawLineBegin(lineWidth);
 		drawLinePart(x1, y1, x2, y2, color1, color2);
-		glEnd();
-		glDisable(GL_LINE_SMOOTH);
+		drawLineEnd();
+		if (x1 != x2 && y1 != y2)
+			glDisable(GL_LINE_SMOOTH);
 	}
 
 	void drawLine(int x1, int y1, int x2, int y2, Color &color1, Color &color2)
@@ -272,9 +281,9 @@ namespace librender
 		drawLine(x1, y1, x2, y2, color1, color2, 1);
 	}
 
-	void drawLine(int x1, int y1, int x2, int y2, Color &color, float lineWeight)
+	void drawLine(int x1, int y1, int x2, int y2, Color &color, float lineWidth)
 	{
-		drawLine(x1, y1, x2, y2, color, color, lineWeight);
+		drawLine(x1, y1, x2, y2, color, color, lineWidth);
 	}
 
 	void drawLine(int x1, int y1, int x2, int y2, Color &color)

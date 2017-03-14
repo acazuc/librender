@@ -39,11 +39,13 @@ namespace librender
 	void drawCircle(int x, int y, int rayon, Color &color, int nbSeg, float lineWidth);
 	void drawCircle(int x, int y, int rayon, Color &color, int nbSeg);
 	void drawCircle(int x, float y, int rayon, Color &color);
+	void drawLineBegin(float lineWidth);
+	void drawLineEnd();
 	void drawLinePart(int x1, int y1, int x2, int y2, Color &color1, Color &color2);
 	void drawLinePart(int x1, int y1, int x2, int y2, Color &color1);
-	void drawLine(int x1, int y1, int x2, int y2, Color &color1, Color &color2, float lineWight);
+	void drawLine(int x1, int y1, int x2, int y2, Color &color1, Color &color2, float lineWidth);
 	void drawLine(int x1, int y1, int x2, int y2, Color &color1, Color &color2);
-	void drawLine(int x1, int y1, int x2, int y2, Color &color, float lineWight);
+	void drawLine(int x1, int y1, int x2, int y2, Color &color, float lineWidth);
 	void drawLine(int x1, int y1, int x2, int y2, Color &color);
 	void drawPointBegin(float size = 1);
 	void drawPointEnd();
