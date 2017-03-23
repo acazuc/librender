@@ -131,8 +131,8 @@ namespace librender
 		{
 			for (uint32_t tX = 0; tX < glyph->width; ++tX)
 			{
-				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffff00 | glyph_data[tY * glyph->width + tX];
-				//data[((y + tY) * size + x + tX) * 4 + 3] = glyph_data[tY * glyph->width + tX];
+				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffffff;
+				data[((y + tY) * size + x + tX) * 4 + 3] = glyph_data[tY * glyph->width + tX];
 			}
 		}
 	}
