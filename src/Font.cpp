@@ -131,8 +131,8 @@ namespace librender
 		{
 			for (uint32_t tX = 0; tX < glyph->width; ++tX)
 			{
-				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffffff;
-				data[((y + tY) * size + x + tX) * 4 + 3] = glyph_data[tY * glyph->width + tX];
+				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffff00 | glyph_data[tY * glyph->width + tX];
+				//data[((y + tY) * size + x + tX) * 4 + 3] = glyph_data[tY * glyph->width + tX];
 			}
 		}
 	}
@@ -146,7 +146,7 @@ namespace librender
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	}
 
-	uint32_t Font::getWidth(uint32_t c)
+	int32_t Font::getWidth(uint32_t c)
 	{
 		if (c >= LIBRENDER_FONT_MODEL_CHARS_NUMBER || !this->glyphs[c])
 			return (0);
@@ -181,7 +181,7 @@ namespace librender
 		return (this->glyphs[c]->offsetY);
 	}
 
-	uint32_t Font::getWidth(std::string &text)
+	int32_t Font::getWidth(std::string &text)
 	{
 		uint32_t currentWidth;
 		uint32_t maxWidth;
@@ -208,7 +208,7 @@ namespace librender
 		return (maxWidth);
 	}
 
-	uint32_t Font::getHeight(std::string &text)
+	int32_t Font::getHeight(std::string &text)
 	{
 		uint32_t nlNb;
 		char *iter;
@@ -221,6 +221,17 @@ namespace librender
 				nlNb++;
 		}
 		return (this->height * nlNb);
+	}
+
+	void Font::drawBegin()
+	{
+		bind();
+		glBegin(GL_QUADS);
+	}
+
+	void Font::drawEnd()
+	{
+		glEnd();
 	}
 
 	void Font::drawQuad(float x, float y, float width, float height, int texX, int texY, int texWidth, int texHeight)

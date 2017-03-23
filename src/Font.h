@@ -48,16 +48,18 @@ namespace librender
 	public:
 		Font(FontModel *parent, FT_Face ftFace, int size);
 		~Font();
-		uint32_t getWidth(uint32_t c);
 		uint32_t getCharRenderWidth(uint32_t c);
 		uint32_t getCharRenderHeight(uint32_t c);
 		uint32_t getCharRenderOffsetX(uint32_t c);
 		uint32_t getCharRenderOffsetY(uint32_t c);
-		uint32_t getWidth(std::string &text);
-		inline uint32_t getLineHeight() {return (this->height);};
-		unsigned int getHeight(std::string &text);
+		int32_t getWidth(uint32_t c);
+		int32_t getWidth(std::string &text);
+		int32_t getHeight(std::string &text);
+		inline int32_t getLineHeight() {return (this->height);};
 		inline void bind() {glBindTexture(GL_TEXTURE_2D, this->textureID);};
 		inline GLuint getTextureId() {return (this->textureID);};
+		void drawBegin();
+		void drawEnd();
 		void drawChar(float x, float y, uint32_t character, Color &color, float scaleX = 1, float scaleY = 1, float opacity = 1);
 		void drawCharPart(float x, float y, uint32_t character, float scaleX = 1, float scaleY = 1);
 		void glArrayCharPart(uint32_t character, float *texCoords);

@@ -13,8 +13,8 @@ namespace librender
 	{
 
 	private:
-		unsigned int width;
-		unsigned int height;
+		uint32_t width;
+		uint32_t height;
 		GLuint textureID;
 		uint8_t sprites;
 
@@ -31,8 +31,8 @@ namespace librender
 		void draw(uint8_t sprite, int32_t x, int32_t y, float alpha = 1);
 		void draw(int32_t x, int32_t y, Color *color);
 		void draw(int32_t x, int32_t y, float alpha = 1);
-		inline uint32_t getWidth() {return (this->width);};
-		inline uint32_t getHeight() {return (this->height);};
+		inline int32_t getWidth() {return (this->width);};
+		inline int32_t getHeight() {return (this->height);};
 		inline GLuint getTextureID() {return (this->textureID);};
 		inline void bind() {glBindTexture(GL_TEXTURE_2D, this->textureID);};
 
