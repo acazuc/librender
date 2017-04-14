@@ -48,4 +48,14 @@ namespace librender
 		this->alpha = alpha;
 	}
 
+	bool Color::compare(Color &color)
+	{
+		return (this->red != color.getRed() || this->green != color.getGreen() || this->blue != color.getBlue() || this->alpha != color.getAlpha());
+	}
+
+	bool Color::compare(Color *color)
+	{
+		return (compare(*color));
+	}
+
 }
