@@ -24,7 +24,8 @@ namespace librender
 
 	typedef struct SScrollEvent
 	{
-		int scroll;
+		int xScroll;
+		int yScroll;
 	} ScrollEvent;
 
 }

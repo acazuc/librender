@@ -1,9 +1,9 @@
 #ifndef LIBRENDER_FONT_MODEL_H
 # define LIBRENDER_FONT_MODEL_H
 
-# include <string>
 # include <ft2build.h>
 # include FT_FREETYPE_H
+# include <string>
 
 # define LIBRENDER_FONT_MODEL_CHARS_NUMBER 1300
 

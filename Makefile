@@ -18,6 +18,7 @@ INCLUDES_PATH = -I src
 INCLUDES_PATH+= -I lib
 INCLUDES_PATH+= -I lib/glfw/include
 INCLUDES_PATH+= -I lib/freetype/include
+INCLUDES_PATH+= -I lib/glew/include
 
 SRCS_PATH = src/
 
@@ -28,6 +29,11 @@ SRCS_NAME = Color.cpp \
 		Texture.cpp \
 		Text.cpp \
 		FontGlyph.cpp \
+		Shader/Program.cpp \
+		Shader/VertexShader.cpp \
+		Shader/FragmentShader.cpp \
+		Window/Window.cpp \
+		Window/EventsManager.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
@@ -50,6 +56,8 @@ $(OBJS_PATH)%.opp: $(SRCS_PATH)%.cpp
 
 odir:
 	@mkdir -p $(OBJS_PATH)
+	@mkdir -p $(OBJS_PATH)Window
+	@mkdir -p $(OBJS_PATH)Shader
 
 clean:
 	@echo " - Cleaning objs"

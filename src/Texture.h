@@ -2,7 +2,7 @@
 # define TEXTURE_H
 
 # include "Color.h"
-# include <GLFW/glfw3.h>
+# include "GL.h"
 # include <cstdint>
 # include <string>
 

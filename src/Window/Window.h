@@ -1,9 +1,8 @@
 #ifndef LIBRENDER_WINDOW_H
 # define LIBRENDER_WINDOW_H
 
-# include "EventsListener.h"
-# include <GLFW/glfw3.h>
-# include <iostream>
+# include "Window/EventsManager.h"
+# include "GL.h"
 # include <string>
 
 namespace librender
@@ -23,7 +22,7 @@ namespace librender
 	{
 
 	private:
-		EventsListener eventsListener;
+		EventsManager eventsManager;
 		GLFWwindow *window;
 		GLFWcursor *hResizeCursor;
 		GLFWcursor *vResizeCursor;
@@ -71,6 +70,16 @@ namespace librender
 		void setHandCursor();
 		void setCursor(enum WindowCursor cursor);
 		void setFocused(bool focused);
+		void setWindowResizedCallback(WindowResizedCallback callback);
+		void setMouseScrollCallback(ScrollCallback callback);
+		void setMouseMoveCallback(MouseMoveCallback callback);
+		void setMouseDownCallback(MouseDownCallback callback);
+		void setMouseUpCallback(MouseUpCallback callback);
+		void setKeyDownCallback(KeyDownCallback callback);
+		void setKeyPressCallback(KeyPressCallback callback);
+		void setKeyUpCallback(KeyUpCallback callback);
+		void setCharCallback(CharCallback callback);
+		inline EventsManager &getEventsManager() {return (this->eventsManager);};
 		inline void setMouseX(int mouseX) {this->mouseX = mouseX;};
 		inline void setMouseY(int mouseY) {this->mouseY = mouseY;};
 		inline bool isFocused() {return (this->focused);};

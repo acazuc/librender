@@ -68,7 +68,7 @@ namespace librender
 		this->height = maxHeight;
 		uint32_t size = std::sqrt(totalWidth * (maxHeight + 2)) + maxWidth + maxHeight + 4;
 		char *data = new char[size * size * 4];
-		std::memset(data, 0xff, size * size * 4);
+		std::memset(data, 0, size * size * 4);
 		uint32_t x = 1;
 		uint32_t y = 1;
 		uint32_t lineHeight = 0;
@@ -120,7 +120,7 @@ namespace librender
 		{
 			for (uint32_t tX = 0; tX < glyph->getWidth(); ++tX)
 			{
-				data[((y + tY) * size + x + tX) * 4 + 3] = glyph_data[tY * glyph->getWidth() + tX];
+				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffff | glyph_data[tY * glyph->getWidth() + tX] << 24;
 			}
 		}
 	}
@@ -147,46 +147,6 @@ namespace librender
 		return (this->glyphs[character]);
 	}
 
-	int32_t Font::getWidth(uint32_t character)
-	{
-		FontGlyph *glyph = getGlyph(character);
-		if (!glyph)
-			return (0);
-		return (glyph->getAdvance());
-	}
-
-	uint32_t Font::getCharRenderWidth(uint32_t character)
-	{
-		FontGlyph *glyph = getGlyph(character);
-		if (!glyph)
-			return (0);
-		return (glyph->getWidth());
-	}
-
-	uint32_t Font::getCharRenderHeight(uint32_t character)
-	{
-		FontGlyph *glyph = getGlyph(character);
-		if (!glyph)
-			return (0);
-		return (glyph->getHeight());
-	}
-
-	uint32_t Font::getCharRenderOffsetX(uint32_t character)
-	{
-		FontGlyph *glyph = getGlyph(character);
-		if (!glyph)
-			return (0);
-		return (glyph->getOffsetX());
-	}
-
-	uint32_t Font::getCharRenderOffsetY(uint32_t character)
-	{
-		FontGlyph *glyph = getGlyph(character);
-		if (!glyph)
-			return (0);
-		return (glyph->getOffsetY());
-	}
-
 	int32_t Font::getWidth(std::string &text)
 	{
 		char *iter = const_cast<char*>(text.c_str());
@@ -203,7 +163,11 @@ namespace librender
 				currentWidth = 0;
 			}
 			else
-				currentWidth += getWidth(currentChar);
+			{
+				FontGlyph *glyph = getGlyph(currentChar);
+				if (glyph)
+					currentWidth += glyph->getAdvance();
+			}
 		}
 		if (currentWidth > maxWidth)
 			maxWidth = currentWidth;
@@ -324,12 +288,13 @@ namespace librender
 			{
 				totalHeight += this->height * scaleY;
 				totalWidth = 0;
+				continue;
 			}
-			else if (currentChar < LIBRENDER_FONT_MODEL_CHARS_NUMBER && this->glyphs[currentChar])
-			{
-				drawCharPart(totalWidth + x, totalHeight + y, currentChar, scaleX, scaleY);
-				totalWidth += getWidth(currentChar) * scaleX;
-			}
+			FontGlyph *glyph = getGlyph(currentChar);
+			if (!glyph)
+				continue;
+			drawCharPart(totalWidth + x, totalHeight + y, currentChar, scaleX, scaleY);
+			totalWidth += glyph->getAdvance() * scaleX;
 		}
 	}
 

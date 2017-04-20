@@ -4,12 +4,12 @@
 # include "FontModel.h"
 # include "FontGlyph.h"
 # include "Color.h"
-# include <GLFW/glfw3.h>
+# include "GL.h"
+# include <ft2build.h>
+# include FT_FREETYPE_H
 # include <cstdint>
 # include <vector>
 # include <string>
-# include <ft2build.h>
-# include FT_FREETYPE_H
 
 namespace librender
 {
@@ -39,11 +39,6 @@ namespace librender
 		Font(FontModel *parent, FT_Face ftFace, int size);
 		~Font();
 		FontGlyph *getGlyph(uint32_t character);
-		uint32_t getCharRenderWidth(uint32_t c);
-		uint32_t getCharRenderHeight(uint32_t c);
-		uint32_t getCharRenderOffsetX(uint32_t c);
-		uint32_t getCharRenderOffsetY(uint32_t c);
-		int32_t getWidth(uint32_t c);
 		int32_t getWidth(std::string &text);
 		int32_t getHeight(std::string &text);
 		inline int32_t getLineHeight() {return (this->height);};

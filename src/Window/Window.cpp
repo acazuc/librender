@@ -1,5 +1,4 @@
 #include "Window.h"
-#include "EventsListener.h"
 #include <cstring>
 #include <utf8.h>
 #include <cmath>
@@ -8,20 +7,16 @@ namespace librender
 {
 
 	Window::Window(std::string title, int width, int height)
+	: focused(true)
+	, mouseX(0)
+	, mouseY(0)
+	, width(width)
+	, height(height)
 	{
-		this->mouseX = 0;
-		this->mouseY = 0;
-		glfwSetErrorCallback(EventsListener::glfwErrorListener);
-		this->width = width;
-		this->height = height;
-		this->focused = true;
-		this->semiDiag = std::sqrt(std::pow(this->width, 2) + std::pow(this->height, 2));
+		this->semiDiag = std::sqrt(this->width * this->width + this->height * this->height);
 		this->isFullscreen = false;
 		if (!(this->window = glfwCreateWindow(this->width, this->height, title.c_str(), NULL, NULL)))
-		{
-			std::cerr << "Failed to create window" << std::endl;
-			exit(EXIT_FAILURE);
-		}
+			throw std::exception();
 		glfwSetWindowUserPointer(this->window, this);
 		glfwMakeContextCurrent(this->window);
 		glEnable(GL_TEXTURE_2D);
@@ -35,15 +30,11 @@ namespace librender
 		this->crossCursor = glfwCreateStandardCursor(GLFW_CROSSHAIR_CURSOR);
 		this->ibeamCursor = glfwCreateStandardCursor(GLFW_IBEAM_CURSOR);
 		this->handCursor = glfwCreateStandardCursor(GLFW_HAND_CURSOR);
-		glfwSetCharCallback(this->window, EventsListener::charListener);
-		glfwSetKeyCallback(this->window, EventsListener::keyListener);
-		glfwSetScrollCallback(this->window, EventsListener::scrollListener);
-		glfwSetMouseButtonCallback(this->window, EventsListener::mouseListener);
-		glfwSetCursorPosCallback(this->window, EventsListener::cursorListener);
-		glfwSetFramebufferSizeCallback(this->window, EventsListener::windowResizeListener);
-		glfwSetWindowFocusCallback(this->window, EventsListener::windowFocusListener);
+		glfwSetCursorPosCallback(this->window, EventsManager::cursorListener);
+		glfwSetFramebufferSizeCallback(this->window, EventsManager::windowResizeListener);
+		glfwSetWindowFocusCallback(this->window, EventsManager::windowFocusListener);
 		updateGLContext();
-		int count = 0;
+		/*int count = 0;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
 		for (int i = 0; i < count; ++i)
 		{
@@ -58,7 +49,7 @@ namespace librender
 				std::cout << "width: " << modes[j].width << ", height: " << modes[j].height << ", redBits: " << modes[j].redBits << ", greenBits: " << modes[j].greenBits << ", blueBits: " << modes[j].blueBits << ", refreshRate: " << modes[j].refreshRate << std::endl;
 			}
 			std::cout << std::endl;
-		}
+		}*/
 	}
 
 	Window::~Window()
@@ -110,7 +101,7 @@ namespace librender
 
 	void Window::resized(int width, int height)
 	{
-		this->semiDiag = std::sqrt(std::pow(width, 2) + std::pow(height, 2)) / 2;
+		this->semiDiag = std::sqrt(width * width + height * height) / 2;
 		this->width = width;
 		this->height = height;
 		updateGLContext();
@@ -271,5 +262,95 @@ namespace librender
 	{
 		this->focused = focused;
 	}
+
+	void Window::setWindowResizedCallback(WindowResizedCallback callback)
+	{
+		//Window resize is always set in constructor
+		this->eventsManager.setWindowResizedCallback(callback);
+	}
+
+	void Window::setMouseScrollCallback(ScrollCallback callback)
+	{
+		this->eventsManager.setScrollCallback(callback);
+		if (!callback)
+		{
+			glfwSetScrollCallback(this->window, NULL);
+			return;
+		}
+		glfwSetScrollCallback(this->window, EventsManager::scrollListener);
+	}
+
+	void Window::setMouseMoveCallback(MouseMoveCallback callback)
+	{
+		//Mouse move is always set in constructor
+		this->eventsManager.setMouseMoveCallback(callback);
+	}
+
+	void Window::setMouseDownCallback(MouseDownCallback callback)
+	{
+		this->eventsManager.setMouseDownCallback(callback);
+		if (!callback && !this->eventsManager.getMouseUpCallback())
+		{
+			glfwSetMouseButtonCallback(this->window, NULL);
+			return;
+		}
+		glfwSetMouseButtonCallback(this->window, EventsManager::mouseListener);
+	}
+
+	void Window::setMouseUpCallback(MouseUpCallback callback)
+	{
+		this->eventsManager.setMouseUpCallback(callback);
+		if (!callback && !this->eventsManager.getMouseDownCallback())
+		{
+			glfwSetMouseButtonCallback(this->window, NULL);
+			return;
+		}
+		glfwSetMouseButtonCallback(this->window, EventsManager::mouseListener);
+	}
+
+	void Window::setKeyDownCallback(KeyDownCallback callback)
+	{
+		this->eventsManager.setKeyDownCallback(callback);
+		if (!callback && !this->eventsManager.getKeyPressCallback() && !this->eventsManager.getKeyUpCallback())
+		{
+			glfwSetKeyCallback(this->window, NULL);
+			return;
+		}
+		glfwSetKeyCallback(this->window, EventsManager::keyListener);
+	}
+
+	void Window::setKeyPressCallback(KeyPressCallback callback)
+	{
+		this->eventsManager.setKeyPressCallback(callback);
+		if (!callback && !this->eventsManager.getKeyDownCallback() && !this->eventsManager.getKeyUpCallback())
+		{
+			glfwSetKeyCallback(this->window, NULL);
+			return;
+		}
+		glfwSetKeyCallback(this->window, EventsManager::keyListener);
+	}
+
+	void Window::setKeyUpCallback(KeyUpCallback callback)
+	{
+		this->eventsManager.setKeyUpCallback(callback);
+		if (!callback && !this->eventsManager.getKeyDownCallback() && !this->eventsManager.getKeyPressCallback())
+		{
+			glfwSetKeyCallback(this->window, NULL);
+			return;
+		}
+		glfwSetKeyCallback(this->window, EventsManager::keyListener);
+	}
+
+	void Window::setCharCallback(CharCallback callback)
+	{
+		this->eventsManager.setCharCallback(callback);
+		if (!callback)
+		{
+			glfwSetCharCallback(this->window, NULL);
+			return;
+		}
+		glfwSetCharCallback(this->window, EventsManager::charListener);
+	}
+
 
 }

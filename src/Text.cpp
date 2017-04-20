@@ -7,6 +7,10 @@
 #define UPDATE_TEX_COORDS 2
 #define UPDATE_COLORS 4
 
+#define VERTEX_BUFFER 0
+#define TEX_COORD_BUFFER 1
+#define COLOR_BUFFER 2
+
 namespace librender
 {
 
@@ -28,7 +32,7 @@ namespace librender
 	, x(x)
 	, y(y)
 	{
-		//Empty
+		glGenBuffers(3, buffers);
 	}
 
 	Text::~Text()
@@ -39,6 +43,7 @@ namespace librender
 			delete[] (this->texCoords);
 		if (this->colors)
 			delete[] (this->colors);
+		glDeleteBuffers(3, buffers);
 	}
 
 	void Text::updateVertex()
@@ -49,34 +54,45 @@ namespace librender
 		if (shadowLen < 0)
 			shadowLen = 0;
 		int32_t lineHeight = this->font->getLineHeight();
-		int32_t x = this->x;
-		int32_t y = this->y;
+		int32_t x = 0;
+		int32_t y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
+		char *end = const_cast<char*>(this->text.c_str() + this->text.length());
+		int32_t index = (shadowLen * this->charsNumber) * 8;
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
-			uint32_t currentChar = utf8::next(iter, const_cast<char*>(this->text.c_str()) + this->text.length());
+			uint32_t currentChar = utf8::next(iter, end);
 			if (currentChar == '\n')
 			{
 				y += lineHeight * this->scaleY;
-				x = this->x;
+				x = 0;
 			}
 			else
 			{
-				int32_t charWidth = static_cast<int32_t>(this->font->getWidth(currentChar)) * this->scaleX;
-				int32_t charRenderWidth = this->font->getCharRenderWidth(currentChar) * this->scaleX;
-				int32_t charRenderHeight = this->font->getCharRenderHeight(currentChar) * this->scaleY;
-				int32_t charRenderX = x + this->font->getCharRenderOffsetX(currentChar);
-				int32_t charRenderY = y + this->font->getCharRenderOffsetY(currentChar);
-				int32_t tmp = (shadowLen * this->charsNumber + i) * 8;
-				this->vertex[tmp + 0] = charRenderX;
-				this->vertex[tmp + 1] = charRenderY;
-				this->vertex[tmp + 2] = charRenderX + charRenderWidth;
-				this->vertex[tmp + 3] = charRenderY;
-				this->vertex[tmp + 4] = charRenderX + charRenderWidth;
-				this->vertex[tmp + 5] = charRenderY + charRenderHeight;
-				this->vertex[tmp + 6] = charRenderX;
-				this->vertex[tmp + 7] = charRenderY + charRenderHeight;
-				x += charWidth * this->scaleX;
+				FontGlyph *glyph = this->font->getGlyph(currentChar);
+				if (!glyph)
+				{
+					std::memset(&this->vertex[index], 0, 8 * sizeof(*this->vertex));
+					index += 8;
+					continue;
+				}
+				else
+				{
+					int32_t charWidth = glyph->getAdvance() * this->scaleX;
+					int32_t charRenderWidth = glyph->getWidth() * this->scaleX;
+					int32_t charRenderHeight = glyph->getHeight() * this->scaleY;
+					int32_t charRenderX = x + glyph->getOffsetX();
+					int32_t charRenderY = glyph->getOffsetY();
+					this->vertex[index++] = charRenderX;
+					this->vertex[index++] = charRenderY;
+					this->vertex[index++] = charRenderX + charRenderWidth;
+					this->vertex[index++] = charRenderY;
+					this->vertex[index++] = charRenderX + charRenderWidth;
+					this->vertex[index++] = charRenderY + charRenderHeight;
+					this->vertex[index++] = charRenderX;
+					this->vertex[index++] = charRenderY + charRenderHeight;
+					x += charWidth * this->scaleX;
+				}
 			}
 		}
 		if (this->shadowSize == 0)
@@ -193,7 +209,10 @@ namespace librender
 		glColorPointer(4, GL_FLOAT, 0, this->colors);
 		glVertexPointer(2, GL_FLOAT, 0, this->vertex);
 		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
+		glPushMatrix();
+		glTranslatef(this->x, this->y, 0);
 		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
+		glPopMatrix();
 	}
 
 	void Text::setText(std::string &text)
@@ -290,66 +309,6 @@ namespace librender
 	{
 		setScaleX(scale);
 		setScaleY(scale);
-	}
-
-	void Text::setX(float x)
-	{
-		moveX(x - this->x);
-	}
-
-	void Text::setY(float y)
-	{
-		moveY(y - this->y);
-	}
-
-	void Text::setPos(float x, float y)
-	{
-		movePos(x - this->x, y - this->y);
-	}
-
-	void Text::moveX(float deltaX)
-	{
-		if (!deltaX)
-			return;
-		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-		{
-			this->vertex[i * 2 + 0] += deltaX;
-		}
-		this->x += deltaX;
-	}
-
-	void Text::moveY(float deltaY)
-	{
-		if (!deltaY)
-			return;
-		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-		{
-			this->vertex[i * 2 + 1] += deltaY;
-		}
-		this->y += deltaY;
-	}
-
-	void Text::movePos(float deltaX, float deltaY)
-	{
-		if (!deltaX && !deltaY)
-			return;
-		if (!deltaX)
-		{
-			moveY(deltaY);
-			return;
-		}
-		if (!deltaY)
-		{
-			moveX(deltaX);
-			return;
-		}
-		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-		{
-			this->vertex[i * 2 + 0] += deltaX;
-			this->vertex[i * 2 + 1] += deltaY;
-		}
-		this->x += deltaX;
-		this->y += deltaY;
 	}
 
 }

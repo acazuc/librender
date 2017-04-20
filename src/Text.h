@@ -3,7 +3,7 @@
 
 # include "Color.h"
 # include "Font.h"
-# include <GLFW/glfw3.h>
+# include "GL.h"
 # include <cstdint>
 # include <string>
 
@@ -18,6 +18,7 @@ namespace librender
 		GLfloat *texCoords;
 		GLfloat *vertex;
 		GLfloat *colors;
+		GLuint buffers[3];
 		Color shadowColor;
 		Color color;
 		Font *font;
@@ -62,14 +63,11 @@ namespace librender
 		void setScaleY(float scaleY);
 		inline float getScaleY() {return (this->scaleY);};
 		void setScale(float scale);
-		void setX(float x);
+		void setX(float x) {this->x = x;};
 		inline float getX() {return (this->x);};
-		void setY(float y);
+		void setY(float y) {this->y = y;};
 		inline float getY() {return (this->y);};
-		void setPos(float x, float y);
-		void moveX(float deltaX);
-		void moveY(float deltaY);
-		void movePos(float deltaX, float deltaY);
+		void setPos(float x, float y) {setX(x);setY(y);};
 
 	};
 
