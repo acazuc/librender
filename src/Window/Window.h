@@ -1,8 +1,8 @@
 #ifndef LIBRENDER_WINDOW_H
 # define LIBRENDER_WINDOW_H
 
-# include "Window/EventsManager.h"
-# include "GL.h"
+# include "EventsManager.h"
+# include "../GL.h"
 # include <string>
 
 namespace librender
@@ -71,7 +71,7 @@ namespace librender
 		void setCursor(enum WindowCursor cursor);
 		void setFocused(bool focused);
 		void setWindowResizedCallback(WindowResizedCallback callback);
-		void setMouseScrollCallback(ScrollCallback callback);
+		void setScrollCallback(ScrollCallback callback);
 		void setMouseMoveCallback(MouseMoveCallback callback);
 		void setMouseDownCallback(MouseDownCallback callback);
 		void setMouseUpCallback(MouseUpCallback callback);

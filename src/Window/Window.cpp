@@ -1,4 +1,5 @@
 #include "Window.h"
+#include <iostream>
 #include <cstring>
 #include <utf8.h>
 #include <cmath>
@@ -7,7 +8,14 @@ namespace librender
 {
 
 	Window::Window(std::string title, int width, int height)
-	: focused(true)
+	: window(NULL)
+	, hResizeCursor(NULL)
+	, vResizeCursor(NULL)
+	, arrowCursor(NULL)
+	, crossCursor(NULL)
+	, ibeamCursor(NULL)
+	, handCursor(NULL)
+	, focused(true)
 	, mouseX(0)
 	, mouseY(0)
 	, width(width)
@@ -34,7 +42,7 @@ namespace librender
 		glfwSetFramebufferSizeCallback(this->window, EventsManager::windowResizeListener);
 		glfwSetWindowFocusCallback(this->window, EventsManager::windowFocusListener);
 		updateGLContext();
-		/*int count = 0;
+		int count = 0;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
 		for (int i = 0; i < count; ++i)
 		{
@@ -49,12 +57,25 @@ namespace librender
 				std::cout << "width: " << modes[j].width << ", height: " << modes[j].height << ", redBits: " << modes[j].redBits << ", greenBits: " << modes[j].greenBits << ", blueBits: " << modes[j].blueBits << ", refreshRate: " << modes[j].refreshRate << std::endl;
 			}
 			std::cout << std::endl;
-		}*/
+		}
 	}
 
 	Window::~Window()
 	{
-		glfwDestroyWindow(this->window);
+		if (this->window)
+			glfwDestroyWindow(this->window);
+		if (this->hResizeCursor)
+			glfwDestroyCursor(this->hResizeCursor);
+		if (this->vResizeCursor)
+			glfwDestroyCursor(this->vResizeCursor);
+		if (this->arrowCursor)
+			glfwDestroyCursor(this->arrowCursor);
+		if (this->crossCursor)
+			glfwDestroyCursor(this->crossCursor);
+		if (this->ibeamCursor)
+			glfwDestroyCursor(this->ibeamCursor);
+		if (this->handCursor)
+			glfwDestroyCursor(this->handCursor);
 	}
 
 	void Window::setIcon(char *data, uint32_t width, uint32_t height)
@@ -269,7 +290,7 @@ namespace librender
 		this->eventsManager.setWindowResizedCallback(callback);
 	}
 
-	void Window::setMouseScrollCallback(ScrollCallback callback)
+	void Window::setScrollCallback(ScrollCallback callback)
 	{
 		this->eventsManager.setScrollCallback(callback);
 		if (!callback)

@@ -44,29 +44,26 @@ namespace librender
 		Window *window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
 		try
 		{
-			if (action == GLFW_PRESS || action == GLFW_RELEASE)
+			KeyEvent event;
+			event.key = key;
+			event.scancode = scancode;
+			event.mods = mods;
+			if (action == GLFW_PRESS)
 			{
-				KeyEvent event;
-				event.key = key;
-				event.scancode = scancode;
-				event.mods = mods;
-				if (action == GLFW_PRESS)
-				{
-					if (window->getEventsManager().keyDownCallback)
-						window->getEventsManager().keyDownCallback(event);
-					if (window->getEventsManager().keyPressCallback)
-						window->getEventsManager().keyPressCallback(event);
-				}
-				else if (action == GLFW_REPEAT)
-				{
-					if (window->getEventsManager().keyPressCallback)
-						window->getEventsManager().keyPressCallback(event);
-				}
-				else if (action == GLFW_RELEASE)
-				{
-					if (window->getEventsManager().keyUpCallback)
-						window->getEventsManager().keyUpCallback(event);
-				}
+				if (window->getEventsManager().keyDownCallback)
+					window->getEventsManager().keyDownCallback(event);
+				if (window->getEventsManager().keyPressCallback)
+					window->getEventsManager().keyPressCallback(event);
+			}
+			else if (action == GLFW_REPEAT)
+			{
+				if (window->getEventsManager().keyPressCallback)
+					window->getEventsManager().keyPressCallback(event);
+			}
+			else if (action == GLFW_RELEASE)
+			{
+				if (window->getEventsManager().keyUpCallback)
+					window->getEventsManager().keyUpCallback(event);
 			}
 		}
 		catch (std::exception &e)

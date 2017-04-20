@@ -1,8 +1,8 @@
 #ifndef LIBRENDER_EVENTS_LISTENER_H
 # define LIBRENDER_EVENTS_LISTENER_H
 
-# include "Window/Events.h"
-# include "GL.h"
+# include "Events.h"
+# include "../GL.h"
 
 
 namespace librender
