@@ -25,6 +25,9 @@ namespace librender
 			char *error = new char[infoLogLength + 1];
 			std::memset(error, 0, infoLogLength + 1);
 			glGetShaderInfoLog(this->id, infoLogLength, NULL, error);
+			if (this->id)
+				glDeleteProgram(this->id);
+			delete[] (error);
 			throw std::exception();
 		}
 	}

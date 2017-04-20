@@ -21,6 +21,7 @@ namespace librender
 			glGetShaderInfoLog(this->id, infoLogLength, NULL, error);
 			if (this->id)
 				glDeleteShader(this->id);
+			delete[] (error);
 			throw std::exception();
 		}
 	}
