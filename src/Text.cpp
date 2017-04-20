@@ -28,7 +28,7 @@ namespace librender
 	, x(x)
 	, y(y)
 	{
-		//
+		//Empty
 	}
 
 	Text::~Text()
@@ -161,8 +161,7 @@ namespace librender
 		this->verticesNumber = this->charsNumber * 4;
 		if (this->shadowSize > 0)
 		{
-			uint16_t fac = 1 + (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2);
-			fac -= 1 + 4 * this->shadowSize;
+			uint16_t fac = 1 + (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 + 4 * this->shadowSize;
 			this->verticesNumber *= fac;
 		}
 		if (this->texCoords)

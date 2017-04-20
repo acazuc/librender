@@ -27,6 +27,7 @@ SRCS_NAME = Color.cpp \
 		FontModel.cpp \
 		Texture.cpp \
 		Text.cpp \
+		FontGlyph.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 

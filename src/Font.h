@@ -2,6 +2,7 @@
 # define LIBRENDER_FONT_H
 
 # include "FontModel.h"
+# include "FontGlyph.h"
 # include "Color.h"
 # include <GLFW/glfw3.h>
 # include <cstdint>
@@ -12,17 +13,6 @@
 
 namespace librender
 {
-
-	typedef struct SFontGlyph
-	{
-		unsigned short x;
-		unsigned short y;
-		unsigned short width;
-		unsigned short height;
-		unsigned short advance;
-		unsigned short offsetY;
-		short offsetX;
-	} FontGlyph;
 
 	class Font
 	{
@@ -39,7 +29,7 @@ namespace librender
 		uint32_t height;
 		void loadList(int32_t size);
 		void createSet();
-		void copyChar(int32_t x, int32_t y, char *data, uint32_t size, SFontGlyph *glyph, char *glyph_data);
+		void copyChar(int32_t x, int32_t y, char *data, uint32_t size, FontGlyph *glyph, char *glyph_data);
 		char *imageCrop(char *data, int32_t size, int32_t height);
 		void buildGLTexture(char *data, uint32_t width, uint32_t height);
 		void drawQuad(float x, float y, float width, float height, int texX, int texY, int texWidth, int texHeight);
@@ -48,6 +38,7 @@ namespace librender
 	public:
 		Font(FontModel *parent, FT_Face ftFace, int size);
 		~Font();
+		FontGlyph *getGlyph(uint32_t character);
 		uint32_t getCharRenderWidth(uint32_t c);
 		uint32_t getCharRenderHeight(uint32_t c);
 		uint32_t getCharRenderOffsetX(uint32_t c);

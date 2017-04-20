@@ -16,6 +16,7 @@ namespace librender
 		if (FT_Set_Pixel_Sizes(this->ftFace, 0, size))
 			throw std::exception();
 		this->glyphs = new FontGlyph*[LIBRENDER_FONT_MODEL_CHARS_NUMBER];
+		std::memset(this->glyphs, 0, LIBRENDER_FONT_MODEL_CHARS_NUMBER * sizeof(*this->glyphs));
 		this->glyphs_datas = new char*[LIBRENDER_FONT_MODEL_CHARS_NUMBER];
 		loadList(size);
 		createSet();
@@ -37,70 +38,58 @@ namespace librender
 	{
 		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
 		{
-			this->glyphs[i] = NULL;
 			if (!this->parent->isAvailable(i))
 				continue;
 			if (FT_Load_Char(this->ftFace, i, FT_LOAD_RENDER))
 				continue;
-			this->glyphs[i] = new FontGlyph();
-			this->glyphs[i]->width = this->ftFace->glyph->bitmap.width;
-			this->glyphs[i]->height = this->ftFace->glyph->bitmap.rows;
-			this->glyphs[i]->advance = this->ftFace->glyph->advance.x >> 6;
-			this->glyphs[i]->offsetY = size - this->ftFace->glyph->bitmap_top;
-			this->glyphs[i]->offsetX = this->ftFace->glyph->bitmap_left;
-			this->glyphs_datas[i] = new char[this->glyphs[i]->width * this->glyphs[i]->height];
-			std::memcpy(this->glyphs_datas[i], this->ftFace->glyph->bitmap.buffer, this->glyphs[i]->width * this->glyphs[i]->height);
+			this->glyphs[i] = new FontGlyph(this->ftFace->glyph->advance.x >> 6, this->ftFace->glyph->bitmap.width, this->ftFace->glyph->bitmap.rows
+				, this->ftFace->glyph->bitmap_left, size - this->ftFace->glyph->bitmap_top);
+			this->glyphs_datas[i] = new char[this->glyphs[i]->getWidth() * this->glyphs[i]->getHeight()];
+			std::memcpy(this->glyphs_datas[i], this->ftFace->glyph->bitmap.buffer, this->glyphs[i]->getWidth() * this->glyphs[i]->getHeight());
 		}
 	}
 
 	void Font::createSet()
 	{
-		char *data;
-		uint32_t totalWidth;
-		uint32_t lineHeight;
-		uint32_t maxHeight;
-		uint32_t maxWidth;
-		uint32_t size;
-		uint32_t x;
-		uint32_t y;
-
-		totalWidth = 0;
-		maxHeight = 0;
-		maxWidth = 0;
+		uint32_t totalWidth = 0;
+		uint32_t maxHeight = 0;
+		uint32_t maxWidth = 0;
 		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
 		{
-			if (!this->glyphs[i])
+			FontGlyph *glyph = this->glyphs[i];
+			if (!glyph)
 				continue;
-			totalWidth += this->glyphs[i]->width + 1;
-			if (this->glyphs[i]->height > maxHeight)
-				maxHeight = this->glyphs[i]->height;
-			if (this->glyphs[i]->width > maxWidth)
-				maxWidth = this->glyphs[i]->width + 1;
+			totalWidth += glyph->getWidth() + 1;
+			if (glyph->getHeight() > maxHeight)
+				maxHeight = glyph->getHeight();
+			if (glyph->getWidth() > maxWidth)
+				maxWidth = glyph->getWidth() + 1;
 		}
 		this->height = maxHeight;
-		size = std::sqrt(totalWidth * (maxHeight + 2)) + maxWidth + (maxHeight + 2);
-		data = new char[size * size * 4];
-		std::memset(data, 0, size * size * 4);
-		x = 1;
-		y = 1;
-		lineHeight = 0;
+		uint32_t size = std::sqrt(totalWidth * (maxHeight + 2)) + maxWidth + maxHeight + 4;
+		char *data = new char[size * size * 4];
+		std::memset(data, 0xff, size * size * 4);
+		uint32_t x = 1;
+		uint32_t y = 1;
+		uint32_t lineHeight = 0;
 		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
 		{
-			if (!this->glyphs[i])
+			FontGlyph *glyph = this->glyphs[i];
+			if (!glyph)
 				continue;
-			if (x + this->glyphs[i]->width + 2 >= size)
+			if (x + glyph->getWidth() + 2 >= size)
 			{
 				x = 1;
 				y += lineHeight + 1;
 				lineHeight = 0;
 			}
-			this->glyphs[i]->x = x;
-			this->glyphs[i]->y = y;
-			if (this->glyphs[i]->height > lineHeight)
-				lineHeight = this->glyphs[i]->height;
-			copyChar(x, y, data, size, this->glyphs[i], this->glyphs_datas[i]);
+			glyph->setTexX(x);
+			glyph->setTexY(y);
+			if (glyph->getHeight() > lineHeight)
+				lineHeight = glyph->getHeight();
+			copyChar(x, y, data, size, glyph, this->glyphs_datas[i]);
 			delete[] (this->glyphs_datas[i]);
-			x += this->glyphs[i]->width + 1;
+			x += glyph->getWidth() + 1;
 		}
 		if (x == 1)
 			y -= lineHeight + 1;
@@ -125,14 +114,13 @@ namespace librender
 		return (data);
 	}
 
-	void Font::copyChar(int32_t x, int32_t y, char *data, uint32_t size, SFontGlyph *glyph, char *glyph_data)
+	void Font::copyChar(int32_t x, int32_t y, char *data, uint32_t size, FontGlyph *glyph, char *glyph_data)
 	{
-		for (uint32_t tY = 0; tY < glyph->height; ++tY)
+		for (uint32_t tY = 0; tY < glyph->getHeight(); ++tY)
 		{
-			for (uint32_t tX = 0; tX < glyph->width; ++tX)
+			for (uint32_t tX = 0; tX < glyph->getWidth(); ++tX)
 			{
-				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffffff;
-				data[((y + tY) * size + x + tX) * 4 + 3] = glyph_data[tY * glyph->width + tX];
+				data[((y + tY) * size + x + tX) * 4 + 3] = glyph_data[tY * glyph->getWidth() + tX];
 			}
 		}
 	}
@@ -148,54 +136,66 @@ namespace librender
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	}
 
-	int32_t Font::getWidth(uint32_t c)
+	FontGlyph *Font::getGlyph(uint32_t character)
 	{
-		if (c >= LIBRENDER_FONT_MODEL_CHARS_NUMBER || !this->glyphs[c])
-			return (0);
-		return (this->glyphs[c]->advance);
+		if (character >= LIBRENDER_FONT_MODEL_CHARS_NUMBER || !this->glyphs[character])
+		{
+			if (character == '?')
+				return (NULL);
+			return (getGlyph('?'));
+		}
+		return (this->glyphs[character]);
 	}
 
-	uint32_t Font::getCharRenderWidth(uint32_t c)
+	int32_t Font::getWidth(uint32_t character)
 	{
-		if (c >= LIBRENDER_FONT_MODEL_CHARS_NUMBER || !this->glyphs[c])
+		FontGlyph *glyph = getGlyph(character);
+		if (!glyph)
 			return (0);
-		return (this->glyphs[c]->width);
+		return (glyph->getAdvance());
 	}
 
-	uint32_t Font::getCharRenderHeight(uint32_t c)
+	uint32_t Font::getCharRenderWidth(uint32_t character)
 	{
-		if (c >= LIBRENDER_FONT_MODEL_CHARS_NUMBER || !this->glyphs[c])
+		FontGlyph *glyph = getGlyph(character);
+		if (!glyph)
 			return (0);
-		return (this->glyphs[c]->height);
+		return (glyph->getWidth());
 	}
 
-	uint32_t Font::getCharRenderOffsetX(uint32_t c)
+	uint32_t Font::getCharRenderHeight(uint32_t character)
 	{
-		if (c >= LIBRENDER_FONT_MODEL_CHARS_NUMBER || !this->glyphs[c])
+		FontGlyph *glyph = getGlyph(character);
+		if (!glyph)
 			return (0);
-		return (this->glyphs[c]->offsetX);
+		return (glyph->getHeight());
 	}
 
-	uint32_t Font::getCharRenderOffsetY(uint32_t c)
+	uint32_t Font::getCharRenderOffsetX(uint32_t character)
 	{
-		if (c >= LIBRENDER_FONT_MODEL_CHARS_NUMBER || !this->glyphs[c])
+		FontGlyph *glyph = getGlyph(character);
+		if (!glyph)
 			return (0);
-		return (this->glyphs[c]->offsetY);
+		return (glyph->getOffsetX());
+	}
+
+	uint32_t Font::getCharRenderOffsetY(uint32_t character)
+	{
+		FontGlyph *glyph = getGlyph(character);
+		if (!glyph)
+			return (0);
+		return (glyph->getOffsetY());
 	}
 
 	int32_t Font::getWidth(std::string &text)
 	{
-		uint32_t currentWidth;
-		uint32_t maxWidth;
-		char *iter;
-		uint32_t currentChar;
-
-		iter = const_cast<char*>(text.c_str());
-		maxWidth = 0;
-		currentWidth = 0;
-		while (iter != const_cast<char*>(text.c_str()) + text.length())
+		char *iter = const_cast<char*>(text.c_str());
+		uint32_t maxWidth = 0;
+		uint32_t currentWidth = 0;
+		char *end = const_cast<char*>(text.c_str()) + text.length();
+		while (iter != end)
 		{
-			currentChar = utf8::next(iter, const_cast<char*>(text.c_str()) + text.length());
+			uint32_t currentChar = utf8::next(iter, end);
 			if (currentChar == '\n')
 			{
 				if (currentWidth > maxWidth)
@@ -212,14 +212,12 @@ namespace librender
 
 	int32_t Font::getHeight(std::string &text)
 	{
-		uint32_t nlNb;
-		char *iter;
-
-		iter = (char*)text.c_str();
-		nlNb = 1;
-		while (*iter)
+		char *iter = const_cast<char*>(text.c_str());
+		uint32_t nlNb = 1;
+		char *end = const_cast<char*>(text.c_str() + text.length());
+		while (iter != end)
 		{
-			if (utf8::next(iter, (char*)text.c_str() + text.length()) == '\n')
+			if (utf8::next(iter, end) == '\n')
 				nlNb++;
 		}
 		return (this->height * nlNb);
@@ -238,10 +236,10 @@ namespace librender
 
 	void Font::drawQuad(float x, float y, float width, float height, int texX, int texY, int texWidth, int texHeight)
 	{
-		float textureSrcX = (float)texX / this->textureWidth;
-		float textureSrcY = (float)texY / this->textureHeight;
-		float renderWidth = (float)texWidth / this->textureWidth;
-		float renderHeight = (float)texHeight / this->textureHeight;
+		float textureSrcX = static_cast<float>(texX) / this->textureWidth;
+		float textureSrcY = static_cast<float>(texY) / this->textureHeight;
+		float renderWidth = static_cast<float>(texWidth) / this->textureWidth;
+		float renderHeight = static_cast<float>(texHeight) / this->textureHeight;
 		glTexCoord2f(textureSrcX, textureSrcY);
 		glVertex2f(x, y);
 		glTexCoord2f(textureSrcX, textureSrcY + renderHeight);
@@ -254,10 +252,10 @@ namespace librender
 
 	void Font::glArrayQuad(int texX, int texY, int texWidth, int texHeight, float *texCoords)
 	{
-		float textureSrcX = (float)texX / this->textureWidth;
-		float textureSrcY = (float)texY / this->textureHeight;
-		float renderWidth = (float)texWidth / this->textureWidth;
-		float renderHeight = (float)texHeight / this->textureHeight;
+		float textureSrcX = static_cast<float>(texX) / this->textureWidth;
+		float textureSrcY = static_cast<float>(texY) / this->textureHeight;
+		float renderWidth = static_cast<float>(texWidth) / this->textureWidth;
+		float renderHeight = static_cast<float>(texHeight) / this->textureHeight;
 		texCoords[0] = textureSrcX;
 		texCoords[1] = textureSrcY;
 		texCoords[2] = textureSrcX + renderWidth;
@@ -281,21 +279,28 @@ namespace librender
 
 	void Font::drawCharPart(float x, float y, uint32_t character, float scaleX, float scaleY)
 	{
-		if (character < LIBRENDER_FONT_MODEL_CHARS_NUMBER && character != '\n' && this->glyphs[character])
-		{
-			drawQuad(x + this->glyphs[character]->offsetX * scaleX, y + this->glyphs[character]->offsetY * scaleY
-				, this->glyphs[character]->width * scaleX, this->glyphs[character]->height * scaleY
-				, this->glyphs[character]->x, this->glyphs[character]->y
-				, this->glyphs[character]->width, this->glyphs[character]->height);
-		}
+		if (character == '\n')
+			return;
+		FontGlyph *glyph = getGlyph(character);
+		if (!glyph)
+			return;
+		drawQuad(x + glyph->getOffsetX() * scaleX, y + glyph->getOffsetY() * scaleY
+			, glyph->getWidth() * scaleX, glyph->getHeight() * scaleY
+			, glyph->getTexX(), glyph->getTexY()
+			, glyph->getWidth(), glyph->getHeight());
 	}
 
 	void Font::glArrayCharPart(uint32_t character, float *texCoords)
 	{
-		if (character < LIBRENDER_FONT_MODEL_CHARS_NUMBER && character != '\n' && this->glyphs[character])
+		if (character == '\n')
+			return;
+		FontGlyph *glyph = getGlyph(character);
+		if (!glyph)
 		{
-			glArrayQuad(this->glyphs[character]->x, this->glyphs[character]->y, this->glyphs[character]->width, this->glyphs[character]->height, texCoords);
+			std::memset(texCoords, 0, 8 * sizeof(*texCoords));
+			return;
 		}
+		glArrayQuad(glyph->getTexX(), glyph->getTexY(), glyph->getWidth(), glyph->getHeight(), texCoords);
 	}
 
 	void Font::drawStringPart(float x, float y, std::string &text, Color &color, float opacity)
@@ -309,14 +314,12 @@ namespace librender
 			return;
 		float totalHeight = 0;
 		float totalWidth = 0;
-		uint32_t currentChar;
-		char *iter;
-
-		iter = (char*)text.c_str();
-		while (*iter)
+		char *iter = const_cast<char*>(text.c_str());
+		char *end = const_cast<char*>(text.c_str() + text.length());
+		glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() * opacity);
+		while (iter != end)
 		{
-			glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() * opacity);
-			currentChar = utf8::next(iter, (char*)text.c_str() + text.length());
+			uint32_t currentChar = utf8::next(iter, end);
 			if (currentChar == '\n')
 			{
 				totalHeight += this->height * scaleY;
@@ -325,7 +328,7 @@ namespace librender
 			else if (currentChar < LIBRENDER_FONT_MODEL_CHARS_NUMBER && this->glyphs[currentChar])
 			{
 				drawCharPart(totalWidth + x, totalHeight + y, currentChar, scaleX, scaleY);
-				totalWidth += this->glyphs[currentChar]->advance * scaleX;
+				totalWidth += getWidth(currentChar) * scaleX;
 			}
 		}
 	}
