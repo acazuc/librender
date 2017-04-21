@@ -3,7 +3,7 @@
 
 # include "FragmentShader.h"
 # include "VertexShader.h"
-# include "GL.h"
+# include "../GL.h"
 
 namespace librender
 {

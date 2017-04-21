@@ -20,6 +20,7 @@ namespace librender
 	, colors(NULL)
 	, shadowColor(Color::WHITE)
 	, color(Color::WHITE)
+	, font(NULL)
 	, verticesNumber(0)
 	, charsNumber(0)
 	, updatesRequired(0)

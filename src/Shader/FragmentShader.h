@@ -1,7 +1,7 @@
 #ifndef LIBRENDER_FRAGMENT_SHADER_H
 # define LIBRENDER_FRAGMENT_SHADER_H
 
-# include "GL.h"
+# include "../GL.h"
 # include <cstdlib>
 
 namespace librender

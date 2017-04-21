@@ -1,5 +1,6 @@
 #include "FragmentShader.h"
 #include <exception>
+#include <iostream>
 #include <cstring>
 
 namespace librender
@@ -21,6 +22,7 @@ namespace librender
 			glGetShaderInfoLog(this->id, infoLogLength, NULL, error);
 			if (this->id)
 				glDeleteShader(this->id);
+			std::cout << error << std::endl;
 			delete[] (error);
 			throw std::exception();
 		}

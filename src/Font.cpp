@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
+#include <iostream>
 
 #define WIDTH_CORRECT 2
 

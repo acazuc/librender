@@ -1,5 +1,6 @@
 #include "Program.h"
 #include <exception>
+#include <iostream>
 #include <cstring>
 
 namespace librender
@@ -27,6 +28,7 @@ namespace librender
 			glGetShaderInfoLog(this->id, infoLogLength, NULL, error);
 			if (this->id)
 				glDeleteProgram(this->id);
+			std::cout << error << std::endl;
 			delete[] (error);
 			throw std::exception();
 		}

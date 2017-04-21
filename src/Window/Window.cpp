@@ -25,8 +25,8 @@ namespace librender
 		this->isFullscreen = false;
 		if (!(this->window = glfwCreateWindow(this->width, this->height, title.c_str(), NULL, NULL)))
 			throw std::exception();
-		glfwSetWindowUserPointer(this->window, this);
 		glfwMakeContextCurrent(this->window);
+		glfwSetWindowUserPointer(this->window, this);
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
