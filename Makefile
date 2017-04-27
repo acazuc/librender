@@ -24,16 +24,16 @@ SRCS_PATH = src/
 
 SRCS_NAME = Color.cpp \
 		Draw.cpp \
-		Font.cpp \
-		FontModel.cpp \
 		Texture.cpp \
-		Text.cpp \
-		FontGlyph.cpp \
-		Shader/Program.cpp \
-		Shader/VertexShader.cpp \
+		Text/Text.cpp \
+		Font/FontGlyph.cpp \
+		Font/FontModel.cpp \
+		Font/Font.cpp \
 		Shader/FragmentShader.cpp \
-		Window/Window.cpp \
+		Shader/VertexShader.cpp \
+		Shader/Program.cpp \
 		Window/EventsManager.cpp \
+		Window/Window.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
@@ -58,6 +58,8 @@ odir:
 	@mkdir -p $(OBJS_PATH)
 	@mkdir -p $(OBJS_PATH)Window
 	@mkdir -p $(OBJS_PATH)Shader
+	@mkdir -p $(OBJS_PATH)Text
+	@mkdir -p $(OBJS_PATH)Font
 
 clean:
 	@echo " - Cleaning objs"

@@ -1,9 +1,9 @@
 #ifndef LIBRENDER_TEXT_H
 # define LIBRENDER_TEXT_H
 
-# include "Color.h"
-# include "Font.h"
-# include "GL.h"
+# include "../Font/Font.h"
+# include "../Color.h"
+# include "../GL.h"
 # include <cstdint>
 # include <string>
 
@@ -13,7 +13,7 @@ namespace librender
 	class Text
 	{
 
-	private:
+	protected:
 		std::string text;
 		GLfloat *texCoords;
 		GLfloat *vertex;
@@ -24,6 +24,7 @@ namespace librender
 		Font *font;
 		uint32_t verticesNumber;
 		uint32_t charsNumber;
+		uint32_t lineHeight;
 		uint8_t updatesRequired;
 		int16_t shadowSize;
 		int16_t shadowX;
@@ -50,6 +51,8 @@ namespace librender
 		inline Color &getColor() {return (this->color);};
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};
+		inline void setLineHeight(uint32_t lineHeight) {this->lineHeight = lineHeight;};
+		inline uint32_t getLineHeight() {return (this->lineHeight);};
 		void setShadowSize(int16_t shadowSize);
 		inline int16_t getShadowSize() {return (this->shadowSize);};
 		void setShadowX(int16_t shadowX);

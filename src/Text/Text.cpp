@@ -23,6 +23,7 @@ namespace librender
 	, font(NULL)
 	, verticesNumber(0)
 	, charsNumber(0)
+	, lineHeight(0)
 	, updatesRequired(0)
 	, shadowSize(0)
 	, shadowX(0)
@@ -33,7 +34,7 @@ namespace librender
 	, x(x)
 	, y(y)
 	{
-		glGenBuffers(3, buffers);
+		//glGenBuffers(3, buffers);
 	}
 
 	Text::~Text()
@@ -44,7 +45,7 @@ namespace librender
 			delete[] (this->texCoords);
 		if (this->colors)
 			delete[] (this->colors);
-		glDeleteBuffers(3, buffers);
+		//glDeleteBuffers(3, buffers);
 	}
 
 	void Text::updateVertex()
@@ -54,7 +55,6 @@ namespace librender
 		int32_t shadowLen = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - this->shadowSize * 4;
 		if (shadowLen < 0)
 			shadowLen = 0;
-		int32_t lineHeight = this->font->getLineHeight();
 		int32_t x = 0;
 		int32_t y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
@@ -65,7 +65,7 @@ namespace librender
 			uint32_t currentChar = utf8::next(iter, end);
 			if (currentChar == '\n')
 			{
-				y += lineHeight * this->scaleY;
+				y += this->lineHeight * this->scaleY;
 				x = 0;
 			}
 			else
@@ -118,6 +118,9 @@ namespace librender
 			}
 			arrCount++;
 		}
+		/*glBindBuffer(GL_ARRAY_BUFFER, this->buffers[VERTEX_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 2 * sizeof(*this->vertex), this->vertex, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 	}
 
 	void Text::updateTexCoords()
@@ -137,6 +140,9 @@ namespace librender
 		{
 			std::memcpy(&this->texCoords[this->charsNumber * 8 * (i + 1)], &this->texCoords[0], this->charsNumber * 8 * sizeof(*this->texCoords));
 		}
+		/*glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 2 * sizeof(*this->texCoords), this->texCoords, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 	}
 
 	void Text::updateColors()
@@ -167,6 +173,9 @@ namespace librender
 		{
 			std::memcpy(&this->colors[this->charsNumber * 4 * 4 * i], &this->colors[0], this->charsNumber * 4 * 4 * sizeof(*this->colors));
 		}
+		/*glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
+		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 4 * sizeof(*this->colors), this->colors, GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);*/
 	}
 
 	void Text::resize(uint32_t len)
@@ -178,7 +187,9 @@ namespace librender
 		this->verticesNumber = this->charsNumber * 4;
 		if (this->shadowSize > 0)
 		{
-			uint16_t fac = 1 + (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 + 4 * this->shadowSize;
+			uint16_t fac = 1 + (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - 4 * this->shadowSize;
+			if (fac < 1)
+				fac = 1;
 			this->verticesNumber *= fac;
 		}
 		if (this->texCoords)
@@ -212,7 +223,18 @@ namespace librender
 		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
 		glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
+		/*glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[VERTEX_BUFFER]);
+		glVertexAttribPointer(
+		   0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		   this->verticesNumber,                  // size
+		   GL_FLOAT,           // type
+		   GL_FALSE,           // normalized?
+		   0,                  // stride
+		   (void*)0            // array buffer offset
+	   );*/
 		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
+		//glDisableVertexAttribArray(0);
 		glPopMatrix();
 	}
 
@@ -247,6 +269,7 @@ namespace librender
 		if (font == this->font)
 			return;
 		this->font = font;
+		this->lineHeight = this->font->getLineHeight();
 		this->updatesRequired |= UPDATE_VERTEX;
 		this->updatesRequired |= UPDATE_TEX_COORDS;
 	}

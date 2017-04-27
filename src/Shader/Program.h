@@ -19,6 +19,7 @@ namespace librender
 	public:
 		Program(FragmentShader *fragmentShader, VertexShader *vertexShader);
 		~Program();
+		GLuint getAttribLocation(const char *name);
 		void use();
 
 	};

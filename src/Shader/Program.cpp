@@ -40,6 +40,11 @@ namespace librender
 			glDeleteProgram(this->id);
 	}
 
+	GLuint Program::getAttribLocation(const char *name)
+	{
+		return (glGetAttribLocation(this->id, name));
+	}
+
 	void Program::use()
 	{
 		glUseProgram(this->id);

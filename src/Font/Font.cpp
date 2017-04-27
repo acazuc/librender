@@ -358,9 +358,9 @@ namespace librender
 	{
 		if (!opacity)
 			return;
-		for (float xx = x - shadowSize * scaleX + shadowX;xx <= x + shadowSize * scaleX + shadowX;xx += scaleX)
+		for (float xx = x - shadowSize * scaleX + shadowX; xx <= x + shadowSize * scaleX + shadowX; xx += scaleX)
 		{
-			for (float yy = y - shadowSize * scaleY + shadowY;yy <= y + shadowSize * scaleY + shadowY;yy += scaleY)
+			for (float yy = y - shadowSize * scaleY + shadowY; yy <= y + shadowSize * scaleY + shadowY; yy += scaleY)
 			{
 				if (std::fabs(xx - x - shadowX) != std::fabs(yy - y - shadowY))
 				{

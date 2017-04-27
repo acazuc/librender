@@ -3,8 +3,8 @@
 
 # include "FontModel.h"
 # include "FontGlyph.h"
-# include "Color.h"
-# include "GL.h"
+# include "../Color.h"
+# include "../GL.h"
 # include <ft2build.h>
 # include FT_FREETYPE_H
 # include <cstdint>
