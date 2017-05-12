@@ -26,6 +26,9 @@ SRCS_NAME = Color.cpp \
 		Draw.cpp \
 		Texture.cpp \
 		Text/Text.cpp \
+		Text/TextEntry.cpp \
+		Text/TextBatch.cpp \
+		Text/TextBatchEntry.cpp \
 		Font/FontGlyph.cpp \
 		Font/FontModel.cpp \
 		Font/Font.cpp \
