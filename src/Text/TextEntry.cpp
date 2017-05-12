@@ -1,7 +1,6 @@
 #include "Text.h"
 #include <cstring>
 #include <utf8.h>
-#include <iostream>
 
 #define UPDATE_VERTEX 1
 #define UPDATE_TEX_COORDS 2
@@ -46,24 +45,24 @@ namespace librender
 			delete[] (this->colors);
 	}
 
-	void TextEntry::updateTexCoords()
+	void TextEntry::fillTexCoords(GLfloat *texCoords)
 	{
 		char *iter = const_cast<char*>(this->text.c_str());
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t currentChar = utf8::next(iter, const_cast<char*>(this->text.c_str()) + this->text.length());
-			getFont()->glArrayCharPart(currentChar, &this->texCoords[i * 8]);
+			getFont()->glArrayCharPart(currentChar, &texCoords[i * 8]);
 		}
 		if (this->shadowSize == 0)
 			return;
 		uint32_t max = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - 4 * this->shadowSize;
 		for (uint32_t i = 0; i < max; ++i)
 		{
-			std::memcpy(&this->texCoords[this->charsNumber * 8 * (i + 1)], &this->texCoords[0], this->charsNumber * 8 * sizeof(*this->texCoords));
+			std::memcpy(&texCoords[this->charsNumber * 8 * (i + 1)], &texCoords[0], this->charsNumber * 8 * sizeof(*texCoords));
 		}
 	}
 
-	void TextEntry::updateVertex()
+	void TextEntry::fillVertex(GLfloat *vertex)
 	{
 		int32_t shadowLen = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - this->shadowSize * 4;
 		if (shadowLen < 0)
@@ -86,7 +85,7 @@ namespace librender
 				FontGlyph *glyph = getFont()->getGlyph(currentChar);
 				if (!glyph)
 				{
-					std::memset(&this->vertex[index], 0, 8 * sizeof(*this->vertex));
+					std::memset(&vertex[index], 0, 8 * sizeof(*this->vertex));
 					index += 8;
 					continue;
 				}
@@ -97,14 +96,14 @@ namespace librender
 					int32_t charRenderHeight = glyph->getHeight() * this->scaleY;
 					int32_t charRenderX = x + glyph->getOffsetX();
 					int32_t charRenderY = glyph->getOffsetY();
-					this->vertex[index++] = charRenderX;
-					this->vertex[index++] = charRenderY;
-					this->vertex[index++] = charRenderX + charRenderWidth;
-					this->vertex[index++] = charRenderY;
-					this->vertex[index++] = charRenderX + charRenderWidth;
-					this->vertex[index++] = charRenderY + charRenderHeight;
-					this->vertex[index++] = charRenderX;
-					this->vertex[index++] = charRenderY + charRenderHeight;
+					vertex[index++] = charRenderX;
+					vertex[index++] = charRenderY;
+					vertex[index++] = charRenderX + charRenderWidth;
+					vertex[index++] = charRenderY;
+					vertex[index++] = charRenderX + charRenderWidth;
+					vertex[index++] = charRenderY + charRenderHeight;
+					vertex[index++] = charRenderX;
+					vertex[index++] = charRenderY + charRenderHeight;
 					x += charWidth * this->scaleX;
 				}
 			}
@@ -124,16 +123,16 @@ namespace librender
 			uint32_t add = 0;
 			for (uint32_t j = 0; j < this->charsNumber * 4; ++j)
 			{
-				this->vertex[index + add] = this->vertex[tmp2 + add] + (sx + this->shadowX) * this->scaleX;
+				vertex[index + add] = vertex[tmp2 + add] + (sx + this->shadowX) * this->scaleX;
 				++add;
-				this->vertex[index + add] = this->vertex[tmp2 + add] + (sy + this->shadowY) * this->scaleY;
+				vertex[index + add] = vertex[tmp2 + add] + (sy + this->shadowY) * this->scaleY;
 				++add;
 			}
 			arrCount++;
 		}
 	}
 
-	void TextEntry::updateColors()
+	void TextEntry::fillColors(GLfloat *colors)
 	{
 		int32_t shadowLen = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - this->shadowSize * 4;
 		if (shadowLen < 0)
@@ -143,7 +142,7 @@ namespace librender
 			int32_t tmp = (shadowLen * this->charsNumber * 4) * 4;
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
 			{
-				std::memcpy(&this->colors[tmp], tab, sizeof(tab));
+				std::memcpy(&colors[tmp], tab, sizeof(tab));
 				tmp += 4;
 			}
 		}
@@ -153,13 +152,13 @@ namespace librender
 			float tab[4] = {this->shadowColor.getRed(), this->shadowColor.getGreen(), this->shadowColor.getBlue(), this->shadowColor.getAlpha() * this->opacity};
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
 			{
-				std::memcpy(&this->colors[i * 4], tab, sizeof(tab));
+				std::memcpy(&colors[i * 4], tab, sizeof(tab));
 			}
 		}
 		uint16_t max = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - 4 * this->shadowSize;
 		for (uint16_t i = 1; i < max; ++i)
 		{
-			std::memcpy(&this->colors[this->charsNumber * 4 * 4 * i], &this->colors[0], this->charsNumber * 4 * 4 * sizeof(*this->colors));
+			std::memcpy(&colors[this->charsNumber * 4 * 4 * i], &colors[0], this->charsNumber * 4 * 4 * sizeof(*colors));
 		}
 	}
 

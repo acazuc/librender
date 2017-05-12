@@ -32,10 +32,13 @@ namespace librender
 		float scaleY;
 		float x;
 		float y;
-		void updateTexCoords();
-		void updateVertex();
-		void updateColors();
-		void resize(uint32_t len);
+		void updateTexCoords() {fillTexCoords(this->texCoords);};
+		void updateVertex() {fillVertex(this->vertex);};
+		void updateColors() {fillColors(this->colors);};
+		void fillTexCoords(GLfloat *texCoords);
+		void fillVertex(GLfloat *vertex);
+		void fillColors(GLfloat *colors);
+		virtual void resize(uint32_t len);
 
 	public:
 		TextEntry();

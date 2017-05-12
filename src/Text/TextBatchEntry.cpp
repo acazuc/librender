@@ -20,12 +20,19 @@ namespace librender
 		//Empty
 	}
 
+	void TextBatchEntry::resize(uint32_t len)
+	{
+		if (this->parent)
+			this->parent->setMustResize(true);
+		TextEntry::resize(len);
+	}
+
 	void TextBatchEntry::update()
 	{
 		uint8_t oldUpdates = this->updatesRequired;
 		TextEntry::update();
-		uint8_t changed = this->updatesRequired | oldUpdates;
-		if (changed & UPDATE_VERTEX)
+		this->changes = this->updatesRequired | oldUpdates;
+		if (this->changes & UPDATE_VERTEX)
 		{
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
 			{
@@ -33,8 +40,8 @@ namespace librender
 				this->vertex[i * 2 + 1] += this->y;
 			}
 		}
-		if (this->parent)
-			this->parent->addChanges(changed);
+		if (this->changes)
+			this->parent->addChanges(this->changes);
 	}
 
 	void TextBatchEntry::setParent(TextBatch *textBatch)

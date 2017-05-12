@@ -22,10 +22,12 @@ namespace librender
 		uint8_t changes;
 		float x;
 		float y;
+		bool mustResize;
 		void updateVerticesNumber();
 		void updateTexCoords();
 		void updateVertex();
 		void updateColors();
+		void resize();
 
 	public:
 		TextBatch();
@@ -38,6 +40,7 @@ namespace librender
 		void addChanges(uint8_t changes) {this->changes |= changes;};
 		void setX(float x) {this->x = x;};
 		void setY(float y) {this->y = y;};
+		inline void setMustResize(bool mustResize) {this->mustResize = mustResize;};
 
 	};
 

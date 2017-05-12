@@ -13,6 +13,8 @@ namespace librender
 
 	private:
 		TextBatch *parent;
+		uint8_t changes;
+		void resize(uint32_t len);
 
 	public:
 		TextBatchEntry();
@@ -22,6 +24,8 @@ namespace librender
 		void setParent(TextBatch *textBatch);
 		void setX(float x);
 		void setY(float y);
+		inline uint8_t getChanges() {return (this->changes);};
+		inline void removeChange(uint8_t change) {this->changes &= ~change;};
 
 	};
 

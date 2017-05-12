@@ -1,7 +1,6 @@
 #include "Text.h"
 #include <cstring>
 #include <utf8.h>
-#include <iostream>
 
 #define UPDATE_VERTEX 1
 #define UPDATE_TEX_COORDS 2
@@ -27,25 +26,25 @@ namespace librender
 	}
 
 	/*void Text::updateVertex()
-	{*/
-		/*glBindBuffer(GL_ARRAY_BUFFER, this->buffers[VERTEX_BUFFER]);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[VERTEX_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 2 * sizeof(*this->vertex), this->vertex, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-	/*}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 
 	void Text::updateTexCoords()
-	{*/
-		/*glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 2 * sizeof(*this->texCoords), this->texCoords, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-	/*}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
 
 	void Text::updateColors()
-	{*/
-		/*glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 4 * sizeof(*this->colors), this->colors, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);*/
-	//}
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}*/
 
 	void Text::draw()
 	{
