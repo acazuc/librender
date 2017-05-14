@@ -78,6 +78,11 @@ namespace librender
 			glfwDestroyCursor(this->handCursor);
 	}
 
+	void Window::setTitle(std::string &title)
+	{
+		glfwSetWindowTitle(this->window, title.c_str());
+	}
+
 	void Window::setIcon(char *data, uint32_t width, uint32_t height)
 	{
 		GLFWimage img = {static_cast<int>(width), static_cast<int>(height), reinterpret_cast<unsigned char*>(data)};

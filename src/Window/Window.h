@@ -61,6 +61,7 @@ namespace librender
 		bool isKeyDown(int key);
 		std::string getClipboard();
 		void setClipboard(std::string text);
+		void setTitle(std::string &title);
 		void setIcon(char *data, uint32_t width, uint32_t height);
 		void setHResizeCursor();
 		void setVResizeCursor();
@@ -80,6 +81,7 @@ namespace librender
 		void setKeyUpCallback(KeyUpCallback callback);
 		void setCharCallback(CharCallback callback);
 		inline EventsManager &getEventsManager() {return (this->eventsManager);};
+		inline GLFWwindow *getWindow() {return (this->window);};
 		inline void setMouseX(int mouseX) {this->mouseX = mouseX;};
 		inline void setMouseY(int mouseY) {this->mouseY = mouseY;};
 		inline bool isFocused() {return (this->focused);};

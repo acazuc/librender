@@ -21,6 +21,7 @@ namespace librender
 		~Program();
 		GLuint getAttribLocation(const char *name);
 		void use();
+		inline GLuint getId() {return (this->id);};
 
 	};
 
