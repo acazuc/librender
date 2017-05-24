@@ -37,12 +37,9 @@ namespace librender
 
 	TextEntry::~TextEntry()
 	{
-		if (this->vertex)
-			delete[] (this->vertex);
-		if (this->texCoords)
-			delete[] (this->texCoords);
-		if (this->colors)
-			delete[] (this->colors);
+		delete[] (this->vertex);
+		delete[] (this->texCoords);
+		delete[] (this->colors);
 	}
 
 	void TextEntry::fillTexCoords(GLfloat *texCoords)
@@ -53,17 +50,13 @@ namespace librender
 			uint32_t currentChar = utf8::next(iter, const_cast<char*>(this->text.c_str()) + this->text.length());
 			getFont()->glArrayCharPart(currentChar, &texCoords[i * 8]);
 		}
-		if (this->shadowSize == 0)
+		if (this->shadowSize <= 0)
 			return;
 		uint16_t max;
 		if (this->shadowSize == 1)
-		{
 			max = 1;
-		}
 		else
-		{
 			max = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - 4 * (this->shadowSize - 1);
-		}
 		for (uint32_t i = 0; i < max; ++i)
 		{
 			std::memcpy(&texCoords[this->charsNumber * 8 * (i + 1)], &texCoords[0], this->charsNumber * 8 * sizeof(*texCoords));
@@ -73,12 +66,12 @@ namespace librender
 	void TextEntry::fillVertex(GLfloat *vertex)
 	{
 		int32_t shadowLen;
-		if (this->shadowSize == 1)
+		if (this->shadowSize <= 0)
+			shadowLen = 0;
+		else if (this->shadowSize == 1)
 		 	shadowLen = 1;
 		else
 			shadowLen = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - (this->shadowSize - 1) * 4;
-		if (shadowLen < 0)
-			shadowLen = 0;
 		int32_t x = 0;
 		int32_t y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
@@ -120,7 +113,7 @@ namespace librender
 				}
 			}
 		}
-		if (this->shadowSize == 0)
+		if (this->shadowSize <= 0)
 			return;
 		uint32_t tmp = 1 + (this->shadowSize - 1) * 2;
 		uint8_t arrCount = 0;
@@ -147,12 +140,12 @@ namespace librender
 	void TextEntry::fillColors(GLfloat *colors)
 	{
 		int32_t shadowLen;
-		if (this->shadowSize == 1)
+		if (this->shadowSize <= 0)
+			shadowLen = 0;
+		else if (this->shadowSize == 1)
 		 	shadowLen = 1;
 		else
 			shadowLen = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - (this->shadowSize - 1) * 4;
-		if (shadowLen < 0)
-			shadowLen = 0;
 		{
 			float tab[4] = {this->color.getRed(), this->color.getGreen(), this->color.getBlue(), this->color.getAlpha() * this->opacity};
 			int32_t tmp = (shadowLen * this->charsNumber * 4) * 4;
@@ -167,14 +160,10 @@ namespace librender
 		{
 			float tab[4] = {this->shadowColor.getRed(), this->shadowColor.getGreen(), this->shadowColor.getBlue(), this->shadowColor.getAlpha() * this->opacity};
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-			{
 				std::memcpy(&colors[i * 4], tab, sizeof(tab));
-			}
 		}
 		for (uint16_t i = 1; i < shadowLen; ++i)
-		{
 			std::memcpy(&colors[this->charsNumber * 4 * 4 * i], &colors[0], this->charsNumber * 4 * 4 * sizeof(*colors));
-		}
 	}
 
 	void TextEntry::update()
