@@ -55,7 +55,15 @@ namespace librender
 		}
 		if (this->shadowSize == 0)
 			return;
-		uint32_t max = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - 4 * this->shadowSize;
+		uint16_t max;
+		if (this->shadowSize == 1)
+		{
+			max = 1;
+		}
+		else
+		{
+			max = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - 4 * (this->shadowSize - 1);
+		}
 		for (uint32_t i = 0; i < max; ++i)
 		{
 			std::memcpy(&texCoords[this->charsNumber * 8 * (i + 1)], &texCoords[0], this->charsNumber * 8 * sizeof(*texCoords));
@@ -64,7 +72,11 @@ namespace librender
 
 	void TextEntry::fillVertex(GLfloat *vertex)
 	{
-		int32_t shadowLen = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - this->shadowSize * 4;
+		int32_t shadowLen;
+		if (this->shadowSize == 1)
+		 	shadowLen = 1;
+		else
+			shadowLen = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - (this->shadowSize - 1) * 4;
 		if (shadowLen < 0)
 			shadowLen = 0;
 		int32_t x = 0;
@@ -110,14 +122,14 @@ namespace librender
 		}
 		if (this->shadowSize == 0)
 			return;
-		uint32_t tmp = 1 + this->shadowSize * 2;
+		uint32_t tmp = 1 + (this->shadowSize - 1) * 2;
 		uint8_t arrCount = 0;
 		int32_t tmp2 = shadowLen * this->charsNumber * 8;
 		for (uint8_t i = 0; i < tmp * tmp; ++i)
 		{
-			int8_t sx = i % tmp - this->shadowSize;
-			int8_t sy = i / tmp - this->shadowSize;
-			if (std::abs(sx) == std::abs(sy))
+			int8_t sx = i % tmp - (this->shadowSize - 1);
+			int8_t sy = i / tmp - (this->shadowSize - 1);
+			if (std::abs(sx) == std::abs(sy) && this->shadowSize != 1)
 				continue;
 			uint32_t index = this->charsNumber * 8 * arrCount;
 			uint32_t add = 0;
@@ -134,7 +146,11 @@ namespace librender
 
 	void TextEntry::fillColors(GLfloat *colors)
 	{
-		int32_t shadowLen = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - this->shadowSize * 4;
+		int32_t shadowLen;
+		if (this->shadowSize == 1)
+		 	shadowLen = 1;
+		else
+			shadowLen = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - (this->shadowSize - 1) * 4;
 		if (shadowLen < 0)
 			shadowLen = 0;
 		{
@@ -155,8 +171,7 @@ namespace librender
 				std::memcpy(&colors[i * 4], tab, sizeof(tab));
 			}
 		}
-		uint16_t max = (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - 4 * this->shadowSize;
-		for (uint16_t i = 1; i < max; ++i)
+		for (uint16_t i = 1; i < shadowLen; ++i)
 		{
 			std::memcpy(&colors[this->charsNumber * 4 * 4 * i], &colors[0], this->charsNumber * 4 * 4 * sizeof(*colors));
 		}
@@ -184,9 +199,16 @@ namespace librender
 		this->verticesNumber = this->charsNumber * 4;
 		if (this->shadowSize > 0)
 		{
-			uint16_t fac = 1 + (1 + this->shadowSize * 2) * (1 + this->shadowSize * 2) - 1 - 4 * this->shadowSize;
-			if (fac < 1)
-				fac = 1;
+			int16_t fac = 1;
+			if (this->shadowSize > 0)
+			{
+				if (this->shadowSize == 1)
+					fac += 1;
+				else
+					fac += (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - 4 * (this->shadowSize - 1);
+				if (fac < 1)
+					fac = 1;
+			}
 			this->verticesNumber *= fac;
 		}
 		if (this->texCoords)

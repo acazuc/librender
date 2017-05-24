@@ -33,7 +33,9 @@ namespace librender
 		float getBlue() {return (this->blue);};
 		void setAlpha(float alpha) {this->alpha = alpha;};
 		float getAlpha() {return (this->alpha);};
-		inline Color &operator = (Color &color) {this->red = color.getRed();this->green = color.getGreen();this->blue = color.getBlue();this->alpha = color.getAlpha();return (*this);};
+		Color &operator += (float val);
+		Color &operator -= (float val);
+		Color &operator = (Color &color);
 		static Color WHITE;
 		static Color LIGHTGREY;
 		static Color GREY;

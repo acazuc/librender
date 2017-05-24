@@ -58,4 +58,29 @@ namespace librender
 		return (compare(*color));
 	}
 
+	Color &Color::operator += (float val)
+	{
+		this->red += val;
+		this->green += val;
+		this->blue += val;
+		return (*this);
+	}
+
+	Color &Color::operator -= (float val)
+	{
+		this->red -= val;
+		this->green -= val;
+		this->blue -= val;
+		return (*this);
+	}
+
+	Color &Color::operator = (Color &color)
+	{
+		this->red = color.red;
+		this->green = color.green;
+		this->blue = color.blue;
+		this->alpha = color.alpha;
+		return (*this);
+	}
+
 }

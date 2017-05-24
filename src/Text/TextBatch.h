@@ -7,8 +7,6 @@
 namespace librender
 {
 
-	class TextBatchEntry;
-
 	class TextBatch
 	{
 
