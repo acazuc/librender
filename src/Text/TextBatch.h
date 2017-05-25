@@ -36,6 +36,7 @@ namespace librender
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};
 		void addChanges(uint8_t changes) {this->changes |= changes;};
+		void setPos(float x, float y) {setX(x);setY(y);};
 		void setX(float x) {this->x = x;};
 		void setY(float y) {this->y = y;};
 		inline void setMustResize(bool mustResize) {this->mustResize = mustResize;};

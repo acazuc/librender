@@ -58,18 +58,7 @@ namespace librender
 		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
 		glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
-		/*glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[VERTEX_BUFFER]);
-		glVertexAttribPointer(
-		   0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		   this->verticesNumber,                  // size
-		   GL_FLOAT,           // type
-		   GL_FALSE,           // normalized?
-		   0,                  // stride
-		   (void*)0            // array buffer offset
-	   );*/
 		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
-		//glDisableVertexAttribArray(0);
 		glPopMatrix();
 	}
 
