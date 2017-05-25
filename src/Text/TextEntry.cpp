@@ -21,9 +21,9 @@ namespace librender
 	, color(Color::WHITE)
 	, verticesNumber(0)
 	, charsNumber(0)
-	, lineHeight(0)
 	, updatesRequired(0)
 	, shadowSize(0)
+	, lineHeight(-1)
 	, shadowX(0)
 	, shadowY(0)
 	, opacity(1)
@@ -82,8 +82,14 @@ namespace librender
 			uint32_t currentChar = utf8::next(iter, end);
 			if (currentChar == '\n')
 			{
-				y += this->lineHeight * this->scaleY;
+				if (this->lineHeight == -1)
+					y += getFont()->getLineHeight() * this->scaleY;
+				else
+					y += this->lineHeight * this->scaleY;
 				x = 0;
+				std::memset(&vertex[index], 0, 8 * sizeof(*this->vertex));
+				index += 8;
+				continue;
 			}
 			else
 			{
@@ -100,7 +106,7 @@ namespace librender
 					int32_t charRenderWidth = glyph->getWidth() * this->scaleX;
 					int32_t charRenderHeight = glyph->getHeight() * this->scaleY;
 					int32_t charRenderX = x + glyph->getOffsetX();
-					int32_t charRenderY = glyph->getOffsetY();
+					int32_t charRenderY = y + glyph->getOffsetY();
 					vertex[index++] = charRenderX;
 					vertex[index++] = charRenderY;
 					vertex[index++] = charRenderX + charRenderWidth;

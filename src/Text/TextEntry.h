@@ -22,9 +22,9 @@ namespace librender
 		Color color;
 		uint32_t verticesNumber;
 		uint32_t charsNumber;
-		uint32_t lineHeight;
 		uint8_t updatesRequired;
 		int16_t shadowSize;
+		int32_t lineHeight;
 		int16_t shadowX;
 		int16_t shadowY;
 		float opacity;
