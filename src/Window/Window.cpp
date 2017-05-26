@@ -7,6 +7,8 @@
 namespace librender
 {
 
+	int32_t Window::maxMSAA = -1;
+
 	Window::Window(std::string title, int width, int height)
 	: window(NULL)
 	, hResizeCursor(NULL)
@@ -21,16 +23,13 @@ namespace librender
 	, width(width)
 	, height(height)
 	{
+		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		this->semiDiag = std::sqrt(this->width * this->width + this->height * this->height);
 		this->isFullscreen = false;
 		if (!(this->window = glfwCreateWindow(this->width, this->height, title.c_str(), NULL, NULL)))
 			throw std::exception();
 		glfwMakeContextCurrent(this->window);
 		glfwSetWindowUserPointer(this->window, this);
-		glEnable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glClearColor(0, 0, 0, 1);
 		this->currentCursor = GLFW_ARROW_CURSOR;
 		this->hResizeCursor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR);
 		this->vResizeCursor = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR);
@@ -41,7 +40,6 @@ namespace librender
 		glfwSetCursorPosCallback(this->window, EventsManager::cursorListener);
 		glfwSetFramebufferSizeCallback(this->window, EventsManager::windowResizeListener);
 		glfwSetWindowFocusCallback(this->window, EventsManager::windowFocusListener);
-		updateGLContext();
 		int count = 0;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
 		for (int i = 0; i < count; ++i)
@@ -76,6 +74,12 @@ namespace librender
 			glfwDestroyCursor(this->ibeamCursor);
 		if (this->handCursor)
 			glfwDestroyCursor(this->handCursor);
+	}
+
+	void Window::show()
+	{
+		glfwShowWindow(this->window);
+		updateGLContext();
 	}
 
 	void Window::setTitle(std::string &title)
@@ -378,5 +382,20 @@ namespace librender
 		glfwSetCharCallback(this->window, EventsManager::charListener);
 	}
 
+	uint8_t Window::getMaxMSAA()
+	{
+		if (maxMSAA == -1)
+		{
+			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+			glfwWindowHint(GLFW_SAMPLES, 128);
+			GLFWwindow *testWindow = glfwCreateWindow(1, 1, "", NULL, NULL);
+			glfwMakeContextCurrent(testWindow);
+			glGetIntegerv(GL_SAMPLES, &maxMSAA);
+			glfwDestroyWindow(testWindow);
+		}
+		if (maxMSAA == -1)
+			return (0);
+		return ((uint8_t)maxMSAA);
+	}
 
 }

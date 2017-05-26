@@ -22,6 +22,7 @@ namespace librender
 	{
 
 	private:
+		static int32_t maxMSAA;
 		EventsManager eventsManager;
 		GLFWwindow *window;
 		GLFWcursor *hResizeCursor;
@@ -44,6 +45,7 @@ namespace librender
 	public:
 		Window(std::string title, int width, int height);
 		~Window();
+		void show();
 		void enableFullscreen();
 		void disableFullscreen();
 		void switchFullscreen();
@@ -80,6 +82,7 @@ namespace librender
 		void setKeyPressCallback(KeyPressCallback callback);
 		void setKeyUpCallback(KeyUpCallback callback);
 		void setCharCallback(CharCallback callback);
+		static uint8_t getMaxMSAA();
 		inline EventsManager &getEventsManager() {return (this->eventsManager);};
 		inline GLFWwindow *getWindow() {return (this->window);};
 		inline void setMouseX(int mouseX) {this->mouseX = mouseX;};
