@@ -208,13 +208,13 @@ namespace librender
 		}
 		if (this->texCoords)
 			delete[] (this->texCoords);
-		this->texCoords = new GLfloat[this->verticesNumber * 2];
+		this->texCoords = new GLfloat[this->verticesNumber * 2 + 1];
 		if (this->vertex)
 			delete[] (this->vertex);
-		this->vertex = new GLfloat[this->verticesNumber * 2];
+		this->vertex = new GLfloat[this->verticesNumber * 2 + 1];
 		if (this->colors)
 			delete[] (this->colors);
-		this->colors = new GLfloat[this->verticesNumber * 4];
+		this->colors = new GLfloat[this->verticesNumber * 4 + 1];
 	}
 
 	void TextEntry::setText(std::string &text)

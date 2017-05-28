@@ -58,9 +58,7 @@ namespace librender
 	Font *TextBatchEntry::getFont()
 	{
 		if (this->parent)
-		{
 			return (this->parent->getFont());
-		}
 		return (NULL);
 	}
 

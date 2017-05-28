@@ -134,6 +134,9 @@ namespace librender
 		glTranslatef(this->x, this->y, 0);
 		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
 		glPopMatrix();
+		glDisableClientState(GL_VERTEX_ARRAY);
+		glDisableClientState(GL_COLOR_ARRAY);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
 
 	void TextBatch::addEntry(TextBatchEntry *entry)

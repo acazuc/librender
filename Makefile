@@ -37,6 +37,8 @@ SRCS_NAME = Color.cpp \
 		Shader/Program.cpp \
 		Window/EventsManager.cpp \
 		Window/Window.cpp \
+		Window/Monitor.cpp \
+		Window/VideoMode.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
