@@ -14,7 +14,6 @@ namespace librender
 		GLfloat texCoords[8];
 		GLfloat vertex[8];
 		GLfloat colors[16];
-		Color color;
 		uint32_t verticesNumber;
 		uint8_t updatesRequired;
 		float opacity;
@@ -22,9 +21,6 @@ namespace librender
 		float scaleY;
 		float x;
 		float y;
-		inline void updateTexCoords() {fillTexCoords(this->texCoords);};
-		inline void updateVertex() {fillVertex(this->vertex);};
-		inline void updateColors() {fillColors(this->colors);};
 		void fillTexCoords(GLfloat *texCoords);
 		void fillVertex(GLfloat *vertex);
 		void fillColors(GLfloat *colors);
@@ -37,7 +33,14 @@ namespace librender
 		inline GLfloat *getVertex() {return (this->vertex);};
 		inline GLfloat *getColors() {return (this->colors);};
 		void setColor(Color &color);
-		inline Color &getColor() {return (this->color);};
+		void setTopColor(Color &color);
+		void setBotColor(Color &color);
+		void setLeftColor(Color &color);
+		void setRightColor(Color &color);
+		void setTopLeftColor(Color &color);
+		void setTopRightColor(Color &color);
+		void setBotLeftColor(Color &color);
+		void setBotRightColor(Color &color);
 		virtual Texture *getTexture() {return (NULL);};
 		inline uint32_t getVerticesNumber() {return (this->verticesNumber);};
 		void setOpacity(float opacity);
@@ -47,6 +50,12 @@ namespace librender
 		void setScaleY(float scaleY);
 		inline float getScaleY() {return (this->scaleY);};
 		void setScale(float scale) {setScaleX(scale);setScaleY(scale);};
+		void setTexX(float texX);
+		void setTexY(float texY);
+		void setTexWidth(float texWidth);
+		void setTexHeight(float texHeight);
+		void setWidth(float width);
+		void setHeight(float height);
 		inline virtual void setX(float x) {this->x = x;};
 		inline float getX() {return (this->x);};
 		inline virtual void setY(float y) {this->y = y;};

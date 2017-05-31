@@ -68,7 +68,7 @@ namespace librender
 
 	void Text::setFont(Font *font)
 	{
-		if (font == this->font)
+		if (this->font == font)
 			return;
 		this->font = font;
 		this->lineHeight = this->font->getLineHeight();

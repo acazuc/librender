@@ -44,7 +44,7 @@ namespace librender
 
 	void Sprite::setTexture(Texture *texture)
 	{
-		if (texture == this->texture)
+		if (this->texture == texture)
 			return;
 		this->texture = texture;
 		this->updatesRequired |= UPDATE_VERTEX;

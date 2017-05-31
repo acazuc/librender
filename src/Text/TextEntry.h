@@ -75,6 +75,8 @@ namespace librender
 		inline virtual void setY(float y) {this->y = y;};
 		inline float getY() {return (this->y);};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
+		int32_t getWidth();
+		int32_t getHeight();
 
 	};
 

@@ -294,4 +294,18 @@ namespace librender
 		this->updatesRequired |= UPDATE_VERTEX;
 	}
 
+	int32_t TextEntry::getWidth()
+	{
+		if (!getFont())
+			return (0);
+		return (getFont()->getWidth(this->text) * this->scaleX);
+	}
+
+	int32_t TextEntry::getHeight()
+	{
+		if (!getFont())
+			return (0);
+		return (getFont()->getHeight(this->text) * this->scaleY);
+	}
+
 }

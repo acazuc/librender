@@ -11,6 +11,7 @@ namespace librender
 	TextBatchEntry::TextBatchEntry()
 	: TextEntry()
 	, parent(NULL)
+	, changes(0)
 	{
 		//Empty
 	}
@@ -64,7 +65,7 @@ namespace librender
 
 	void TextBatchEntry::setX(float x)
 	{
-		if (x == this->x)
+		if (this->x == x)
 			return;
 		float diffX = x - this->x;
 		for (uint32_t i = 0; i < this->verticesNumber; ++i)
@@ -74,7 +75,7 @@ namespace librender
 
 	void TextBatchEntry::setY(float y)
 	{
-		if (y == this->y)
+		if (this->y == y)
 			return;
 		float diffY = y - this->y;
 		for (uint32_t i = 0; i < this->verticesNumber; ++i)

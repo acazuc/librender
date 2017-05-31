@@ -1,4 +1,5 @@
 #include "SpriteEntry.h"
+#include <cstring>
 
 #define UPDATE_VERTEX 1
 #define UPDATE_TEX_COORDS 2
@@ -8,8 +9,7 @@ namespace librender
 {
 
 	SpriteEntry::SpriteEntry()
-	: color(Color::WHITE)
-	, verticesNumber(0)
+	: verticesNumber(0)
 	, updatesRequired(0)
 	, opacity(1)
 	, scaleX(1)
@@ -38,37 +38,78 @@ namespace librender
 
 	void SpriteEntry::fillTexCoords(GLfloat *texCoords)
 	{
-		//Empty
+		std::memcpy(texCoords, this->texCoords, sizeof(this->texCoords));
 	}
 
 	void SpriteEntry::fillVertex(GLfloat *vertex)
 	{
-		//Empty
+		std::memcpy(vertex, this->vertex, sizeof(this->vertex));
 	}
 
 	void SpriteEntry::fillColors(GLfloat *colors)
 	{
-		//Empty
+		std::memcpy(colors, this->colors, sizeof(this->colors));
 	}
 
 	void SpriteEntry::update()
 	{
-		if (!getTexture())
-			return;
-		if (this->updatesRequired & UPDATE_TEX_COORDS)
-			updateTexCoords();
-		if (this->updatesRequired & UPDATE_VERTEX)
-			updateVertex();
-		if (this->updatesRequired & UPDATE_COLORS)
-			updateColors();
 		this->updatesRequired = 0;
 	}
 
 	void SpriteEntry::setColor(Color &color)
 	{
-		if (!color.compare(this->color))
-			return;
-		this->color = color;
+		setTopLeftColor(color);
+		setTopRightColor(color);
+		setBotLeftColor(color);
+		setBotRightColor(color);
+		this->updatesRequired |= UPDATE_COLORS;
+	}
+
+	void SpriteEntry::setTopColor(Color &color)
+	{
+		setTopLeftColor(color);
+		setTopRightColor(color);
+	}
+
+	void SpriteEntry::setBotColor(Color &color)
+	{
+		setBotLeftColor(color);
+		setBotRightColor(color);
+	}
+
+	void SpriteEntry::setLeftColor(Color &color)
+	{
+		setTopLeftColor(color);
+		setBotLeftColor(color);
+	}
+	
+	void SpriteEntry::setRightColor(Color &color)
+	{
+		setTopRightColor(color);
+		setBotRightColor(color);
+	}
+
+	void SpriteEntry::setTopLeftColor(Color &color)
+	{
+		std::memcpy(&this->colors[0], &color, sizeof(*this->colors) * 4);
+		this->updatesRequired |= UPDATE_COLORS;
+	}
+
+	void SpriteEntry::setTopRightColor(Color &color)
+	{
+		std::memcpy(&this->colors[4], &color, sizeof(*this->colors) * 4);
+		this->updatesRequired |= UPDATE_COLORS;
+	}
+
+	void SpriteEntry::setBotLeftColor(Color &color)
+	{
+		std::memcpy(&this->colors[12], &color, sizeof(*this->colors) * 4);
+		this->updatesRequired |= UPDATE_COLORS;
+	}
+
+	void SpriteEntry::setBotRightColor(Color &color)
+	{
+		std::memcpy(&this->colors[8], &color, sizeof(*this->colors) * 4);
 		this->updatesRequired |= UPDATE_COLORS;
 	}
 
@@ -93,6 +134,48 @@ namespace librender
 		if (this->scaleY == scaleY)
 			return;
 		this->scaleY = scaleY;
+		this->updatesRequired |= UPDATE_VERTEX;
+	}
+
+	void SpriteEntry::setTexX(float texX)
+	{
+		this->texCoords[0] = texX;
+		this->texCoords[6] = texX;
+		this->updatesRequired |= UPDATE_TEX_COORDS;
+	}
+
+	void SpriteEntry::setTexY(float texY)
+	{
+		this->texCoords[1] = texY;
+		this->texCoords[3] = texY;
+		this->updatesRequired |= UPDATE_TEX_COORDS;
+	}
+
+	void SpriteEntry::setTexWidth(float texWidth)
+	{
+		this->texCoords[2] = texWidth;
+		this->texCoords[4] = texWidth;
+		this->updatesRequired |= UPDATE_TEX_COORDS;
+	}
+
+	void SpriteEntry::setTexHeight(float texHeight)
+	{
+		this->texCoords[5] = texHeight;
+		this->texCoords[7] = texHeight;
+		this->updatesRequired |= UPDATE_TEX_COORDS;
+	}
+
+	void SpriteEntry::setWidth(float width)
+	{
+		this->vertex[2] = width;
+		this->vertex[4] = width;
+		this->updatesRequired |= UPDATE_VERTEX;
+	}
+
+	void SpriteEntry::setHeight(float height)
+	{
+		this->vertex[5] = height;
+		this->vertex[7] = height;
 		this->updatesRequired |= UPDATE_VERTEX;
 	}
 
