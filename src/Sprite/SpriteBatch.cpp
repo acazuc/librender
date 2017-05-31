@@ -1,4 +1,4 @@
-#include "TextBatch.h"
+#include "SpriteBatch.h"
 #include <cstring>
 
 #define UPDATE_VERTEX 1
@@ -8,11 +8,11 @@
 namespace librender
 {
 
-	TextBatch::TextBatch()
+	SpriteBatch::SpriteBatch()
 	: texCoords(NULL)
 	, vertex(NULL)
 	, colors(NULL)
-	, font(NULL)
+	, texture(NULL)
 	, verticesNumber(0)
 	, x(0)
 	, y(0)
@@ -22,7 +22,7 @@ namespace librender
 		//Empty
 	}
 
-	TextBatch::~TextBatch()
+	SpriteBatch::~SpriteBatch()
 	{
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->setParent(NULL);
@@ -31,19 +31,19 @@ namespace librender
 		delete[] (this->colors);
 	}
 
-	void TextBatch::updateVerticesNumber()
+	void SpriteBatch::updateVerticesNumber()
 	{
 		this->verticesNumber = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->verticesNumber += this->entries[i]->getVerticesNumber();
 	}
 
-	void TextBatch::updateTexCoords()
+	void SpriteBatch::updateTexCoords()
 	{
 		uint32_t count = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
-			TextBatchEntry *entry = this->entries[i];
+			SpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & UPDATE_TEX_COORDS)
 			{
 				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * 2 * sizeof(*this->texCoords));
@@ -53,12 +53,12 @@ namespace librender
 		}
 	}
 
-	void TextBatch::updateVertex()
+	void SpriteBatch::updateVertex()
 	{
 		uint32_t count = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
-			TextBatchEntry *entry = this->entries[i];
+			SpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & UPDATE_VERTEX)
 			{
 				std::memcpy(&this->vertex[count], entry->getVertex(), entry->getVerticesNumber() * 2 * sizeof(*this->vertex));
@@ -68,12 +68,12 @@ namespace librender
 		}
 	}
 
-	void TextBatch::updateColors()
+	void SpriteBatch::updateColors()
 	{
 		uint32_t count = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
-			TextBatchEntry *entry = this->entries[i];
+			SpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & UPDATE_COLORS)
 			{
 				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * 4 * sizeof(*this->colors));
@@ -83,7 +83,7 @@ namespace librender
 		}
 	}
 
-	void TextBatch::resize()
+	void SpriteBatch::resize()
 	{
 		updateVerticesNumber();
 		if (!this->verticesNumber)
@@ -96,9 +96,9 @@ namespace librender
 		this->colors = new GLfloat[this->verticesNumber * 4 + 1];
 	}
 
-	void TextBatch::draw()
+	void SpriteBatch::draw()
 	{
-		if (!this->font)
+		if (!this->texture)
 			return;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->update();
@@ -117,7 +117,7 @@ namespace librender
 		if (this->mustResize)
 			this->mustResize = false;
 		this->changes = 0;
-		this->font->bind();
+		this->texture->bind();
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -133,13 +133,13 @@ namespace librender
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
 
-	void TextBatch::addEntry(TextBatchEntry *entry)
+	void SpriteBatch::addEntry(SpriteBatchEntry *entry)
 	{
 		entry->setParent(this);
 		this->entries.push_back(entry);
 	}
 
-	void TextBatch::removeEntry(TextBatchEntry *entry)
+	void SpriteBatch::removeEntry(SpriteBatchEntry *entry)
 	{
 		entry->setParent(NULL);
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
@@ -152,9 +152,9 @@ namespace librender
 		}
 	}
 
-	void TextBatch::setFont(Font *font)
+	void SpriteBatch::setTexture(Texture *texture)
 	{
-		this->font = font;
+		this->texture = texture;
 		this->changes = UPDATE_TEX_COORDS | UPDATE_VERTEX | UPDATE_COLORS;
 	}
 

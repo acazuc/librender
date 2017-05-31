@@ -6,10 +6,6 @@
 #define UPDATE_TEX_COORDS 2
 #define UPDATE_COLORS 4
 
-#define VERTEX_BUFFER 0
-#define TEX_COORD_BUFFER 1
-#define COLOR_BUFFER 2
-
 namespace librender
 {
 
@@ -17,7 +13,7 @@ namespace librender
 	: texCoords(NULL)
 	, vertex(NULL)
 	, colors(NULL)
-	, shadowColor(Color::WHITE)
+	, shadowColor(Color::BLACK)
 	, color(Color::WHITE)
 	, verticesNumber(0)
 	, charsNumber(0)
@@ -115,7 +111,7 @@ namespace librender
 					vertex[index++] = charRenderY + charRenderHeight;
 					vertex[index++] = charRenderX;
 					vertex[index++] = charRenderY + charRenderHeight;
-					x += charWidth * this->scaleX;
+					x += charWidth;
 				}
 			}
 		}
@@ -296,12 +292,6 @@ namespace librender
 			return;
 		this->scaleY = scaleY;
 		this->updatesRequired |= UPDATE_VERTEX;
-	}
-
-	void TextEntry::setScale(float scale)
-	{
-		setScaleX(scale);
-		setScaleY(scale);
 	}
 
 }

@@ -1,21 +1,21 @@
-#ifndef LIBRENDER_TEXT_BATCH_H
-# define LIBRENDER_TEXT_BATCH_H
+#ifndef LIBRENDER_SPRITE_BATCH_H
+# define LIBRENDER_SPRITE_BATCH_H
 
-# include "./TextBatchEntry.h"
+# include "./SpriteBatchEntry.h"
 # include <vector>
 
 namespace librender
 {
 
-	class TextBatch
+	class SpriteBatch
 	{
 
 	private:
-		std::vector<TextBatchEntry*> entries;
+		std::vector<SpriteBatchEntry*> entries;
 		GLfloat *texCoords;
 		GLfloat *vertex;
 		GLfloat *colors;
-		Font *font;
+		Texture *texture;
 		uint32_t verticesNumber;
 		uint8_t changes;
 		float x;
@@ -28,13 +28,13 @@ namespace librender
 		void resize();
 
 	public:
-		TextBatch();
-		~TextBatch();
+		SpriteBatch();
+		~SpriteBatch();
 		void draw();
-		void addEntry(TextBatchEntry *entry);
-		void removeEntry(TextBatchEntry *entry);
-		void setFont(Font *font);
-		inline Font *getFont() {return (this->font);};
+		void addEntry(SpriteBatchEntry *entry);
+		void removeEntry(SpriteBatchEntry *entry);
+		void setTexture(Texture *texture);
+		inline Texture *getTexture() {return (this->texture);};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 		inline void setX(float x) {this->x = x;};

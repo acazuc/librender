@@ -39,6 +39,10 @@ SRCS_NAME = Color.cpp \
 		Window/Window.cpp \
 		Window/Monitor.cpp \
 		Window/VideoMode.cpp \
+		Sprite/Sprite.cpp \
+		Sprite/SpriteEntry.cpp \
+		Sprite/SpriteBatch.cpp \
+		Sprite/SpriteBatchEntry.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
@@ -65,6 +69,7 @@ odir:
 	@mkdir -p $(OBJS_PATH)Shader
 	@mkdir -p $(OBJS_PATH)Text
 	@mkdir -p $(OBJS_PATH)Font
+	@mkdir -p $(OBJS_PATH)Sprite
 
 clean:
 	@echo " - Cleaning objs"

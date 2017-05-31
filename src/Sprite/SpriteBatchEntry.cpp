@@ -1,5 +1,5 @@
-#include "TextBatchEntry.h"
-#include "TextBatch.h"
+#include "SpriteBatchEntry.h"
+#include "SpriteBatch.h"
 
 #define UPDATE_VERTEX 1
 #define UPDATE_TEX_COORDS 2
@@ -8,29 +8,22 @@
 namespace librender
 {
 
-	TextBatchEntry::TextBatchEntry()
-	: TextEntry()
+	SpriteBatchEntry::SpriteBatchEntry()
+	: SpriteEntry()
 	, parent(NULL)
 	{
 		//Empty
 	}
 
-	TextBatchEntry::~TextBatchEntry()
+	SpriteBatchEntry::~SpriteBatchEntry()
 	{
 		//Empty
 	}
 
-	void TextBatchEntry::resize(uint32_t len)
-	{
-		if (this->parent)
-			this->parent->setMustResize(true);
-		TextEntry::resize(len);
-	}
-
-	void TextBatchEntry::update()
+	void SpriteBatchEntry::update()
 	{
 		uint8_t oldUpdates = this->updatesRequired;
-		TextEntry::update();
+		SpriteEntry::update();
 		this->changes = this->updatesRequired | oldUpdates;
 		if (this->changes & UPDATE_VERTEX && this->x && this->y)
 		{
@@ -44,25 +37,25 @@ namespace librender
 			this->parent->addChanges(this->changes);
 	}
 
-	void TextBatchEntry::setParent(TextBatch *textBatch)
+	void SpriteBatchEntry::setParent(SpriteBatch *spriteBatch)
 	{
-		if (this->parent && (!textBatch || this->parent->getFont() != textBatch->getFont()))
+		if (this->parent && (!spriteBatch || this->parent->getTexture() != spriteBatch->getTexture()))
 		{
 			this->updatesRequired |= UPDATE_VERTEX;
 			this->updatesRequired |= UPDATE_TEX_COORDS;
 			this->updatesRequired |= UPDATE_COLORS;
 		}
-		this->parent = textBatch;
+		this->parent = spriteBatch;
 	}
 
-	Font *TextBatchEntry::getFont()
+	Texture *SpriteBatchEntry::getTexture()
 	{
 		if (this->parent)
-			return (this->parent->getFont());
+			return (this->parent->getTexture());
 		return (NULL);
 	}
 
-	void TextBatchEntry::setX(float x)
+	void SpriteBatchEntry::setX(float x)
 	{
 		if (x == this->x)
 			return;
@@ -72,7 +65,7 @@ namespace librender
 		this->x = x;
 	}
 
-	void TextBatchEntry::setY(float y)
+	void SpriteBatchEntry::setY(float y)
 	{
 		if (y == this->y)
 			return;

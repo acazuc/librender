@@ -1,6 +1,4 @@
 #include "Text.h"
-#include <cstring>
-#include <utf8.h>
 
 #define UPDATE_VERTEX 1
 #define UPDATE_TEX_COORDS 2
@@ -27,6 +25,7 @@ namespace librender
 
 	/*void Text::updateVertex()
 	{
+		TextEntry::updateVertex();
 		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[VERTEX_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 2 * sizeof(*this->vertex), this->vertex, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -34,6 +33,7 @@ namespace librender
 
 	void Text::updateTexCoords()
 	{
+		TextEntry::updateTexCoords();
 		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 2 * sizeof(*this->texCoords), this->texCoords, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -41,6 +41,7 @@ namespace librender
 
 	void Text::updateColors()
 	{
+		TextEntry::updateColors();
 		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
 		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 4 * sizeof(*this->colors), this->colors, GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

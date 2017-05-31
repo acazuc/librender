@@ -1,7 +1,7 @@
 #ifndef LIBRENDER_TEXT_BATCH_ENTRY_H
 # define LIBRENDER_TEXT_BATCH_ENTRY_H
 
-# include "TextEntry.h"
+# include "./TextEntry.h"
 
 namespace librender
 {
