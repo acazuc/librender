@@ -62,7 +62,6 @@ namespace librender
 		setTopRightColor(color);
 		setBotLeftColor(color);
 		setBotRightColor(color);
-		this->updatesRequired |= UPDATE_COLORS;
 	}
 
 	void SpriteEntry::setTopColor(Color &color)
@@ -151,6 +150,12 @@ namespace librender
 		this->updatesRequired |= UPDATE_TEX_COORDS;
 	}
 
+	void SpriteEntry::setTexPos(float texX, float texY)
+	{
+		setTexX(texX);
+		setTexY(texY);
+	}
+
 	void SpriteEntry::setTexWidth(float texWidth)
 	{
 		this->texCoords[2] = texWidth;
@@ -165,6 +170,12 @@ namespace librender
 		this->updatesRequired |= UPDATE_TEX_COORDS;
 	}
 
+	void SpriteEntry::setTexSize(float texWidth, float texHeight)
+	{
+		setTexWidth(texWidth);
+		setTexHeight(texHeight);
+	}
+
 	void SpriteEntry::setWidth(float width)
 	{
 		this->vertex[2] = width;
@@ -177,6 +188,12 @@ namespace librender
 		this->vertex[5] = height;
 		this->vertex[7] = height;
 		this->updatesRequired |= UPDATE_VERTEX;
+	}
+
+	void SpriteEntry::setSize(float width, float height)
+	{
+		setWidth(width);
+		setHeight(height);
 	}
 
 }

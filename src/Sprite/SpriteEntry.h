@@ -52,10 +52,13 @@ namespace librender
 		void setScale(float scale) {setScaleX(scale);setScaleY(scale);};
 		void setTexX(float texX);
 		void setTexY(float texY);
+		void setTexPos(float texX, float texY);
 		void setTexWidth(float texWidth);
 		void setTexHeight(float texHeight);
+		void setTexSize(float texWidth, float texHeight);
 		void setWidth(float width);
 		void setHeight(float height);
+		void setSize(float width, float height);
 		inline virtual void setX(float x) {this->x = x;};
 		inline float getX() {return (this->x);};
 		inline virtual void setY(float y) {this->y = y;};
