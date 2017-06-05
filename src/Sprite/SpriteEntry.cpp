@@ -9,9 +9,8 @@ namespace librender
 {
 
 	SpriteEntry::SpriteEntry()
-	: verticesNumber(0)
+	: verticesNumber(4)
 	, updatesRequired(0)
-	, opacity(1)
 	, scaleX(1)
 	, scaleY(1)
 	, x(0)
@@ -112,14 +111,6 @@ namespace librender
 		this->updatesRequired |= UPDATE_COLORS;
 	}
 
-	void SpriteEntry::setOpacity(float opacity)
-	{
-		if (this->opacity == opacity)
-			return;
-		this->opacity = opacity;
-		this->updatesRequired |= UPDATE_COLORS;
-	}
-
 	void SpriteEntry::setScaleX(float scaleX)
 	{
 		if (this->scaleX == scaleX)
@@ -138,15 +129,25 @@ namespace librender
 
 	void SpriteEntry::setTexX(float texX)
 	{
+		float delta = texX - this->texCoords[0];
+		if (!delta)
+			return;
 		this->texCoords[0] = texX;
 		this->texCoords[6] = texX;
+		this->texCoords[2] += delta;
+		this->texCoords[4] += delta;
 		this->updatesRequired |= UPDATE_TEX_COORDS;
 	}
 
 	void SpriteEntry::setTexY(float texY)
 	{
+		float delta = texY - this->texCoords[0];
+		if (!delta)
+			return;
 		this->texCoords[1] = texY;
 		this->texCoords[3] = texY;
+		this->texCoords[5] += delta;
+		this->texCoords[7] += delta;
 		this->updatesRequired |= UPDATE_TEX_COORDS;
 	}
 
@@ -158,15 +159,21 @@ namespace librender
 
 	void SpriteEntry::setTexWidth(float texWidth)
 	{
-		this->texCoords[2] = texWidth;
-		this->texCoords[4] = texWidth;
+		float delta = texWidth - (this->texCoords[2] - this->texCoords[0]);
+		if (!delta)
+			return;
+		this->texCoords[2] = texWidth + this->texCoords[0];
+		this->texCoords[4] = texWidth + this->texCoords[0];
 		this->updatesRequired |= UPDATE_TEX_COORDS;
 	}
 
 	void SpriteEntry::setTexHeight(float texHeight)
 	{
-		this->texCoords[5] = texHeight;
-		this->texCoords[7] = texHeight;
+		float delta = texHeight - (this->texCoords[7] - this->texCoords[1]);
+		if (!delta)
+			return;
+		this->texCoords[5] = texHeight + this->texCoords[1];
+		this->texCoords[7] = texHeight + this->texCoords[1];
 		this->updatesRequired |= UPDATE_TEX_COORDS;
 	}
 
@@ -178,6 +185,9 @@ namespace librender
 
 	void SpriteEntry::setWidth(float width)
 	{
+		float delta = width - (this->vertex[2] - this->vertex[0]);
+		if (!delta)
+			return;
 		this->vertex[2] = width;
 		this->vertex[4] = width;
 		this->updatesRequired |= UPDATE_VERTEX;
@@ -185,6 +195,9 @@ namespace librender
 
 	void SpriteEntry::setHeight(float height)
 	{
+		float delta = height - (this->vertex[7] - this->vertex[1]);
+		if (!delta)
+			return;
 		this->vertex[5] = height;
 		this->vertex[7] = height;
 		this->updatesRequired |= UPDATE_VERTEX;
@@ -194,6 +207,20 @@ namespace librender
 	{
 		setWidth(width);
 		setHeight(height);
+	}
+
+	int32_t SpriteEntry::getTextureWidth()
+	{
+		if (!getTexture())
+			return (0);
+		return (getTexture()->getWidth());
+	}
+
+	int32_t SpriteEntry::getTextureHeight()
+	{
+		if (!getTexture())
+			return (0);
+		return (getTexture()->getHeight());
 	}
 
 }

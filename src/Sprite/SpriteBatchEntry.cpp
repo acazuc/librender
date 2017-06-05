@@ -26,7 +26,7 @@ namespace librender
 		uint8_t oldUpdates = this->updatesRequired;
 		SpriteEntry::update();
 		this->changes = this->updatesRequired | oldUpdates;
-		if (this->changes & UPDATE_VERTEX && this->x && this->y)
+		if (this->changes & UPDATE_VERTEX && (this->x || this->y))
 		{
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
 			{
@@ -34,8 +34,7 @@ namespace librender
 				this->vertex[i * 2 + 1] += this->y;
 			}
 		}
-		if (this->changes)
-			this->parent->addChanges(this->changes);
+		this->parent->addChanges(this->changes);
 	}
 
 	void SpriteBatchEntry::setParent(SpriteBatch *spriteBatch)
@@ -60,20 +59,16 @@ namespace librender
 	{
 		if (this->x == x)
 			return;
-		float diffX = x - this->x;
-		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-			this->vertex[i * 2] += diffX;
 		this->x = x;
+		this->updatesRequired |= UPDATE_VERTEX;
 	}
 
 	void SpriteBatchEntry::setY(float y)
 	{
 		if (this->y == y)
 			return;
-		float diffY = y - this->y;
-		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-			this->vertex[i * 2 + 1] += diffY;
 		this->y = y;
+		this->updatesRequired |= UPDATE_VERTEX;
 	}
 
 }

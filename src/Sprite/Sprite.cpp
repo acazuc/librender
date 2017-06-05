@@ -25,6 +25,8 @@ namespace librender
 
 	void Sprite::draw()
 	{
+		if (!this->texture)
+			return;
 		update();
 		this->texture->bind();
 		glEnableClientState(GL_VERTEX_ARRAY);

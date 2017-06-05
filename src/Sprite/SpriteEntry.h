@@ -16,7 +16,6 @@ namespace librender
 		GLfloat colors[16];
 		uint32_t verticesNumber;
 		uint8_t updatesRequired;
-		float opacity;
 		float scaleX;
 		float scaleY;
 		float x;
@@ -43,8 +42,6 @@ namespace librender
 		void setBotRightColor(Color &color);
 		virtual Texture *getTexture() {return (NULL);};
 		inline uint32_t getVerticesNumber() {return (this->verticesNumber);};
-		void setOpacity(float opacity);
-		inline float getOpacity() {return (this->opacity);};
 		void setScaleX(float scaleX);
 		inline float getScaleX() {return (this->scaleX);};
 		void setScaleY(float scaleY);
@@ -64,6 +61,8 @@ namespace librender
 		inline virtual void setY(float y) {this->y = y;};
 		inline float getY() {return (this->y);};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
+		int32_t getTextureWidth();
+		int32_t getTextureHeight();
 
 	};
 

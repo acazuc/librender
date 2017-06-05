@@ -33,7 +33,7 @@ namespace librender
 		uint8_t oldUpdates = this->updatesRequired;
 		TextEntry::update();
 		this->changes = this->updatesRequired | oldUpdates;
-		if (this->changes & UPDATE_VERTEX && this->x && this->y)
+		if (this->changes & UPDATE_VERTEX && (this->x || this->y))
 		{
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
 			{
