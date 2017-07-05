@@ -26,14 +26,6 @@ namespace librender
 		uint8_t oldUpdates = this->updatesRequired;
 		SpriteEntry::update();
 		this->changes = this->updatesRequired | oldUpdates;
-		if (this->changes & UPDATE_VERTEX && (this->x || this->y))
-		{
-			for (uint32_t i = 0; i < this->verticesNumber; ++i)
-			{
-				this->vertex[i * 2 + 0] += this->x;
-				this->vertex[i * 2 + 1] += this->y;
-			}
-		}
 		this->parent->addChanges(this->changes);
 	}
 
@@ -59,6 +51,9 @@ namespace librender
 	{
 		if (this->x == x)
 			return;
+		float delta = x - this->x;
+		for (uint32_t i = 0; i < this->verticesNumber; ++i)
+			this->vertex[i * 2] += delta;
 		this->x = x;
 		this->updatesRequired |= UPDATE_VERTEX;
 	}
@@ -67,7 +62,30 @@ namespace librender
 	{
 		if (this->y == y)
 			return;
+		float delta = y - this->y;
+		for (uint32_t i = 0; i < this->verticesNumber; ++i)
+			this->vertex[i * 2 + 1] += delta;
 		this->y = y;
+		this->updatesRequired |= UPDATE_VERTEX;
+	}
+	
+	void SpriteBatchEntry::setWidth(float width)
+	{
+		float delta = width - (this->vertex[2] - this->x);
+		if (!delta)
+			return;
+		this->vertex[2] = width + this->x;
+		this->vertex[4] = width + this->x;
+		this->updatesRequired |= UPDATE_VERTEX;
+	}
+
+	void SpriteBatchEntry::setHeight(float height)
+	{
+		float delta = height - (this->vertex[7] - this->y);
+		if (!delta)
+			return;
+		this->vertex[5] = height + this->y;
+		this->vertex[7] = height + this->y;
 		this->updatesRequired |= UPDATE_VERTEX;
 	}
 

@@ -181,6 +181,39 @@ namespace librender
 		drawQuad(texture, x, y, texture->getWidth(), texture->getHeight(), 0, 0, texture->getWidth(), texture->getHeight(), alpha);
 	}
 
+	void drawTriangleBegin()
+	{
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glBegin(GL_TRIANGLES);
+	}
+
+	void drawTriangleEnd()
+	{
+		glEnd();
+	}
+
+	void drawTrianglePart(int x1, int y1, int x2, int y2, int x3, int y3, Color &c1, Color &c2, Color &c3)
+	{
+		c1.bind();
+		glVertex2f(x1, y1);
+		c2.bind();
+		glVertex2f(x2, y2);
+		c3.bind();
+		glVertex2f(x3, y3);
+	}
+
+	void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color &c1, Color &c2, Color &c3)
+	{
+		drawTriangleBegin();
+		drawTrianglePart(x1, y1, x2, y2, x3, y3, c1, c2, c3);
+		drawTriangleEnd();
+	}
+
+	void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color &color)
+	{
+		drawTriangle(x1, y1, x2, y2, x3, y3, color, color, color);
+	}
+
 	void drawCircleBegin(float lineWidth)
 	{
 		glLineWidth(lineWidth);

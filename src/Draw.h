@@ -30,6 +30,11 @@ namespace librender
 	void drawQuad(Texture *texture, int x, int y, int width, int height, float alpha = 1);
 	void drawQuad(Texture *texture, int x, int y, Color &color);
 	void drawQuad(Texture *texture, int x, int y, float alpha = 1);
+	void drawTriangleBegin();
+	void drawTriangleEnd();
+	void drawTrianglePart(int x1, int y1, int x2, int y2, int x3, int y3, Color &c1, Color &c2, Color &c3);
+	void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color &c1, Color &c2, Color &c3);
+	void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color &color);
 	void drawCircleBegin(float lineWidth = 1);
 	void drawCircleEnd();
 	void drawCirclePart(int x, int y, int rayon, int nbSeg, float angle, float startAngle);

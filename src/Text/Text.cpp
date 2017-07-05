@@ -49,6 +49,8 @@ namespace librender
 
 	void Text::draw()
 	{
+		if (!this->font)
+			return;
 		update();
 		this->font->bind();
 		glEnableClientState(GL_VERTEX_ARRAY);
