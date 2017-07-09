@@ -14,9 +14,9 @@ namespace librender
 	, colors(NULL)
 	, font(NULL)
 	, verticesNumber(0)
+	, changes(0)
 	, x(0)
 	, y(0)
-	, changes(0)
 	, mustResize(true)
 	{
 		//Empty
@@ -141,15 +141,22 @@ namespace librender
 
 	void TextBatch::removeEntry(TextBatchEntry *entry)
 	{
-		entry->setParent(NULL);
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
 			if (this->entries[i] == entry)
 			{
 				this->entries.erase(this->entries.begin() + i);
+				entry->setParent(NULL);
 				return;
 			}
 		}
+	}
+
+	void TextBatch::clearEntries()
+	{
+		for (uint32_t i = 0; i < this->entries.size(); ++i)
+			this->entries[i]->setParent(NULL);
+		this->entries.clear();
 	}
 
 	void TextBatch::setFont(Font *font)

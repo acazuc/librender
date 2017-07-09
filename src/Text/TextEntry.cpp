@@ -101,8 +101,8 @@ namespace librender
 					int32_t charWidth = glyph->getAdvance() * this->scaleX;
 					int32_t charRenderWidth = glyph->getWidth() * this->scaleX;
 					int32_t charRenderHeight = glyph->getHeight() * this->scaleY;
-					int32_t charRenderX = x + glyph->getOffsetX();
-					int32_t charRenderY = y + glyph->getOffsetY();
+					int32_t charRenderX = x + glyph->getOffsetX() * this->scaleX;
+					int32_t charRenderY = y + glyph->getOffsetY() * this->scaleY;
 					vertex[index++] = charRenderX;
 					vertex[index++] = charRenderY;
 					vertex[index++] = charRenderX + charRenderWidth;

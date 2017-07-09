@@ -33,6 +33,7 @@ namespace librender
 		void draw();
 		void addEntry(TextBatchEntry *entry);
 		void removeEntry(TextBatchEntry *entry);
+		void clearEntries();
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};
