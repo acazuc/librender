@@ -56,7 +56,7 @@ namespace librender
 		inline virtual Font *getFont() {return (NULL);};
 		inline uint32_t getVerticesNumber() {return (this->verticesNumber);};
 		inline void setLineHeight(uint32_t lineHeight) {this->lineHeight = lineHeight;};
-		inline uint32_t getLineHeight() {return (this->lineHeight);};
+		int32_t getLineHeight();
 		void setShadowSize(int16_t shadowSize);
 		inline int16_t getShadowSize() {return (this->shadowSize);};
 		void setShadowX(int16_t shadowX);

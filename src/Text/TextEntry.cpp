@@ -308,4 +308,15 @@ namespace librender
 		return (getFont()->getHeight(this->text) * this->scaleY);
 	}
 
+	int32_t TextEntry::getLineHeight()
+	{
+		if (this->lineHeight == -1)
+		{
+			if (getFont())
+				return (getFont()->getLineHeight());
+			return (0);
+		}
+		return (this->lineHeight);
+	}
+
 }

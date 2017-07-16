@@ -141,7 +141,7 @@ namespace librender
 
 	void SpriteEntry::setTexY(float texY)
 	{
-		float delta = texY - this->texCoords[0];
+		float delta = texY - this->texCoords[1];
 		if (!delta)
 			return;
 		this->texCoords[1] = texY;

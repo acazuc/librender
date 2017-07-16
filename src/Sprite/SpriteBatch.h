@@ -35,6 +35,7 @@ namespace librender
 		void removeEntry(SpriteBatchEntry *entry);
 		void setTexture(Texture *texture);
 		inline Texture *getTexture() {return (this->texture);};
+		inline std::vector<SpriteBatchEntry*> &getEntries() {return (this->entries);};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 		inline void setX(float x) {this->x = x;};

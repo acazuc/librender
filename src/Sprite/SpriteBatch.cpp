@@ -14,9 +14,9 @@ namespace librender
 	, colors(NULL)
 	, texture(NULL)
 	, verticesNumber(0)
+	, changes(0)
 	, x(0)
 	, y(0)
-	, changes(0)
 	, mustResize(true)
 	{
 		//Empty
