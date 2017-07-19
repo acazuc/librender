@@ -22,6 +22,8 @@ namespace librender
 		Color color;
 		uint32_t verticesNumber;
 		uint32_t charsNumber;
+		int32_t height;
+		int32_t width;
 		uint8_t updatesRequired;
 		int16_t shadowSize;
 		int32_t lineHeight;

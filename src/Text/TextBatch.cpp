@@ -47,7 +47,7 @@ namespace librender
 			if (this->mustResize || entry->getChanges() & UPDATE_TEX_COORDS)
 			{
 				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * 2 * sizeof(*this->texCoords));
-				entry->removeChange(UPDATE_TEX_COORDS);
+				entry->removeChanges(UPDATE_TEX_COORDS);
 			}
 			count += entry->getVerticesNumber() * 2;
 		}
@@ -62,7 +62,7 @@ namespace librender
 			if (this->mustResize || entry->getChanges() & UPDATE_VERTEX)
 			{
 				std::memcpy(&this->vertex[count], entry->getVertex(), entry->getVerticesNumber() * 2 * sizeof(*this->vertex));
-				entry->removeChange(UPDATE_VERTEX);
+				entry->removeChanges(UPDATE_VERTEX);
 			}
 			count += entry->getVerticesNumber() * 2;
 		}
@@ -77,7 +77,7 @@ namespace librender
 			if (this->mustResize || entry->getChanges() & UPDATE_COLORS)
 			{
 				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * 4 * sizeof(*this->colors));
-				entry->removeChange(UPDATE_COLORS);
+				entry->removeChanges(UPDATE_COLORS);
 			}
 			count += entry->getVerticesNumber() * 4;
 		}
@@ -162,7 +162,9 @@ namespace librender
 	void TextBatch::setFont(Font *font)
 	{
 		this->font = font;
-		this->changes = UPDATE_TEX_COORDS | UPDATE_VERTEX | UPDATE_COLORS;
+		this->changes = UPDATE_TEX_COORDS | UPDATE_VERTEX;
+		for (uint32_t i = 0; i < this->entries.size(); ++i)
+			this->entries[i]->addChanges(UPDATE_TEX_COORDS | UPDATE_VERTEX);
 	}
 
 }

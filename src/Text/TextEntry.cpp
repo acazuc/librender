@@ -17,6 +17,8 @@ namespace librender
 	, color(Color::WHITE)
 	, verticesNumber(0)
 	, charsNumber(0)
+	, height(-1)
+	, width(-1)
 	, updatesRequired(0)
 	, shadowSize(0)
 	, lineHeight(-1)
@@ -68,8 +70,8 @@ namespace librender
 		 	shadowLen = 1;
 		else
 			shadowLen = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - (this->shadowSize - 1) * 4;
-		int32_t x = 0;
-		int32_t y = 0;
+		float x = 0;
+		float y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = const_cast<char*>(this->text.c_str() + this->text.length());
 		int32_t index = (shadowLen * this->charsNumber) * 8;
@@ -78,10 +80,7 @@ namespace librender
 			uint32_t currentChar = utf8::next(iter, end);
 			if (currentChar == '\n')
 			{
-				if (this->lineHeight == -1)
-					y += getFont()->getLineHeight() * this->scaleY;
-				else
-					y += this->lineHeight * this->scaleY;
+				y += getLineHeight() * this->scaleY;
 				x = 0;
 				std::memset(&vertex[index], 0, 8 * sizeof(*this->vertex));
 				index += 8;
@@ -98,11 +97,11 @@ namespace librender
 				}
 				else
 				{
-					int32_t charWidth = glyph->getAdvance() * this->scaleX;
-					int32_t charRenderWidth = glyph->getWidth() * this->scaleX;
-					int32_t charRenderHeight = glyph->getHeight() * this->scaleY;
-					int32_t charRenderX = x + glyph->getOffsetX() * this->scaleX;
-					int32_t charRenderY = y + glyph->getOffsetY() * this->scaleY;
+					float charWidth = glyph->getAdvance() * this->scaleX;
+					float charRenderWidth = glyph->getWidth() * this->scaleX;
+					float charRenderHeight = glyph->getHeight() * this->scaleY;
+					float charRenderX = x + glyph->getOffsetX() * this->scaleX;
+					float charRenderY = y + glyph->getOffsetY() * this->scaleY;
 					vertex[index++] = charRenderX;
 					vertex[index++] = charRenderY;
 					vertex[index++] = charRenderX + charRenderWidth;

@@ -10,14 +10,7 @@ namespace librender
 	int32_t Window::maxMSAA = -1;
 
 	Window::Window(std::string title, int width, int height)
-	: window(NULL)
-	, hResizeCursor(NULL)
-	, vResizeCursor(NULL)
-	, arrowCursor(NULL)
-	, crossCursor(NULL)
-	, ibeamCursor(NULL)
-	, handCursor(NULL)
-	, focused(true)
+	: focused(true)
 	, mouseX(0)
 	, mouseY(0)
 	, width(width)
@@ -40,7 +33,7 @@ namespace librender
 		glfwSetCursorPosCallback(this->window, EventsManager::cursorListener);
 		glfwSetFramebufferSizeCallback(this->window, EventsManager::windowResizeListener);
 		glfwSetWindowFocusCallback(this->window, EventsManager::windowFocusListener);
-		int count = 0;
+		/*int count = 0;
 		GLFWmonitor** monitors = glfwGetMonitors(&count);
 		for (int i = 0; i < count; ++i)
 		{
@@ -55,7 +48,7 @@ namespace librender
 				std::cout << "width: " << modes[j].width << ", height: " << modes[j].height << ", redBits: " << modes[j].redBits << ", greenBits: " << modes[j].greenBits << ", blueBits: " << modes[j].blueBits << ", refreshRate: " << modes[j].refreshRate << std::endl;
 			}
 			std::cout << std::endl;
-		}
+		}*/
 	}
 
 	Window::~Window()

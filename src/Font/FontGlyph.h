@@ -15,8 +15,8 @@ namespace librender
 		uint16_t width;
 		uint16_t texX;
 		uint16_t texY;
-		int16_t offsetY;
 		int16_t offsetX;
+		int16_t offsetY;
 
 	public:
 		FontGlyph(uint16_t advance, uint16_t width, uint16_t height, int16_t offsetX, int16_t offsetY);
