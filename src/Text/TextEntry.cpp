@@ -17,11 +17,10 @@ namespace librender
 	, color(Color::WHITE)
 	, verticesNumber(0)
 	, charsNumber(0)
-	, height(-1)
-	, width(-1)
 	, updatesRequired(0)
 	, shadowSize(0)
 	, lineHeight(-1)
+	, maxWidth(-1)
 	, shadowX(0)
 	, shadowY(0)
 	, opacity(1)
@@ -86,32 +85,34 @@ namespace librender
 				index += 8;
 				continue;
 			}
+			FontGlyph *glyph = getFont()->getGlyph(currentChar);
+			if (!glyph)
+			{
+				std::memset(&vertex[index], 0, 8 * sizeof(*this->vertex));
+				index += 8;
+				continue;
+			}
 			else
 			{
-				FontGlyph *glyph = getFont()->getGlyph(currentChar);
-				if (!glyph)
-				{
-					std::memset(&vertex[index], 0, 8 * sizeof(*this->vertex));
-					index += 8;
-					continue;
-				}
-				else
-				{
-					float charWidth = glyph->getAdvance() * this->scaleX;
-					float charRenderWidth = glyph->getWidth() * this->scaleX;
-					float charRenderHeight = glyph->getHeight() * this->scaleY;
-					float charRenderX = x + glyph->getOffsetX() * this->scaleX;
-					float charRenderY = y + glyph->getOffsetY() * this->scaleY;
-					vertex[index++] = charRenderX;
-					vertex[index++] = charRenderY;
-					vertex[index++] = charRenderX + charRenderWidth;
-					vertex[index++] = charRenderY;
-					vertex[index++] = charRenderX + charRenderWidth;
-					vertex[index++] = charRenderY + charRenderHeight;
-					vertex[index++] = charRenderX;
-					vertex[index++] = charRenderY + charRenderHeight;
-					x += charWidth;
-				}
+				float charWidth = glyph->getAdvance() * this->scaleX;
+				float charRenderWidth = glyph->getWidth() * this->scaleX;
+				float charRenderHeight = glyph->getHeight() * this->scaleY;
+				float charRenderX = x + glyph->getOffsetX() * this->scaleX;
+				float charRenderY = y + glyph->getOffsetY() * this->scaleY;
+				vertex[index++] = charRenderX;
+				vertex[index++] = charRenderY;
+				vertex[index++] = charRenderX + charRenderWidth;
+				vertex[index++] = charRenderY;
+				vertex[index++] = charRenderX + charRenderWidth;
+				vertex[index++] = charRenderY + charRenderHeight;
+				vertex[index++] = charRenderX;
+				vertex[index++] = charRenderY + charRenderHeight;
+				x += charWidth;
+			}
+			if (this->maxWidth >= 0 && x >= this->maxWidth)
+			{
+				y += getLineHeight() * this->scaleY;
+				x = 0;
 			}
 		}
 		if (this->shadowSize <= 0)
@@ -249,7 +250,7 @@ namespace librender
 		this->updatesRequired |= UPDATE_COLORS;
 	}
 
-	void TextEntry::setShadowX(int16_t shadowX)
+	void TextEntry::setShadowX(int32_t shadowX)
 	{
 		if (this->shadowX == shadowX)
 			return;
@@ -259,7 +260,7 @@ namespace librender
 		this->updatesRequired |= UPDATE_COLORS;
 	}
 
-	void TextEntry::setShadowY(int16_t shadowY)
+	void TextEntry::setShadowY(int32_t shadowY)
 	{
 		if (this->shadowY == shadowY)
 			return;
@@ -290,6 +291,14 @@ namespace librender
 		if (this->scaleY == scaleY)
 			return;
 		this->scaleY = scaleY;
+		this->updatesRequired |= UPDATE_VERTEX;
+	}
+
+	void TextEntry::setMaxWidth(int32_t maxWidth)
+	{
+		if (this->maxWidth == maxWidth)
+			return;
+		this->maxWidth = maxWidth;
 		this->updatesRequired |= UPDATE_VERTEX;
 	}
 
