@@ -61,6 +61,7 @@ namespace librender
 		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
 		glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
+		glScalef(this->scaleX, this->scaleY, 0);
 		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
 		glPopMatrix();
 		glDisableClientState(GL_VERTEX_ARRAY);

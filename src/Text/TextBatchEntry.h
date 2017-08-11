@@ -24,6 +24,8 @@ namespace librender
 		void setParent(TextBatch *textBatch);
 		void setX(float x);
 		void setY(float y);
+		void setScaleX(float scaleX);
+		void setScaleY(float scaleY);
 		inline uint8_t getChanges() {return (this->changes);};
 		inline void removeChanges(uint8_t changes) {this->changes &= ~changes;};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};

@@ -16,7 +16,6 @@ namespace librender
 		float alpha;
 
 	public:
-		Color();
 		Color(Color &color);
 		Color(float red, float green, float blue, float alpha = 1);
 		Color(float rgb, float alpha = 1);

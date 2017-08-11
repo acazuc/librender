@@ -61,8 +61,8 @@ namespace librender
 			if (!glyph)
 				continue;
 			totalWidth += glyph->getWidth() + 1;
-			if (glyph->getHeight() > maxHeight)
-				maxHeight = glyph->getHeight();
+			if (glyph->getHeight() + glyph->getOffsetY() > maxHeight)
+				maxHeight = glyph->getHeight() + glyph->getOffsetY();
 			if (glyph->getWidth() > maxWidth)
 				maxWidth = glyph->getWidth() + 1;
 		}

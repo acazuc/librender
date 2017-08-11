@@ -6,7 +6,7 @@
 namespace librender
 {
 
-	VertexShader::VertexShader(const char *data, size_t len)
+	VertexShader::VertexShader(const char *data)
 	{
 		this->id = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(this->id, 1, &data , NULL);

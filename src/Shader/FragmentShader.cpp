@@ -6,7 +6,7 @@
 namespace librender
 {
 
-	FragmentShader::FragmentShader(const char *data, size_t len)
+	FragmentShader::FragmentShader(const char *data)
 	{
 		this->id = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(this->id, 1, &data , NULL);

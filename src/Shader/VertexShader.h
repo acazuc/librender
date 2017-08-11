@@ -14,7 +14,7 @@ namespace librender
 		GLuint id;
 
 	public:
-		VertexShader(const char *data, size_t len);
+		VertexShader(const char *data);
 		~VertexShader();
 		inline GLuint getId() {return (this->id);};
 

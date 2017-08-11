@@ -33,10 +33,12 @@ namespace librender
 		uint8_t oldUpdates = this->updatesRequired;
 		TextEntry::update();
 		this->changes = this->updatesRequired | oldUpdates;
-		if (this->changes & UPDATE_VERTEX && (this->x || this->y))
+		if (this->changes & UPDATE_VERTEX && (this->x || this->y || this->scaleX || this->scaleY))
 		{
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
 			{
+				this->vertex[i * 2 + 0] *= this->scaleX;
+				this->vertex[i * 2 + 0] *= this->scaleY;
 				this->vertex[i * 2 + 0] += this->x;
 				this->vertex[i * 2 + 1] += this->y;
 			}
@@ -81,6 +83,26 @@ namespace librender
 		for (uint32_t i = 0; i < this->verticesNumber; ++i)
 			this->vertex[i * 2 + 1] += diffY;
 		this->y = y;
+	}
+
+	void TextBatchEntry::setScaleX(float scaleX)
+	{
+		if (this->scaleX == scaleX)
+			return;
+		float ratioX = scaleX / this->scaleX;
+		for (uint32_t i = 0; i < this->verticesNumber; ++i)
+			this->vertex[i * 2] *= ratioX;
+		this->scaleX = scaleX;
+	}
+
+	void TextBatchEntry::setScaleY(float scaleY)
+	{
+		if (this->scaleY == scaleY)
+			return;
+		float ratioY = scaleY / this->scaleY;
+		for (uint32_t i = 0; i < this->verticesNumber; ++i)
+			this->vertex[i * 2 + 1] *= ratioY;
+		this->scaleY = scaleY;
 	}
 
 }

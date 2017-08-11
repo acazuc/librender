@@ -14,7 +14,7 @@ namespace librender
 		GLuint id;
 
 	public:
-		FragmentShader(const char *data, size_t len);
+		FragmentShader(const char *data);
 		~FragmentShader();
 		inline GLuint getId() {return (this->id);};
 

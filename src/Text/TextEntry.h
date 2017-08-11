@@ -67,9 +67,9 @@ namespace librender
 		inline int32_t getShadowY() {return (this->shadowY);};
 		void setOpacity(float opacity);
 		inline float getOpacity() {return (this->opacity);};
-		void setScaleX(float scaleX);
+		virtual void setScaleX(float scaleX);
 		inline float getScaleX() {return (this->scaleX);};
-		void setScaleY(float scaleY);
+		virtual void setScaleY(float scaleY);
 		inline float getScaleY() {return (this->scaleY);};
 		void setScale(float scale) {setScaleX(scale);setScaleY(scale);};
 		void setMaxWidth(int32_t width);
