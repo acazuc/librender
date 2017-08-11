@@ -55,6 +55,9 @@ namespace librender
 		static Color LIGHTORANGE;
 		static Color ORANGE;
 		static Color DARKORANGE;
+		static Color PURPLE;
+		static Color DARKPURPLE;
+		static Color LIGHTPURPLE;
 
 	};
 

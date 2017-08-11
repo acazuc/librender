@@ -16,13 +16,16 @@ namespace librender
 	Color Color::DARKGREEN(0, .5f, 0);
 	Color Color::LIGHTBLUE(.25f, 1, 1);
 	Color Color::BLUE(0, 0, 1);
-	Color Color::DARKBLUE(0, 0, .5f);
-	Color Color::LIGHTYELLOW(1, 1, .33f);
+	Color Color::DARKBLUE(0, 0, .5);
+	Color Color::LIGHTYELLOW(1, 1, .33);
 	Color Color::YELLOW(1, 1, 0);
-	Color Color::DARKYELLOW(.5f, .5f, 0);
-	Color Color::LIGHTORANGE(1, .75f, .25f);
-	Color Color::ORANGE(1, .5f, 0);
-	Color Color::DARKORANGE(.5f, .25f, 0);
+	Color Color::DARKYELLOW(.5, .5, 0);
+	Color Color::LIGHTORANGE(1, .75, .25);
+	Color Color::ORANGE(1, .5, 0);
+	Color Color::DARKORANGE(.5, .25, 0);
+	Color Color::PURPLE(.75, 0, .75);
+	Color Color::DARKPURPLE(.5, 0, .5);
+	Color Color::LIGHTPURPLE(1, 0, 1);
 
 	Color::Color(Color &color)
 	{
