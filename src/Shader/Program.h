@@ -1,8 +1,10 @@
 #ifndef LIBRENDER_PROGRAM_H
 # define LIBRENDER_PROGRAM_H
 
-# include "FragmentShader.h"
-# include "VertexShader.h"
+# include "./ProgramLocation.h"
+# include "./FragmentShader.h"
+# include "./GeometryShader.h"
+# include "./VertexShader.h"
 # include "../GL.h"
 
 namespace librender
@@ -12,14 +14,17 @@ namespace librender
 	{
 
 	private:
-		FragmentShader *fragmentShader;
-		VertexShader *vertexShader;
 		GLuint id;
 
 	public:
-		Program(FragmentShader *fragmentShader, VertexShader *vertexShader);
+		Program();
 		~Program();
-		GLuint getAttribLocation(const char *name);
+		void attachFragmentShader(FragmentShader *fragmentShader);
+		void attachGeometryShader(GeometryShader *geometryShader);
+		void attachVertexShader(VertexShader *vertexShader);
+		void link();
+		ProgramLocation *getUniformLocation(const char *name);
+		ProgramLocation *getAttribLocation(const char *name);
 		void use();
 		inline GLuint getId() {return (this->id);};
 

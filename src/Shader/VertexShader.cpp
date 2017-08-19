@@ -1,6 +1,5 @@
 #include "VertexShader.h"
-#include <exception>
-#include <iostream>
+#include "ShaderException.h"
 #include <cstring>
 
 namespace librender
@@ -20,18 +19,16 @@ namespace librender
 			char *error = new char[infoLogLength + 1];
 			std::memset(error, 0, infoLogLength + 1);
 			glGetShaderInfoLog(this->id, infoLogLength, NULL, error);
-			if (this->id)
-				glDeleteShader(this->id);
-			std::cerr << error << std::endl;
+			glDeleteShader(this->id);
+			std::string err(error);
 			delete[] (error);
-			throw std::exception();
+			throw ShaderException(err);
 		}
 	}
 
 	VertexShader::~VertexShader()
 	{
-		if (this->id)
-			glDeleteShader(this->id);
+		glDeleteShader(this->id);
 	}
 
 }

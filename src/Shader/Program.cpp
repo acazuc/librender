@@ -1,21 +1,37 @@
 #include "Program.h"
-#include <exception>
-#include <iostream>
+#include "ProgramException.h"
 #include <cstring>
 
 namespace librender
 {
 
-	Program::Program(FragmentShader *fragmentShader, VertexShader *vertexShader)
-	: fragmentShader(fragmentShader)
-	, vertexShader(vertexShader)
-	, id(0)
+	Program::Program()
 	{
-		if (!fragmentShader || !vertexShader)
-			throw std::exception();
-	 	this->id = glCreateProgram();
-		glAttachShader(this->id, this->vertexShader->getId());
-		glAttachShader(this->id, this->fragmentShader->getId());
+		this->id = glCreateProgram();
+	}
+
+	Program::~Program()
+	{
+		glDeleteProgram(this->id);
+	}
+
+	void Program::attachFragmentShader(FragmentShader *fragmentShader)
+	{
+		glAttachShader(this->id, fragmentShader->getId());
+	}
+
+	void Program::attachGeometryShader(GeometryShader *geometryShader)
+	{
+		glAttachShader(this->id, geometryShader->getId());
+	}
+
+	void Program::attachVertexShader(VertexShader *vertexShader)
+	{
+		glAttachShader(this->id, vertexShader->getId());
+	}
+
+	void Program::link()
+	{
 		glLinkProgram(this->id);
 		GLint result = GL_FALSE;
 		int infoLogLength;
@@ -26,23 +42,20 @@ namespace librender
 			char *error = new char[infoLogLength + 1];
 			std::memset(error, 0, infoLogLength + 1);
 			glGetShaderInfoLog(this->id, infoLogLength, NULL, error);
-			if (this->id)
-				glDeleteProgram(this->id);
-			std::cout << error << std::endl;
+			std::string err(error);
 			delete[] (error);
-			throw std::exception();
+			throw ProgramException(err);
 		}
 	}
 
-	Program::~Program()
+	ProgramLocation *Program::getUniformLocation(const char *name)
 	{
-		if (this->id)
-			glDeleteProgram(this->id);
+		return (new ProgramLocation(glGetUniformLocation(this->id, name)));
 	}
 
-	GLuint Program::getAttribLocation(const char *name)
+	ProgramLocation *Program::getAttribLocation(const char *name)
 	{
-		return (glGetAttribLocation(this->id, name));
+		return (new ProgramLocation(glGetAttribLocation(this->id, name)));
 	}
 
 	void Program::use()

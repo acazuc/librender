@@ -1,13 +1,13 @@
-#include "FragmentShader.h"
+#include "GeometryShader.h"
 #include "ShaderException.h"
 #include <cstring>
 
 namespace librender
 {
 
-	FragmentShader::FragmentShader(const char *data)
+	GeometryShader::GeometryShader(const char *data)
 	{
-		this->id = glCreateShader(GL_FRAGMENT_SHADER);
+		//this->id = glCreateShader(GL_GEOMETRY_SHADER);
 		glShaderSource(this->id, 1, &data , NULL);
 		glCompileShader(this->id);
 		GLint result = GL_FALSE;
@@ -26,7 +26,7 @@ namespace librender
 		}
 	}
 
-	FragmentShader::~FragmentShader()
+	GeometryShader::~GeometryShader()
 	{
 		glDeleteShader(this->id);
 	}
