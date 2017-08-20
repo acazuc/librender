@@ -12,7 +12,6 @@ namespace librender
 	{
 
 	protected:
-		GLuint buffers[3];
 		Font *font;
 
 	public:

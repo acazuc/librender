@@ -42,9 +42,10 @@ namespace librender
 	void TextEntry::fillTexCoords(GLfloat *texCoords)
 	{
 		char *iter = const_cast<char*>(this->text.c_str());
+		char *end = iter + this->text.length();
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
-			uint32_t currentChar = utf8::next(iter, const_cast<char*>(this->text.c_str()) + this->text.length());
+			uint32_t currentChar = utf8::next(iter, end);
 			getFont()->glArrayCharPart(currentChar, &texCoords[i * 8]);
 		}
 		if (this->shadowSize <= 0)
@@ -72,14 +73,14 @@ namespace librender
 		float x = 0;
 		float y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
-		char *end = const_cast<char*>(this->text.c_str() + this->text.length());
+		char *end = iter + this->text.length();
 		int32_t index = (shadowLen * this->charsNumber) * 8;
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t currentChar = utf8::next(iter, end);
 			if (currentChar == '\n')
 			{
-				y += getLineHeight();// * this->scaleY;
+				y += getLineHeight();
 				x = 0;
 				std::memset(&vertex[index], 0, 8 * sizeof(*this->vertex));
 				index += 8;
@@ -94,11 +95,11 @@ namespace librender
 			}
 			else
 			{
-				float charWidth = glyph->getAdvance();// * this->scaleX;
-				float charRenderWidth = glyph->getWidth();// * this->scaleX;
-				float charRenderHeight = glyph->getHeight();// * this->scaleY;
-				float charRenderX = x + glyph->getOffsetX();// * this->scaleX;
-				float charRenderY = y + glyph->getOffsetY();// * this->scaleY;
+				float charWidth = glyph->getAdvance();
+				float charRenderWidth = glyph->getWidth();
+				float charRenderHeight = glyph->getHeight();
+				float charRenderX = x + glyph->getOffsetX();
+				float charRenderY = y + glyph->getOffsetY();
 				vertex[index++] = charRenderX;
 				vertex[index++] = charRenderY;
 				vertex[index++] = charRenderX + charRenderWidth;
@@ -111,7 +112,7 @@ namespace librender
 			}
 			if (this->maxWidth > 0 && x >= this->maxWidth)
 			{
-				y += getLineHeight();// * this->scaleY;
+				y += getLineHeight();
 				x = 0;
 			}
 		}
@@ -130,9 +131,9 @@ namespace librender
 			uint32_t add = 0;
 			for (uint32_t j = 0; j < this->charsNumber * 4; ++j)
 			{
-				vertex[index + add] = vertex[tmp2 + add] + (sx + this->shadowX);// * this->scaleX;
+				vertex[index + add] = vertex[tmp2 + add] + (sx + this->shadowX);
 				++add;
-				vertex[index + add] = vertex[tmp2 + add] + (sy + this->shadowY);// * this->scaleY;
+				vertex[index + add] = vertex[tmp2 + add] + (sy + this->shadowY);
 				++add;
 			}
 			arrCount++;
@@ -202,14 +203,11 @@ namespace librender
 			}
 			this->verticesNumber *= fac;
 		}
-		if (this->texCoords)
-			delete[] (this->texCoords);
+		delete[] (this->texCoords);
 		this->texCoords = new GLfloat[this->verticesNumber * 2 + 1];
-		if (this->vertex)
-			delete[] (this->vertex);
+		delete[] (this->vertex);
 		this->vertex = new GLfloat[this->verticesNumber * 2 + 1];
-		if (this->colors)
-			delete[] (this->colors);
+		delete[] (this->colors);
 		this->colors = new GLfloat[this->verticesNumber * 4 + 1];
 	}
 

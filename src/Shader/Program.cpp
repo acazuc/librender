@@ -15,19 +15,34 @@ namespace librender
 		glDeleteProgram(this->id);
 	}
 
-	void Program::attachFragmentShader(FragmentShader *fragmentShader)
+	void Program::attachShader(FragmentShader *fragmentShader)
 	{
 		glAttachShader(this->id, fragmentShader->getId());
 	}
 
-	void Program::attachGeometryShader(GeometryShader *geometryShader)
+	void Program::detachShader(FragmentShader *fragmentShader)
+	{
+		glDetachShader(this->id, fragmentShader->getId());
+	}
+
+	void Program::attachShader(GeometryShader *geometryShader)
 	{
 		glAttachShader(this->id, geometryShader->getId());
 	}
 
-	void Program::attachVertexShader(VertexShader *vertexShader)
+	void Program::detachShader(GeometryShader *geometryShader)
+	{
+		glDetachShader(this->id, geometryShader->getId());
+	}
+
+	void Program::attachShader(VertexShader *vertexShader)
 	{
 		glAttachShader(this->id, vertexShader->getId());
+	}
+
+	void Program::detachShader(VertexShader *vertexShader)
+	{
+		glDetachShader(this->id, vertexShader->getId());
 	}
 
 	void Program::link()
@@ -41,7 +56,7 @@ namespace librender
 		{
 			char *error = new char[infoLogLength + 1];
 			std::memset(error, 0, infoLogLength + 1);
-			glGetShaderInfoLog(this->id, infoLogLength, NULL, error);
+			glGetProgramInfoLog(this->id, infoLogLength, NULL, error);
 			std::string err(error);
 			delete[] (error);
 			throw ProgramException(err);

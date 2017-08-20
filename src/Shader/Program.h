@@ -19,9 +19,12 @@ namespace librender
 	public:
 		Program();
 		~Program();
-		void attachFragmentShader(FragmentShader *fragmentShader);
-		void attachGeometryShader(GeometryShader *geometryShader);
-		void attachVertexShader(VertexShader *vertexShader);
+		void attachShader(FragmentShader *fragmentShader);
+		void detachShader(FragmentShader *fragmentShader);
+		void attachShader(GeometryShader *geometryShader);
+		void detachShader(GeometryShader *geometryShader);
+		void attachShader(VertexShader *vertexShader);
+		void detachShader(VertexShader *vertexShader);
 		void link();
 		ProgramLocation *getUniformLocation(const char *name);
 		ProgramLocation *getAttribLocation(const char *name);

@@ -14,9 +14,29 @@ namespace librender
 		glUniform1i(this->location, val);
 	}
 
+	void ProgramLocation::setVec2i(GLint val1, GLint val2)
+	{
+		glUniform2i(this->location, val1, val2);
+	}
+
+	void ProgramLocation::setVec3i(GLint val1, GLint val2, GLint val3)
+	{
+		glUniform3i(this->location, val1, val2, val3);
+	}
+
+	void ProgramLocation::setVec4i(GLint val1, GLint val2, GLint val3, GLint val4)
+	{
+		glUniform4i(this->location, val1, val2, val3, val4);
+	}
+
 	void ProgramLocation::setVec1f(GLfloat val)
 	{
 		glUniform1f(this->location, val);
+	}
+
+	void ProgramLocation::setVec2f(GLfloat val1, GLfloat val2)
+	{
+		glUniform2f(this->location, val1, val2);
 	}
 
 	void ProgramLocation::setVec2f(glm::vec2 &vec)
@@ -24,9 +44,19 @@ namespace librender
 		glUniform2f(this->location, vec.x, vec.y);
 	}
 
+	void ProgramLocation::setVec3f(GLfloat val1, GLfloat val2, GLfloat val3)
+	{
+		glUniform3f(this->location, val1, val2, val3);
+	}
+
 	void ProgramLocation::setVec3f(glm::vec3 &vec)
 	{
 		glUniform3f(this->location, vec.x, vec.y, vec.z);
+	}
+
+	void ProgramLocation::setVec4f(GLfloat val1, GLfloat val2, GLfloat val3, GLfloat val4)
+	{
+		glUniform4f(this->location, val1, val2, val3, val4);
 	}
 
 	void ProgramLocation::setVec4f(glm::vec4 &vec)

@@ -15,37 +15,13 @@ namespace librender
 	: TextEntry()
 	, font(NULL)
 	{
-		//glGenBuffers(3, buffers);
+		//Empty
 	}
 
 	Text::~Text()
 	{
-		//glDeleteBuffers(3, buffers);
+		//Empty
 	}
-
-	/*void Text::updateVertex()
-	{
-		TextEntry::updateVertex();
-		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[VERTEX_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 2 * sizeof(*this->vertex), this->vertex, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
-	void Text::updateTexCoords()
-	{
-		TextEntry::updateTexCoords();
-		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 2 * sizeof(*this->texCoords), this->texCoords, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
-	void Text::updateColors()
-	{
-		TextEntry::updateColors();
-		glBindBuffer(GL_ARRAY_BUFFER, this->buffers[TEX_CORRDS_BUFFER]);
-		glBufferData(GL_ARRAY_BUFFER, this->verticesNumber * 4 * sizeof(*this->colors), this->colors, GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}*/
 
 	void Text::draw()
 	{

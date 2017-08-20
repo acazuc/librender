@@ -18,7 +18,8 @@ namespace librender
 
 	SpriteBatchEntry::~SpriteBatchEntry()
 	{
-		//Empty
+		if (this->parent)
+			this->parent->removeEntry(this);
 	}
 
 	void SpriteBatchEntry::update()

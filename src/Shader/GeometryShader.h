@@ -1,22 +1,16 @@
 #ifndef LIBRENDER_GEOMETRY_SHADER_H
 # define LIBRENDER_GEOMETRY_SHADER_H
 
-# include "../GL.h"
-# include <cstdlib>
+# include "./Shader.h"
 
 namespace librender
 {
 
-	class GeometryShader
+	class GeometryShader : public Shader
 	{
-
-	private:
-		GLuint id;
 
 	public:
 		GeometryShader(const char *data);
-		~GeometryShader();
-		inline GLuint getId() {return (this->id);};
 
 	};
 

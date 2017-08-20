@@ -1,22 +1,16 @@
 #ifndef LIBRENDER_FRAGMENT_SHADER_H
 # define LIBRENDER_FRAGMENT_SHADER_H
 
-# include "../GL.h"
-# include <cstdlib>
+# include "./Shader.h"
 
 namespace librender
 {
 
-	class FragmentShader
+	class FragmentShader : public Shader
 	{
-
-	private:
-		GLuint id;
 
 	public:
 		FragmentShader(const char *data);
-		~FragmentShader();
-		inline GLuint getId() {return (this->id);};
 
 	};
 

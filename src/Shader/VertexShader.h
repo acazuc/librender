@@ -1,22 +1,16 @@
 #ifndef LIBRENDER_VERTEX_SHADER_H
 # define LIBRENDER_VERTEX_SHADER_H
 
-# include "../GL.h"
-# include <cstdlib>
+# include "./Shader.h"
 
 namespace librender
 {
 
-	class VertexShader
+	class VertexShader : public Shader
 	{
-
-	private:
-		GLuint id;
 
 	public:
 		VertexShader(const char *data);
-		~VertexShader();
-		inline GLuint getId() {return (this->id);};
 
 	};
 

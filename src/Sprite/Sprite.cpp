@@ -15,12 +15,12 @@ namespace librender
 	: SpriteEntry()
 	, texture(NULL)
 	{
-		//glGenBuffers(3, buffers);
+		//Empty
 	}
 
 	Sprite::~Sprite()
 	{
-		//glDeleteBuffers(3, buffers);
+		//Empty
 	}
 
 	void Sprite::draw()

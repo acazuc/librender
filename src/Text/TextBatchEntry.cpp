@@ -18,7 +18,8 @@ namespace librender
 
 	TextBatchEntry::~TextBatchEntry()
 	{
-		//Empty
+		if (this->parent)
+			this->parent->removeEntry(this);
 	}
 
 	void TextBatchEntry::resize(uint32_t len)
