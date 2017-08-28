@@ -3,7 +3,6 @@
 
 # include "../Font/Font.h"
 # include "../Color.h"
-# include "../GL.h"
 # include <cstdint>
 # include <string>
 
@@ -15,9 +14,9 @@ namespace librender
 
 	protected:
 		std::string text;
-		GLfloat *texCoords;
-		GLfloat *vertex;
-		GLfloat *colors;
+		float *texCoords;
+		float *vertex;
+		float *colors;
 		Color shadowColor;
 		Color color;
 		uint32_t verticesNumber;
@@ -36,9 +35,9 @@ namespace librender
 		inline void updateTexCoords() {fillTexCoords(this->texCoords);};
 		inline void updateVertex() {fillVertex(this->vertex);};
 		inline void updateColors() {fillColors(this->colors);};
-		void fillTexCoords(GLfloat *texCoords);
-		void fillVertex(GLfloat *vertex);
-		void fillColors(GLfloat *colors);
+		void fillTexCoords(float *texCoords);
+		void fillVertex(float *vertex);
+		void fillColors(float *colors);
 		virtual void resize(uint32_t len);
 
 	public:
@@ -47,9 +46,9 @@ namespace librender
 		virtual void update();
 		void setText(std::string &text);
 		inline std::string &getText() {return (this->text);};
-		inline GLfloat *getTexCoords() {return (this->texCoords);};
-		inline GLfloat *getVertex() {return (this->vertex);};
-		inline GLfloat *getColors() {return (this->colors);};
+		inline float *getTexCoords() {return (this->texCoords);};
+		inline float *getVertex() {return (this->vertex);};
+		inline float *getColors() {return (this->colors);};
 		void setShadowColor(Color &color);
 		inline Color &getShadowColor() {return (this->shadowColor);};
 		void setColor(Color &color);

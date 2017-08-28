@@ -1,4 +1,6 @@
 #include "Shader.h"
+#include "ShaderException.h"
+#include <cstring>
 
 namespace librender
 {

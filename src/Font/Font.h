@@ -4,7 +4,6 @@
 # include "FontModel.h"
 # include "FontGlyph.h"
 # include "../Color.h"
-# include "../GL.h"
 # include <freetype2/ft2build.h>
 # include FT_FREETYPE_H
 # include <cstdint>
@@ -22,7 +21,7 @@ namespace librender
 		FontGlyph **glyphs;
 		FontModel *parent;
 		FT_Face ftFace;
-		GLuint textureID;
+		unsigned int textureID;
 		char **glyphs_datas;
 		uint32_t textureHeight;
 		uint32_t textureWidth;
@@ -42,8 +41,8 @@ namespace librender
 		int32_t getWidth(std::string &text);
 		int32_t getHeight(std::string &text);
 		inline int32_t getLineHeight() {return (this->height);};
-		inline void bind() {glBindTexture(GL_TEXTURE_2D, this->textureID);};
-		inline GLuint getTextureId() {return (this->textureID);};
+		inline unsigned int getTextureId() {return (this->textureID);};
+		void bind();
 		void drawBegin();
 		void drawEnd();
 		void drawChar(float x, float y, uint32_t character, Color &color, float scaleX = 1, float scaleY = 1, float opacity = 1);

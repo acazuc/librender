@@ -2,11 +2,14 @@
 # define LIBRENDER_WINDOW_H
 
 # include "EventsManager.h"
-# include "../GL.h"
 # include <string>
+
+class GLFWcursor;
+class GLFWwindow;
 
 namespace librender
 {
+
 
 	enum WindowCursor
 	{

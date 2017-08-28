@@ -38,6 +38,9 @@ SRCS_NAME = Color.cpp \
 		Shader/DataBuffer.cpp \
 		Shader/ProgramLocation.cpp \
 		Shader/GeometryShader.cpp \
+		Shader/Shader.cpp \
+		Shader/FrameBuffer.cpp \
+		Shader/RenderBuffer.cpp \
 		Window/EventsManager.cpp \
 		Window/Window.cpp \
 		Window/Monitor.cpp \

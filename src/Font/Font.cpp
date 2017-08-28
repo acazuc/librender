@@ -1,4 +1,5 @@
 #include "Font.h"
+#include "GL.h"
 #include "utf8.h"
 #include <cstdlib>
 #include <cstring>
@@ -33,6 +34,11 @@ namespace librender
 				delete (this->glyphs[i]);
 		}
 		delete[] (this->glyphs);
+	}
+	
+	void Font::bind()
+	{
+		glBindTexture(GL_TEXTURE_2D, this->textureID);
 	}
 
 	void Font::loadList(int size)

@@ -1,5 +1,6 @@
 #include "EventsManager.h"
 #include "Window/Window.h"
+#include "GL.h"
 #include <iostream>
 #include <vector>
 #include <utf8.h>

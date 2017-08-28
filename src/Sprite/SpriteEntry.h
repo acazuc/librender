@@ -2,7 +2,6 @@
 # define LIBRENDER_SPRITE_ENTRY_H
 
 # include "../Texture.h"
-# include "../GL.h"
 
 namespace librender
 {
@@ -11,26 +10,26 @@ namespace librender
 	{
 
 	protected:
-		GLfloat texCoords[8];
-		GLfloat vertex[8];
-		GLfloat colors[16];
+		float texCoords[8];
+		float vertex[8];
+		float colors[16];
 		uint32_t verticesNumber;
 		uint8_t updatesRequired;
 		float scaleX;
 		float scaleY;
 		float x;
 		float y;
-		void fillTexCoords(GLfloat *texCoords);
-		void fillVertex(GLfloat *vertex);
-		void fillColors(GLfloat *colors);
+		void fillTexCoords(float *texCoords);
+		void fillVertex(float *vertex);
+		void fillColors(float *colors);
 
 	public:
 		SpriteEntry();
 		~SpriteEntry();
 		virtual void update();
-		inline GLfloat *getTexCoords() {return (this->texCoords);};
-		inline GLfloat *getVertex() {return (this->vertex);};
-		inline GLfloat *getColors() {return (this->colors);};
+		inline float *getTexCoords() {return (this->texCoords);};
+		inline float *getVertex() {return (this->vertex);};
+		inline float *getColors() {return (this->colors);};
 		void setColor(Color &color);
 		void setTopColor(Color &color);
 		void setBotColor(Color &color);

@@ -3,7 +3,6 @@
 
 # include "../Font/Font.h"
 # include "./TextEntry.h"
-# include "../GL.h"
 
 namespace librender
 {

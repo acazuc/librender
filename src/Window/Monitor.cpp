@@ -1,4 +1,5 @@
 #include "Monitor.h"
+#include "GL.h"
 
 namespace librender
 {

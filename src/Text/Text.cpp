@@ -1,4 +1,5 @@
 #include "Text.h"
+#include "GL.h"
 
 #define UPDATE_VERTEX 1
 #define UPDATE_TEX_COORDS 2

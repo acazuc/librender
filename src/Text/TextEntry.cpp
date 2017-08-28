@@ -1,4 +1,5 @@
 #include "Text.h"
+#include "GL.h"
 #include <cstring>
 #include <utf8.h>
 

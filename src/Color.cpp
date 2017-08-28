@@ -1,4 +1,5 @@
 #include "Color.h"
+#include "GL.h"
 
 namespace librender
 {
@@ -49,6 +50,11 @@ namespace librender
 		this->green = rgb;
 		this->blue = rgb;
 		this->alpha = alpha;
+	}
+	
+	void Color::bind()
+	{
+		glColor4f(this->red, this->green, this->blue, this->alpha);
 	}
 
 	bool Color::compare(Color &color)

@@ -2,9 +2,10 @@
 # define LIBRENDER_MONITOR_H
 
 # include "VideoMode.h"
-# include "../GL.h"
 # include <cstdint>
 # include <string>
+
+class GLFWmonitor;
 
 namespace librender
 {

@@ -3,7 +3,6 @@
 
 # include "./SpriteEntry.h"
 # include "../Texture.h"
-# include "../GL.h"
 
 namespace librender
 {

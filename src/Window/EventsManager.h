@@ -2,8 +2,8 @@
 # define LIBRENDER_EVENTS_LISTENER_H
 
 # include "Events.h"
-# include "../GL.h"
 
+class GLFWwindow;
 
 namespace librender
 {

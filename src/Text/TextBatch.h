@@ -12,9 +12,9 @@ namespace librender
 
 	private:
 		std::vector<TextBatchEntry*> entries;
-		GLfloat *texCoords;
-		GLfloat *vertex;
-		GLfloat *colors;
+		float *texCoords;
+		float *vertex;
+		float *colors;
 		Font *font;
 		uint32_t verticesNumber;
 		uint8_t changes;

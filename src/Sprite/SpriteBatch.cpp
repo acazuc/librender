@@ -1,4 +1,5 @@
 #include "SpriteBatch.h"
+#include "GL.h"
 #include <cstring>
 
 #define UPDATE_VERTEX 1
@@ -9,12 +10,12 @@ namespace librender
 {
 
 	SpriteBatch::SpriteBatch()
-	: texCoords(NULL)
-	, vertex(NULL)
-	, colors(NULL)
-	, texture(NULL)
+	: texture(NULL)
 	, verticesNumber(0)
 	, changes(0)
+	, texCoords(NULL)
+	, vertex(NULL)
+	, colors(NULL)
 	, x(0)
 	, y(0)
 	, mustResize(true)
@@ -89,11 +90,11 @@ namespace librender
 		if (!this->verticesNumber)
 			return;
 		delete[] (this->texCoords);
-		this->texCoords = new GLfloat[this->verticesNumber * 2 + 1];
+		this->texCoords = new float[this->verticesNumber * 2 + 1];
 		delete[] (this->vertex);
-		this->vertex = new GLfloat[this->verticesNumber * 2 + 1];
+		this->vertex = new float[this->verticesNumber * 2 + 1];
 		delete[] (this->colors);
-		this->colors = new GLfloat[this->verticesNumber * 4 + 1];
+		this->colors = new float[this->verticesNumber * 4 + 1];
 	}
 
 	void SpriteBatch::draw()

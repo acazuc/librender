@@ -2,7 +2,6 @@
 # define TEXTURE_H
 
 # include "Color.h"
-# include "GL.h"
 # include <cstdint>
 # include <string>
 
@@ -15,16 +14,16 @@ namespace librender
 	private:
 		uint32_t width;
 		uint32_t height;
-		GLuint textureID;
+		uint textureID;
 		uint8_t sprites;
 
 	public:
 		Texture(char *data, uint32_t width, uint32_t height);
 		~Texture();
+		void bind();
 		inline int32_t getWidth() {return (this->width);};
 		inline int32_t getHeight() {return (this->height);};
-		inline GLuint getTextureID() {return (this->textureID);};
-		inline void bind() {glBindTexture(GL_TEXTURE_2D, this->textureID);};
+		inline uint getTextureID() {return (this->textureID);};
 
 	};
 

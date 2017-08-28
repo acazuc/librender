@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "GL.h"
 
 namespace librender
 {
@@ -19,6 +20,11 @@ namespace librender
 	Texture::~Texture()
 	{
 		glDeleteTextures(1, &this->textureID);
+	}
+	
+	void Texture::bind()
+	{
+		glBindTexture(GL_TEXTURE_2D, this->textureID);
 	}
 
 }

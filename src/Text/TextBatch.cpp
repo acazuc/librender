@@ -1,4 +1,5 @@
 #include "TextBatch.h"
+#include "GL.h"
 #include <cstring>
 
 #define UPDATE_VERTEX 1

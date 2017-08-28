@@ -12,12 +12,12 @@ namespace librender
 
 	private:
 		std::vector<SpriteBatchEntry*> entries;
-		GLfloat *texCoords;
-		GLfloat *vertex;
-		GLfloat *colors;
 		Texture *texture;
 		uint32_t verticesNumber;
 		uint8_t changes;
+		float *texCoords;
+		float *vertex;
+		float *colors;
 		float x;
 		float y;
 		bool mustResize;

@@ -1,8 +1,6 @@
 #ifndef LIBRENDER_COLOR_H
 # define LIBRENDER_COLOR_H
 
-# include "GL.h"
-
 namespace librender
 {
 
@@ -23,7 +21,7 @@ namespace librender
 		inline void set(float rgb, float alpha = 1) {this->red = rgb;this->green = rgb;this->blue = rgb;this->alpha = alpha;};
 		bool compare(Color &color);
 		bool compare(Color *color);
-		void bind() {glColor4f(this->red, this->green, this->blue, this->alpha);};
+		void bind();
 		void setRed(float red) {this->red = red;};
 		float getRed() {return (this->red);};
 		void setGreen(float green) {this->green = green;};

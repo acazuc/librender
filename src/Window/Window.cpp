@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "GL.h"
 #include <iostream>
 #include <cstring>
 #include <utf8.h>
