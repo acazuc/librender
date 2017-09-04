@@ -1,6 +1,7 @@
 #ifndef LIBRENDER_FRAME_BUFFER_H
 # define LIBRENDER_FRAME_BUFFER_H
 
+# include "../Texture.h"
 # include "../GL.h"
 
 namespace librender
@@ -15,6 +16,7 @@ namespace librender
 	public:
 		FrameBuffer();
 		~FrameBuffer();
+		void attachTexture(GLenum attachment, Texture &texture, GLint level);
 		void bind();
 
 	};

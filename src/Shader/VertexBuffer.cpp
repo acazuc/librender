@@ -1,19 +1,19 @@
-#include "DataBuffer.h"
+#include "VertexBuffer.h"
 
 namespace librender
 {
 
-	DataBuffer::DataBuffer()
+	VertexBuffer::VertexBuffer()
 	{
 		glGenBuffers(1, &this->id);
 	}
 
-	DataBuffer::~DataBuffer()
+	VertexBuffer::~VertexBuffer()
 	{
 		glDeleteBuffers(1, &this->id);
 	}
 
-	void DataBuffer::setData(GLenum bufType, const void *data, GLsizei len, GLenum type, GLsizei stride, GLenum usage)
+	void VertexBuffer::setData(GLenum bufType, const void *data, GLsizei len, GLenum type, GLsizei stride, GLenum usage)
 	{
 		bind(bufType);
 		glBufferData(bufType, len, data, usage);
@@ -21,7 +21,7 @@ namespace librender
 		this->stride = stride;
 	}
 	
-	void DataBuffer::bind(GLenum type)
+	void VertexBuffer::bind(GLenum type)
 	{
 		glBindBuffer(type, this->id);
 	}

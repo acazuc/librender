@@ -1,12 +1,12 @@
-#ifndef LIBRENDER_DATA_BUFFER_H
-# define LIBRENDER_DATA_BUFFER_H
+#ifndef LIBRENDER_VERTEX_BUFFER_H
+# define LIBRENDER_VERTEX_BUFFER_H
 
 # include "../GL.h"
 
 namespace librender
 {
 
-	class DataBuffer
+	class VertexBuffer
 	{
 
 	private:
@@ -16,8 +16,8 @@ namespace librender
 		GLint size;
 
 	public:
-		DataBuffer();
-		~DataBuffer();
+		VertexBuffer();
+		~VertexBuffer();
 		void setData(GLenum bufType, const void *data, GLsizei size, GLenum type, GLsizei stride, GLenum usage);
 		void bind(GLenum type);
 		inline GLsizei getStride() {return (this->stride);};

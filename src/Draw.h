@@ -10,6 +10,11 @@ namespace librender
 	double getTime();
 	void scissorBegin(int32_t x, int32_t y, int32_t width, int32_t height);
 	void scissorEnd();
+	void pushMatrix();
+	void popMatrix();
+	void rotate(float angle, float x, float y, float z);
+	void translate(float x, float y, float z);
+	void scale(float x, float y, float z);
 	void drawColorQuadBegin();
 	void drawColorQuadEnd();
 	void drawColorQuadPart(int32_t x, int32_t y, int32_t width, int32_t height, Color &topLeft, Color &topRight, Color &bottomRight, Color &bottomLeft);

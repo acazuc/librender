@@ -1,7 +1,7 @@
 #ifndef LIBRENDER_PROGRAM_LOCATION_H
 # define LIBRENDER_PROGRAM_LOCATION_H
 
-# include "./DataBuffer.h"
+# include "./VertexBuffer.h"
 # include "../GL.h"
 # include <glm/glm.hpp>
 
@@ -29,7 +29,7 @@ namespace librender
 		void setVec4f(glm::vec4 &vec);
 		void setMat3f(glm::mat3 &mat);
 		void setMat4f(glm::mat4 &mat);
-		void setDataBuffer(DataBuffer &buffer);
+		void setVertexBuffer(VertexBuffer &buffer);
 		void setVertexAttribArray(bool asArray);
 		inline GLint getLocation() {return (this->location);};
 

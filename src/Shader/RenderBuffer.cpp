@@ -13,6 +13,12 @@ namespace librender
 		glDeleteRenderbuffers(1, &this->id);
 	}
 
+	void RenderBuffer::setStorage(GLenum format, GLsizei width, GLsizei height)
+	{
+		bind();
+		glRenderbufferStorage(GL_RENDERBUFFER, format, width, height);
+	}
+
 	void RenderBuffer::bind()
 	{
 		glBindRenderbuffer(GL_RENDERBUFFER, this->id);

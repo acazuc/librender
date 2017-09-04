@@ -2,6 +2,7 @@
 # define LIBRENDER_SPRITE_ENTRY_H
 
 # include "../Texture.h"
+# include <cstdlib>
 
 namespace librender
 {

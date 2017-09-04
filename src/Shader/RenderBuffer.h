@@ -15,6 +15,7 @@ namespace librender
 	public:
 		RenderBuffer();
 		~RenderBuffer();
+		void setStorage(GLenum format, GLsizei width, GLsizei height);
 		void bind();
 
 	};

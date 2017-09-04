@@ -75,6 +75,10 @@ namespace librender
 
 	void Program::use()
 	{
+		GLuint currentProgram;
+		glGetIntegerv(GL_CURRENT_PROGRAM, reinterpret_cast<GLint*>(&currentProgram));
+		if (currentProgram == this->id)
+			return;
 		glUseProgram(this->id);
 	}
 

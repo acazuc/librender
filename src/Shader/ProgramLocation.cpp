@@ -74,7 +74,7 @@ namespace librender
 		glUniformMatrix4fv(this->location, 1, GL_FALSE, &mat[0][0]);
 	}
 
-	void ProgramLocation::setDataBuffer(DataBuffer &buffer)
+	void ProgramLocation::setVertexBuffer(VertexBuffer &buffer)
 	{
 		buffer.bind(GL_ARRAY_BUFFER);
 		glVertexAttribPointer(this->location, buffer.getStride(), buffer.getType(), GL_FALSE, 0, (void*)0);

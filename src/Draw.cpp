@@ -25,6 +25,31 @@ namespace librender
 		glDisable(GL_SCISSOR_TEST);
 	}
 
+	void pushMatrix()
+	{
+		glPushMatrix();
+	}
+
+	void popMatrix()
+	{
+		glPopMatrix();
+	}
+
+	void rotate(float angle, float x, float y, float z)
+	{
+		glRotatef(angle, x, y, z);
+	}
+
+	void translate(float x, float y, float z)
+	{
+		glTranslatef(x, y, z);
+	}
+
+	void scale(float x, float y, float z)
+	{
+		glScalef(x, y, z);
+	}
+
 	void drawColorQuadBegin()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
