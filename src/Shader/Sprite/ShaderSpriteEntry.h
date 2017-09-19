@@ -1,13 +1,13 @@
-#ifndef LIBRENDER_SPRITE_ENTRY_H
-# define LIBRENDER_SPRITE_ENTRY_H
+#ifndef LIBRENDER_SHADER_SPRITE_ENTRY_H
+# define LIBRENDER_SHADER_SPRITE_ENTRY_H
 
-# include "../Texture.h"
+# include "../../Texture.h"
 # include <cstdlib>
 
 namespace librender
 {
 
-	class SpriteEntry
+	class ShaderSpriteEntry
 	{
 
 	protected:
@@ -25,8 +25,8 @@ namespace librender
 		void fillColors(float *colors);
 
 	public:
-		SpriteEntry();
-		virtual ~SpriteEntry();
+		ShaderSpriteEntry();
+		virtual ~ShaderSpriteEntry();
 		virtual void update();
 		inline float *getTexCoords() {return (this->texCoords);};
 		inline float *getVertex() {return (this->vertex);};

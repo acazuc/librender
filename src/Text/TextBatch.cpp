@@ -1,10 +1,7 @@
 #include "TextBatch.h"
-#include "GL.h"
+#include "./TextUpdate.h"
+#include "../GL.h"
 #include <cstring>
-
-#define UPDATE_VERTEX 1
-#define UPDATE_TEX_COORDS 2
-#define UPDATE_COLORS 4
 
 namespace librender
 {
@@ -45,10 +42,10 @@ namespace librender
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
 			TextBatchEntry *entry = this->entries[i];
-			if (this->mustResize || entry->getChanges() & UPDATE_TEX_COORDS)
+			if (this->mustResize || entry->getChanges() & TEXT_UPDATE_TEX_COORDS)
 			{
 				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * 2 * sizeof(*this->texCoords));
-				entry->removeChanges(UPDATE_TEX_COORDS);
+				entry->removeChanges(TEXT_UPDATE_TEX_COORDS);
 			}
 			count += entry->getVerticesNumber() * 2;
 		}
@@ -60,10 +57,10 @@ namespace librender
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
 			TextBatchEntry *entry = this->entries[i];
-			if (this->mustResize || entry->getChanges() & UPDATE_VERTEX)
+			if (this->mustResize || entry->getChanges() & TEXT_UPDATE_VERTEXES)
 			{
 				std::memcpy(&this->vertex[count], entry->getVertex(), entry->getVerticesNumber() * 2 * sizeof(*this->vertex));
-				entry->removeChanges(UPDATE_VERTEX);
+				entry->removeChanges(TEXT_UPDATE_VERTEXES);
 			}
 			count += entry->getVerticesNumber() * 2;
 		}
@@ -75,10 +72,10 @@ namespace librender
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
 			TextBatchEntry *entry = this->entries[i];
-			if (this->mustResize || entry->getChanges() & UPDATE_COLORS)
+			if (this->mustResize || entry->getChanges() & TEXT_UPDATE_COLORS)
 			{
 				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * 4 * sizeof(*this->colors));
-				entry->removeChanges(UPDATE_COLORS);
+				entry->removeChanges(TEXT_UPDATE_COLORS);
 			}
 			count += entry->getVerticesNumber() * 4;
 		}
@@ -108,12 +105,12 @@ namespace librender
 		if (!this->verticesNumber)
 			return;
 		if (this->mustResize)
-			this->changes = UPDATE_TEX_COORDS | UPDATE_VERTEX | UPDATE_COLORS;
-		if (this->changes & UPDATE_TEX_COORDS)
+			this->changes = TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES | TEXT_UPDATE_COLORS;
+		if (this->changes & TEXT_UPDATE_TEX_COORDS)
 			updateTexCoords();
-		if (this->changes & UPDATE_VERTEX)
+		if (this->changes & TEXT_UPDATE_VERTEXES)
 			updateVertex();
-		if (this->changes & UPDATE_COLORS)
+		if (this->changes & TEXT_UPDATE_COLORS)
 			updateColors();
 		if (this->mustResize)
 			this->mustResize = false;
@@ -163,9 +160,9 @@ namespace librender
 	void TextBatch::setFont(Font *font)
 	{
 		this->font = font;
-		this->changes = UPDATE_TEX_COORDS | UPDATE_VERTEX;
+		this->changes = TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
-			this->entries[i]->addChanges(UPDATE_TEX_COORDS | UPDATE_VERTEX);
+			this->entries[i]->addChanges(TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES);
 	}
 
 }

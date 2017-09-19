@@ -4,7 +4,7 @@
 # include "FontModel.h"
 # include "FontGlyph.h"
 # include "../Color.h"
-# include <freetype2/ft2build.h>
+# include <ft2build.h>
 # include FT_FREETYPE_H
 # include <cstdint>
 # include <vector>

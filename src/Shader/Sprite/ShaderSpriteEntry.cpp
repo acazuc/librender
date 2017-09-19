@@ -1,12 +1,12 @@
-#include "SpriteEntry.h"
-#include "./SpriteUpdate.h"
-#include "../GL.h"
+#include "ShaderSpriteEntry.h"
+#include "./ShaderSpriteUpdate.h"
+#include "../../GL.h"
 #include <cstring>
 
 namespace librender
 {
 
-	SpriteEntry::SpriteEntry()
+	ShaderSpriteEntry::ShaderSpriteEntry()
 	: verticesNumber(4)
 	, updatesRequired(0)
 	, scaleX(1)
@@ -26,34 +26,35 @@ namespace librender
 			colors[i] = 1;
 		for (uint8_t i = 0; i < 8; ++i)
 			vertex[i] = 0;
+		this->updatesRequired = SHADER_SPRITE_UPDATE_TEX_COORDS | SHADER_SPRITE_UPDATE_VERTEXES | SHADER_SPRITE_UPDATE_COLORS;
 	}
 
-	SpriteEntry::~SpriteEntry()
+	ShaderSpriteEntry::~ShaderSpriteEntry()
 	{
 		//Empty
 	}
 
-	void SpriteEntry::fillTexCoords(GLfloat *texCoords)
+	void ShaderSpriteEntry::fillTexCoords(GLfloat *texCoords)
 	{
 		std::memcpy(texCoords, this->texCoords, sizeof(this->texCoords));
 	}
 
-	void SpriteEntry::fillVertex(GLfloat *vertex)
+	void ShaderSpriteEntry::fillVertex(GLfloat *vertex)
 	{
 		std::memcpy(vertex, this->vertex, sizeof(this->vertex));
 	}
 
-	void SpriteEntry::fillColors(GLfloat *colors)
+	void ShaderSpriteEntry::fillColors(GLfloat *colors)
 	{
 		std::memcpy(colors, this->colors, sizeof(this->colors));
 	}
 
-	void SpriteEntry::update()
+	void ShaderSpriteEntry::update()
 	{
 		this->updatesRequired = 0;
 	}
 
-	void SpriteEntry::setColor(Color &color)
+	void ShaderSpriteEntry::setColor(Color &color)
 	{
 		setTopLeftColor(color);
 		setTopRightColor(color);
@@ -61,71 +62,71 @@ namespace librender
 		setBotRightColor(color);
 	}
 
-	void SpriteEntry::setTopColor(Color &color)
+	void ShaderSpriteEntry::setTopColor(Color &color)
 	{
 		setTopLeftColor(color);
 		setTopRightColor(color);
 	}
 
-	void SpriteEntry::setBotColor(Color &color)
+	void ShaderSpriteEntry::setBotColor(Color &color)
 	{
 		setBotLeftColor(color);
 		setBotRightColor(color);
 	}
 
-	void SpriteEntry::setLeftColor(Color &color)
+	void ShaderSpriteEntry::setLeftColor(Color &color)
 	{
 		setTopLeftColor(color);
 		setBotLeftColor(color);
 	}
 	
-	void SpriteEntry::setRightColor(Color &color)
+	void ShaderSpriteEntry::setRightColor(Color &color)
 	{
 		setTopRightColor(color);
 		setBotRightColor(color);
 	}
 
-	void SpriteEntry::setTopLeftColor(Color &color)
+	void ShaderSpriteEntry::setTopLeftColor(Color &color)
 	{
 		std::memcpy(&this->colors[0], &color, sizeof(*this->colors) * 4);
-		this->updatesRequired |= SPRITE_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
-	void SpriteEntry::setTopRightColor(Color &color)
+	void ShaderSpriteEntry::setTopRightColor(Color &color)
 	{
 		std::memcpy(&this->colors[4], &color, sizeof(*this->colors) * 4);
-		this->updatesRequired |= SPRITE_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
-	void SpriteEntry::setBotLeftColor(Color &color)
+	void ShaderSpriteEntry::setBotLeftColor(Color &color)
 	{
 		std::memcpy(&this->colors[12], &color, sizeof(*this->colors) * 4);
-		this->updatesRequired |= SPRITE_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
-	void SpriteEntry::setBotRightColor(Color &color)
+	void ShaderSpriteEntry::setBotRightColor(Color &color)
 	{
 		std::memcpy(&this->colors[8], &color, sizeof(*this->colors) * 4);
-		this->updatesRequired |= SPRITE_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
-	void SpriteEntry::setScaleX(float scaleX)
+	void ShaderSpriteEntry::setScaleX(float scaleX)
 	{
 		if (this->scaleX == scaleX)
 			return;
 		this->scaleX = scaleX;
-		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
-	void SpriteEntry::setScaleY(float scaleY)
+	void ShaderSpriteEntry::setScaleY(float scaleY)
 	{
 		if (this->scaleY == scaleY)
 			return;
 		this->scaleY = scaleY;
-		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
-	void SpriteEntry::setTexX(float texX)
+	void ShaderSpriteEntry::setTexX(float texX)
 	{
 		float delta = texX - this->texCoords[0];
 		if (!delta)
@@ -134,10 +135,10 @@ namespace librender
 		this->texCoords[6] = texX;
 		this->texCoords[2] += delta;
 		this->texCoords[4] += delta;
-		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
 	}
 
-	void SpriteEntry::setTexY(float texY)
+	void ShaderSpriteEntry::setTexY(float texY)
 	{
 		float delta = texY - this->texCoords[1];
 		if (!delta)
@@ -146,75 +147,75 @@ namespace librender
 		this->texCoords[3] = texY;
 		this->texCoords[5] += delta;
 		this->texCoords[7] += delta;
-		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
 	}
 
-	void SpriteEntry::setTexPos(float texX, float texY)
+	void ShaderSpriteEntry::setTexPos(float texX, float texY)
 	{
 		setTexX(texX);
 		setTexY(texY);
 	}
 
-	void SpriteEntry::setTexWidth(float texWidth)
+	void ShaderSpriteEntry::setTexWidth(float texWidth)
 	{
 		float delta = texWidth - (this->texCoords[2] - this->texCoords[0]);
 		if (!delta)
 			return;
 		this->texCoords[2] = texWidth + this->texCoords[0];
 		this->texCoords[4] = texWidth + this->texCoords[0];
-		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
 	}
 
-	void SpriteEntry::setTexHeight(float texHeight)
+	void ShaderSpriteEntry::setTexHeight(float texHeight)
 	{
 		float delta = texHeight - (this->texCoords[7] - this->texCoords[1]);
 		if (!delta)
 			return;
 		this->texCoords[5] = texHeight + this->texCoords[1];
 		this->texCoords[7] = texHeight + this->texCoords[1];
-		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
 	}
 
-	void SpriteEntry::setTexSize(float texWidth, float texHeight)
+	void ShaderSpriteEntry::setTexSize(float texWidth, float texHeight)
 	{
 		setTexWidth(texWidth);
 		setTexHeight(texHeight);
 	}
 
-	void SpriteEntry::setWidth(float width)
+	void ShaderSpriteEntry::setWidth(float width)
 	{
 		float delta = width - (this->vertex[2] - this->vertex[0]);
 		if (!delta)
 			return;
 		this->vertex[2] = width;
 		this->vertex[4] = width;
-		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
-	void SpriteEntry::setHeight(float height)
+	void ShaderSpriteEntry::setHeight(float height)
 	{
 		float delta = height - (this->vertex[7] - this->vertex[1]);
 		if (!delta)
 			return;
 		this->vertex[5] = height;
 		this->vertex[7] = height;
-		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
-	void SpriteEntry::setSize(float width, float height)
+	void ShaderSpriteEntry::setSize(float width, float height)
 	{
 		setWidth(width);
 		setHeight(height);
 	}
 
-	int32_t SpriteEntry::getTextureWidth()
+	int32_t ShaderSpriteEntry::getTextureWidth()
 	{
 		if (!getTexture())
 			return (0);
 		return (getTexture()->getWidth());
 	}
 
-	int32_t SpriteEntry::getTextureHeight()
+	int32_t ShaderSpriteEntry::getTextureHeight()
 	{
 		if (!getTexture())
 			return (0);

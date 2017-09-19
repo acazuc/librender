@@ -1,11 +1,8 @@
 #include "Text.h"
-#include "GL.h"
+#include "./TextUpdate.h"
+#include "../GL.h"
 #include <cstring>
 #include <utf8.h>
-
-#define UPDATE_VERTEX 1
-#define UPDATE_TEX_COORDS 2
-#define UPDATE_COLORS 4
 
 namespace librender
 {
@@ -174,20 +171,20 @@ namespace librender
 	{
 		if (!getFont())
 			return;
-		if (this->updatesRequired & UPDATE_TEX_COORDS)
+		if (this->updatesRequired & TEXT_UPDATE_TEX_COORDS)
 			updateTexCoords();
-		if (this->updatesRequired & UPDATE_VERTEX)
+		if (this->updatesRequired & TEXT_UPDATE_VERTEXES)
 			updateVertex();
-		if (this->updatesRequired & UPDATE_COLORS)
+		if (this->updatesRequired & TEXT_UPDATE_COLORS)
 			updateColors();
 		this->updatesRequired = 0;
 	}
 
 	void TextEntry::resize(uint32_t len)
 	{
-		this->updatesRequired |= UPDATE_VERTEX;
-		this->updatesRequired |= UPDATE_TEX_COORDS;
-		this->updatesRequired |= UPDATE_COLORS;
+		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= TEXT_UPDATE_COLORS;
 		this->charsNumber = len;
 		this->verticesNumber = this->charsNumber * 4;
 		if (this->shadowSize > 0)
@@ -218,8 +215,8 @@ namespace librender
 		if (this->charsNumber != newLen)
 			resize(newLen);
 		this->text = text;
-		this->updatesRequired |= UPDATE_VERTEX;
-		this->updatesRequired |= UPDATE_TEX_COORDS;
+		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
 	}
 
 	void TextEntry::setShadowColor(Color &color)
@@ -227,7 +224,7 @@ namespace librender
 		if (!color.compare(this->shadowColor))
 			return;
 		this->shadowColor = color;
-		this->updatesRequired |= UPDATE_COLORS;
+		this->updatesRequired |= TEXT_UPDATE_COLORS;
 	}
 
 	void TextEntry::setColor(Color &color)
@@ -235,7 +232,7 @@ namespace librender
 		if (!color.compare(this->color))
 			return;
 		this->color = color;
-		this->updatesRequired |= UPDATE_COLORS;
+		this->updatesRequired |= TEXT_UPDATE_COLORS;
 	}
 
 	void TextEntry::setShadowSize(int16_t shadowSize)
@@ -244,9 +241,9 @@ namespace librender
 			return;
 		this->shadowSize = shadowSize;
 		resize(this->charsNumber);
-		this->updatesRequired |= UPDATE_VERTEX;
-		this->updatesRequired |= UPDATE_TEX_COORDS;
-		this->updatesRequired |= UPDATE_COLORS;
+		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= TEXT_UPDATE_COLORS;
 	}
 
 	void TextEntry::setShadowX(int32_t shadowX)
@@ -254,9 +251,9 @@ namespace librender
 		if (this->shadowX == shadowX)
 			return;
 		this->shadowX = shadowX;
-		this->updatesRequired |= UPDATE_VERTEX;
-		this->updatesRequired |= UPDATE_TEX_COORDS;
-		this->updatesRequired |= UPDATE_COLORS;
+		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= TEXT_UPDATE_COLORS;
 	}
 
 	void TextEntry::setShadowY(int32_t shadowY)
@@ -264,9 +261,9 @@ namespace librender
 		if (this->shadowY == shadowY)
 			return;
 		this->shadowY = shadowY;
-		this->updatesRequired |= UPDATE_VERTEX;
-		this->updatesRequired |= UPDATE_TEX_COORDS;
-		this->updatesRequired |= UPDATE_COLORS;
+		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= TEXT_UPDATE_COLORS;
 	}
 
 	void TextEntry::setOpacity(float opacity)
@@ -274,7 +271,7 @@ namespace librender
 		if (this->opacity == opacity)
 			return;
 		this->opacity = opacity;
-		this->updatesRequired |= UPDATE_COLORS;
+		this->updatesRequired |= TEXT_UPDATE_COLORS;
 	}
 
 	void TextEntry::setScaleX(float scaleX)
@@ -282,7 +279,6 @@ namespace librender
 		if (this->scaleX == scaleX)
 			return;
 		this->scaleX = scaleX;
-		this->updatesRequired |= UPDATE_VERTEX;
 	}
 
 	void TextEntry::setScaleY(float scaleY)
@@ -290,7 +286,6 @@ namespace librender
 		if (this->scaleY == scaleY)
 			return;
 		this->scaleY = scaleY;
-		this->updatesRequired |= UPDATE_VERTEX;
 	}
 
 	void TextEntry::setMaxWidth(int32_t maxWidth)
@@ -298,7 +293,7 @@ namespace librender
 		if (this->maxWidth == maxWidth)
 			return;
 		this->maxWidth = maxWidth;
-		this->updatesRequired |= UPDATE_VERTEX;
+		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
 	}
 
 	int32_t TextEntry::getWidth()
@@ -320,10 +315,10 @@ namespace librender
 		if (this->lineHeight == -1)
 		{
 			if (getFont())
-				return (getFont()->getLineHeight());
+				return (getFont()->getLineHeight() * this->scaleY);
 			return (0);
 		}
-		return (this->lineHeight);
+		return (this->lineHeight * this->scaleY);
 	}
 
 }

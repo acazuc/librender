@@ -19,6 +19,7 @@ INCLUDES_PATH+= -I lib
 INCLUDES_PATH+= -I lib/glfw/include
 INCLUDES_PATH+= -I lib/freetype/include
 INCLUDES_PATH+= -I lib/glad/include
+INCLUDES_PATH+= -I lib/glm
 
 SRCS_PATH = src/
 
@@ -41,6 +42,10 @@ SRCS_NAME = Color.cpp \
 		Shader/Shader.cpp \
 		Shader/FrameBuffer.cpp \
 		Shader/RenderBuffer.cpp \
+		Shader/Sprite/ShaderSprite.cpp \
+		Shader/Sprite/ShaderSpriteEntry.cpp \
+		Shader/Sprite/ShaderSpriteBatch.cpp \
+		Shader/Sprite/ShaderSpriteBatchEntry.cpp \
 		Window/EventsManager.cpp \
 		Window/Window.cpp \
 		Window/Monitor.cpp \
@@ -73,6 +78,7 @@ odir:
 	@mkdir -p $(OBJS_PATH)
 	@mkdir -p $(OBJS_PATH)Window
 	@mkdir -p $(OBJS_PATH)Shader
+	@mkdir -p $(OBJS_PATH)Shader/Sprite
 	@mkdir -p $(OBJS_PATH)Text
 	@mkdir -p $(OBJS_PATH)Font
 	@mkdir -p $(OBJS_PATH)Sprite

@@ -1,9 +1,6 @@
 #include "TextBatchEntry.h"
-#include "TextBatch.h"
-
-#define UPDATE_VERTEX 1
-#define UPDATE_TEX_COORDS 2
-#define UPDATE_COLORS 4
+#include "./TextUpdate.h"
+#include "./TextBatch.h"
 
 namespace librender
 {
@@ -34,7 +31,7 @@ namespace librender
 		uint8_t oldUpdates = this->updatesRequired;
 		TextEntry::update();
 		this->changes = this->updatesRequired | oldUpdates;
-		if (this->changes & UPDATE_VERTEX && (this->x || this->y || this->scaleX || this->scaleY))
+		if (this->changes & TEXT_UPDATE_VERTEXES && (this->x || this->y || this->scaleX || this->scaleY))
 		{
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
 			{
@@ -52,9 +49,9 @@ namespace librender
 	{
 		if (this->parent && (!textBatch || this->parent->getFont() != textBatch->getFont()))
 		{
-			this->updatesRequired |= UPDATE_VERTEX;
-			this->updatesRequired |= UPDATE_TEX_COORDS;
-			this->updatesRequired |= UPDATE_COLORS;
+			this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+			this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+			this->updatesRequired |= TEXT_UPDATE_COLORS;
 		}
 		this->parent = textBatch;
 	}

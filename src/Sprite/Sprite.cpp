@@ -1,13 +1,6 @@
 #include "Sprite.h"
-#include "GL.h"
-
-#define UPDATE_VERTEX 1
-#define UPDATE_TEX_COORDS 2
-#define UPDATE_COLORS 4
-
-#define VERTEX_BUFFER 0
-#define TEX_COORD_BUFFER 1
-#define COLOR_BUFFER 2
+#include "./SpriteUpdate.h"
+#include "../GL.h"
 
 namespace librender
 {
@@ -50,8 +43,8 @@ namespace librender
 		if (this->texture == texture)
 			return;
 		this->texture = texture;
-		this->updatesRequired |= UPDATE_VERTEX;
-		this->updatesRequired |= UPDATE_TEX_COORDS;
+		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
+		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
 	}
 
 }
