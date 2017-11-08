@@ -1,13 +1,13 @@
-#include "TextEntry.h"
-#include "./TextUpdate.h"
-#include "../GL.h"
+#include "ShaderTextEntry.h"
+#include "./ShaderTextUpdate.h"
+#include "../../GL.h"
 #include <cstring>
 #include <utf8.h>
 
 namespace librender
 {
 
-	TextEntry::TextEntry()
+	ShaderTextEntry::ShaderTextEntry()
 	: texCoords(NULL)
 	, vertexes(NULL)
 	, colors(NULL)
@@ -28,20 +28,20 @@ namespace librender
 	, scaleY(1)
 	, x(0)
 	, y(0)
-	, mustCalcHeight(0)
-	, mustCalcWidth(0)
+	, mustCalcHeight(false)
+	, mustCalcWidth(false)
 	{
 		//Empty
 	}
 
-	TextEntry::~TextEntry()
+	ShaderTextEntry::~ShaderTextEntry()
 	{
 		delete[] (this->texCoords);
 		delete[] (this->vertexes);
 		delete[] (this->colors);
 	}
 
-	void TextEntry::fillTexCoords(GLfloat *texCoords)
+	void ShaderTextEntry::fillTexCoords(GLfloat *texCoords)
 	{
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = iter + this->text.length();
@@ -63,7 +63,7 @@ namespace librender
 		}
 	}
 
-	void TextEntry::fillVertexes(GLfloat *vertexes)
+	void ShaderTextEntry::fillVertexes(GLfloat *vertexes)
 	{
 		int32_t shadowLen;
 		if (this->shadowSize <= 0)
@@ -142,7 +142,7 @@ namespace librender
 		}
 	}
 
-	void TextEntry::fillColors(GLfloat *colors)
+	void ShaderTextEntry::fillColors(GLfloat *colors)
 	{
 		int32_t shadowLen;
 		if (this->shadowSize <= 0)
@@ -171,24 +171,24 @@ namespace librender
 			std::memcpy(&colors[this->charsNumber * 4 * 4 * i], &colors[0], this->charsNumber * 4 * 4 * sizeof(*colors));
 	}
 
-	void TextEntry::update()
+	void ShaderTextEntry::update()
 	{
 		if (!getFont())
 			return;
-		if (this->updatesRequired & TEXT_UPDATE_TEX_COORDS)
+		if (this->updatesRequired & SHADER_TEXT_UPDATE_TEX_COORDS)
 			updateTexCoords();
-		if (this->updatesRequired & TEXT_UPDATE_VERTEXES)
+		if (this->updatesRequired & SHADER_TEXT_UPDATE_VERTEXES)
 			updateVertexes();
-		if (this->updatesRequired & TEXT_UPDATE_COLORS)
+		if (this->updatesRequired & SHADER_TEXT_UPDATE_COLORS)
 			updateColors();
 		this->updatesRequired = 0;
 	}
 
-	void TextEntry::resize(uint32_t len)
+	void ShaderTextEntry::resize(uint32_t len)
 	{
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
 		this->charsNumber = len;
 		this->verticesNumber = this->charsNumber * 4;
 		if (this->shadowSize > 0)
@@ -213,7 +213,7 @@ namespace librender
 		this->colors = new GLfloat[this->verticesNumber * 4 + 1];
 	}
 
-	void TextEntry::setText(std::string &text)
+	void ShaderTextEntry::setText(std::string &text)
 	{
 		recalcWidth();
 		recalcHeight();
@@ -221,88 +221,88 @@ namespace librender
 		if (this->charsNumber != newLen)
 			resize(newLen);
 		this->text = text;
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_TEX_COORDS;
 	}
 
-	void TextEntry::setShadowColor(Color &color)
+	void ShaderTextEntry::setShadowColor(Color &color)
 	{
 		if (!color.compare(this->shadowColor))
 			return;
 		this->shadowColor = color;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
 	}
 
-	void TextEntry::setColor(Color &color)
+	void ShaderTextEntry::setColor(Color &color)
 	{
 		if (!color.compare(this->color))
 			return;
 		this->color = color;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
 	}
 
-	void TextEntry::setShadowSize(int16_t shadowSize)
+	void ShaderTextEntry::setShadowSize(int16_t shadowSize)
 	{
 		if (this->shadowSize == shadowSize)
 			return;
 		this->shadowSize = shadowSize;
 		resize(this->charsNumber);
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
 	}
 
-	void TextEntry::setShadowX(int32_t shadowX)
+	void ShaderTextEntry::setShadowX(int32_t shadowX)
 	{
 		if (this->shadowX == shadowX)
 			return;
 		this->shadowX = shadowX;
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
 	}
 
-	void TextEntry::setShadowY(int32_t shadowY)
+	void ShaderTextEntry::setShadowY(int32_t shadowY)
 	{
 		if (this->shadowY == shadowY)
 			return;
 		this->shadowY = shadowY;
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_TEX_COORDS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
 	}
 
-	void TextEntry::setOpacity(float opacity)
+	void ShaderTextEntry::setOpacity(float opacity)
 	{
 		if (this->opacity == opacity)
 			return;
 		this->opacity = opacity;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
 	}
 
-	void TextEntry::setScaleX(float scaleX)
+	void ShaderTextEntry::setScaleX(float scaleX)
 	{
 		if (this->scaleX == scaleX)
 			return;
 		this->scaleX = scaleX;
 	}
 
-	void TextEntry::setScaleY(float scaleY)
+	void ShaderTextEntry::setScaleY(float scaleY)
 	{
 		if (this->scaleY == scaleY)
 			return;
 		this->scaleY = scaleY;
 	}
 
-	void TextEntry::setMaxWidth(int32_t maxWidth)
+	void ShaderTextEntry::setMaxWidth(int32_t maxWidth)
 	{
 		if (this->maxWidth == maxWidth)
 			return;
 		this->maxWidth = maxWidth;
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
 	}
 
-	int32_t TextEntry::getWidth()
+	int32_t ShaderTextEntry::getWidth()
 	{
 		if (this->mustCalcWidth)
 		{
@@ -315,9 +315,9 @@ namespace librender
 		return (this->width * this->scaleX);
 	}
 
-	int32_t TextEntry::getHeight()
+	int32_t ShaderTextEntry::getHeight()
 	{
-		if (this->mustCalcHeight)
+		if (this->mustCalcWidth)
 		{
 			if (!getFont())
 				this->height = 0;
@@ -328,7 +328,7 @@ namespace librender
 		return (this->height * this->scaleY);
 	}
 
-	int32_t TextEntry::getLineHeight()
+	int32_t ShaderTextEntry::getLineHeight()
 	{
 		if (this->lineHeight == -1)
 		{

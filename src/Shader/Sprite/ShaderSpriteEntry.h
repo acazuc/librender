@@ -12,7 +12,7 @@ namespace librender
 
 	protected:
 		float texCoords[8];
-		float vertex[8];
+		float vertexes[8];
 		float colors[16];
 		uint32_t verticesNumber;
 		uint8_t updatesRequired;
@@ -21,7 +21,7 @@ namespace librender
 		float x;
 		float y;
 		void fillTexCoords(float *texCoords);
-		void fillVertex(float *vertex);
+		void fillVertexes(float *vertexes);
 		void fillColors(float *colors);
 
 	public:
@@ -29,7 +29,7 @@ namespace librender
 		virtual ~ShaderSpriteEntry();
 		virtual void update();
 		inline float *getTexCoords() {return (this->texCoords);};
-		inline float *getVertex() {return (this->vertex);};
+		inline float *getVertexes() {return (this->vertexes);};
 		inline float *getColors() {return (this->colors);};
 		void setColor(Color &color);
 		void setTopColor(Color &color);

@@ -25,7 +25,7 @@ namespace librender
 		for (uint8_t i = 0; i < 16; ++i)
 			colors[i] = 1;
 		for (uint8_t i = 0; i < 8; ++i)
-			vertex[i] = 0;
+			vertexes[i] = 0;
 		this->updatesRequired = SHADER_SPRITE_UPDATE_TEX_COORDS | SHADER_SPRITE_UPDATE_VERTEXES | SHADER_SPRITE_UPDATE_COLORS;
 	}
 
@@ -39,9 +39,9 @@ namespace librender
 		std::memcpy(texCoords, this->texCoords, sizeof(this->texCoords));
 	}
 
-	void ShaderSpriteEntry::fillVertex(GLfloat *vertex)
+	void ShaderSpriteEntry::fillVertexes(GLfloat *vertexes)
 	{
-		std::memcpy(vertex, this->vertex, sizeof(this->vertex));
+		std::memcpy(vertexes, this->vertexes, sizeof(this->vertexes));
 	}
 
 	void ShaderSpriteEntry::fillColors(GLfloat *colors)
@@ -184,21 +184,21 @@ namespace librender
 
 	void ShaderSpriteEntry::setWidth(float width)
 	{
-		float delta = width - (this->vertex[2] - this->vertex[0]);
+		float delta = width - (this->vertexes[2] - this->vertexes[0]);
 		if (!delta)
 			return;
-		this->vertex[2] = width;
-		this->vertex[4] = width;
+		this->vertexes[2] = width;
+		this->vertexes[4] = width;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
 	void ShaderSpriteEntry::setHeight(float height)
 	{
-		float delta = height - (this->vertex[7] - this->vertex[1]);
+		float delta = height - (this->vertexes[7] - this->vertexes[1]);
 		if (!delta)
 			return;
-		this->vertex[5] = height;
-		this->vertex[7] = height;
+		this->vertexes[5] = height;
+		this->vertexes[7] = height;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 

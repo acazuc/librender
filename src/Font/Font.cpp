@@ -1,5 +1,5 @@
 #include "Font.h"
-#include "GL.h"
+#include "../GL.h"
 #include "utf8.h"
 #include <cstdlib>
 #include <cstring>
@@ -59,7 +59,7 @@ namespace librender
 	void Font::createSet()
 	{
 		uint32_t totalWidth = 0;
-		uint32_t maxHeight = 0;
+		int32_t maxHeight = 0;
 		uint32_t maxWidth = 0;
 		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
 		{

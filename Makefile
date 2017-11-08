@@ -42,10 +42,15 @@ SRCS_NAME = Color.cpp \
 		Shader/Shader.cpp \
 		Shader/FrameBuffer.cpp \
 		Shader/RenderBuffer.cpp \
+		Shader/VertexArray.cpp \
 		Shader/Sprite/ShaderSprite.cpp \
 		Shader/Sprite/ShaderSpriteEntry.cpp \
 		Shader/Sprite/ShaderSpriteBatch.cpp \
 		Shader/Sprite/ShaderSpriteBatchEntry.cpp \
+		Shader/Text/ShaderText.cpp \
+		Shader/Text/ShaderTextEntry.cpp \
+		Shader/Text/ShaderTextBatch.cpp \
+		Shader/Text/ShaderTextBatchEntry.cpp \
 		Window/EventsManager.cpp \
 		Window/Window.cpp \
 		Window/Monitor.cpp \
@@ -79,6 +84,7 @@ odir:
 	@mkdir -p $(OBJS_PATH)Window
 	@mkdir -p $(OBJS_PATH)Shader
 	@mkdir -p $(OBJS_PATH)Shader/Sprite
+	@mkdir -p $(OBJS_PATH)Shader/Text
 	@mkdir -p $(OBJS_PATH)Text
 	@mkdir -p $(OBJS_PATH)Font
 	@mkdir -p $(OBJS_PATH)Sprite

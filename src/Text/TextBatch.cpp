@@ -8,7 +8,7 @@ namespace librender
 
 	TextBatch::TextBatch()
 	: texCoords(NULL)
-	, vertex(NULL)
+	, vertexes(NULL)
 	, colors(NULL)
 	, font(NULL)
 	, verticesNumber(0)
@@ -25,7 +25,7 @@ namespace librender
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->setParent(NULL);
 		delete[] (this->texCoords);
-		delete[] (this->vertex);
+		delete[] (this->vertexes);
 		delete[] (this->colors);
 	}
 
@@ -51,7 +51,7 @@ namespace librender
 		}
 	}
 
-	void TextBatch::updateVertex()
+	void TextBatch::updateVertexes()
 	{
 		uint32_t count = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
@@ -59,7 +59,7 @@ namespace librender
 			TextBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & TEXT_UPDATE_VERTEXES)
 			{
-				std::memcpy(&this->vertex[count], entry->getVertex(), entry->getVerticesNumber() * 2 * sizeof(*this->vertex));
+				std::memcpy(&this->vertexes[count], entry->getVertexes(), entry->getVerticesNumber() * 2 * sizeof(*this->vertexes));
 				entry->removeChanges(TEXT_UPDATE_VERTEXES);
 			}
 			count += entry->getVerticesNumber() * 2;
@@ -88,8 +88,8 @@ namespace librender
 			return;
 		delete[] (this->texCoords);
 		this->texCoords = new GLfloat[this->verticesNumber * 2 + 1];
-		delete[] (this->vertex);
-		this->vertex = new GLfloat[this->verticesNumber * 2 + 1];
+		delete[] (this->vertexes);
+		this->vertexes = new GLfloat[this->verticesNumber * 2 + 1];
 		delete[] (this->colors);
 		this->colors = new GLfloat[this->verticesNumber * 4 + 1];
 	}
@@ -109,7 +109,7 @@ namespace librender
 		if (this->changes & TEXT_UPDATE_TEX_COORDS)
 			updateTexCoords();
 		if (this->changes & TEXT_UPDATE_VERTEXES)
-			updateVertex();
+			updateVertexes();
 		if (this->changes & TEXT_UPDATE_COLORS)
 			updateColors();
 		if (this->mustResize)
@@ -120,7 +120,7 @@ namespace librender
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glColorPointer(4, GL_FLOAT, 0, this->colors);
-		glVertexPointer(2, GL_FLOAT, 0, this->vertex);
+		glVertexPointer(2, GL_FLOAT, 0, this->vertexes);
 		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
 		glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
@@ -135,6 +135,8 @@ namespace librender
 	{
 		entry->setParent(this);
 		this->entries.push_back(entry);
+		this->mustResize = true;
+		this->changes = TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES | TEXT_UPDATE_COLORS;
 	}
 
 	void TextBatch::removeEntry(TextBatchEntry *entry)
@@ -145,6 +147,8 @@ namespace librender
 			{
 				this->entries.erase(this->entries.begin() + i);
 				entry->setParent(NULL);
+				this->mustResize = true;
+				this->changes = TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES | TEXT_UPDATE_COLORS;
 				return;
 			}
 		}
@@ -155,6 +159,8 @@ namespace librender
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->setParent(NULL);
 		this->entries.clear();
+		this->mustResize = true;
+		this->changes = TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES | TEXT_UPDATE_COLORS;
 	}
 
 	void TextBatch::setFont(Font *font)
@@ -162,7 +168,12 @@ namespace librender
 		this->font = font;
 		this->changes = TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
-			this->entries[i]->addChanges(TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES);
+		{
+			TextBatchEntry *entry = this->entries[i];
+			entry->addChanges(TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_VERTEXES);
+			entry->recalcWidth();
+			entry->recalcHeight();
+		}
 	}
 
 }

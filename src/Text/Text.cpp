@@ -27,7 +27,7 @@ namespace librender
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glColorPointer(4, GL_FLOAT, 0, this->colors);
-		glVertexPointer(2, GL_FLOAT, 0, this->vertex);
+		glVertexPointer(2, GL_FLOAT, 0, this->vertexes);
 		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
 		glPushMatrix();
 		glTranslatef(this->x, this->y, 0);
@@ -47,6 +47,8 @@ namespace librender
 		this->lineHeight = this->font->getLineHeight();
 		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
 		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+		recalcWidth();
+		recalcHeight();
 	}
 
 }

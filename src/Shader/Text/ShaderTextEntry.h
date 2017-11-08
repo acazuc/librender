@@ -1,15 +1,15 @@
-#ifndef LIBRENDER_TEXT_ENTRY_H
-# define LIBRENDER_TEXT_ENTRY_H
+#ifndef LIBRENDER_SHADER_TEXT_ENTRY_H
+# define LIBRENDER_SHADER_TEXT_ENTRY_H
 
-# include "../Font/Font.h"
-# include "../Color.h"
+# include "../../Font/Font.h"
+# include "../../Color.h"
 # include <cstdint>
 # include <string>
 
 namespace librender
 {
 
-	class TextEntry
+	class ShaderTextEntry
 	{
 
 	protected:
@@ -45,8 +45,8 @@ namespace librender
 		virtual void resize(uint32_t len);
 
 	public:
-		TextEntry();
-		~TextEntry();
+		ShaderTextEntry();
+		~ShaderTextEntry();
 		virtual void update();
 		void setText(std::string &text);
 		inline std::string &getText() {return (this->text);};

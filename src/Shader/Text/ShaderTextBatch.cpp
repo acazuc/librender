@@ -1,5 +1,5 @@
-#include "ShaderSpriteBatch.h"
-#include "./ShaderSpriteUpdate.h"
+#include "ShaderTextBatch.h"
+#include "./ShaderTextUpdate.h"
 #include "../../GL.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
@@ -7,18 +7,18 @@
 namespace librender
 {
 
-	ShaderSpriteBatch::ShaderSpriteBatch()
+	ShaderTextBatch::ShaderTextBatch()
 	: texCoordsLocation(NULL)
 	, vertexesLocation(NULL)
 	, colorsLocation(NULL)
 	, mvpLocation(NULL)
-	, texture(NULL)
 	, program(NULL)
-	, verticesNumber(0)
-	, changes(0)
+	, font(NULL)
 	, texCoords(NULL)
 	, vertexes(NULL)
 	, colors(NULL)
+	, verticesNumber(0)
+	, changes(0)
 	, x(0)
 	, y(0)
 	, mustResize(true)
@@ -26,7 +26,7 @@ namespace librender
 		//Empty
 	}
 
-	ShaderSpriteBatch::~ShaderSpriteBatch()
+	ShaderTextBatch::~ShaderTextBatch()
 	{
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->setParent(NULL);
@@ -35,46 +35,46 @@ namespace librender
 		delete[] (this->colors);
 	}
 
-	void ShaderSpriteBatch::updateVerticesNumber()
+	void ShaderTextBatch::updateVerticesNumber()
 	{
 		this->verticesNumber = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->verticesNumber += this->entries[i]->getVerticesNumber();
 	}
 
-	void ShaderSpriteBatch::updateTexCoords()
+	void ShaderTextBatch::updateTexCoords()
 	{
 		uint32_t count = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
-			ShaderSpriteBatchEntry *entry = this->entries[i];
-			if (this->mustResize || entry->getChanges() & SHADER_SPRITE_UPDATE_TEX_COORDS)
+			ShaderTextBatchEntry *entry = this->entries[i];
+			if (this->mustResize || entry->getChanges() & SHADER_TEXT_UPDATE_TEX_COORDS)
 			{
 				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * 2 * sizeof(*this->texCoords));
-				entry->removeChange(SHADER_SPRITE_UPDATE_TEX_COORDS);
+				entry->removeChanges(SHADER_TEXT_UPDATE_TEX_COORDS);
 			}
 			count += entry->getVerticesNumber() * 2;
 		}
 		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, count * sizeof(*this->texCoords), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 	}
 
-	void ShaderSpriteBatch::updateVertexes()
+	void ShaderTextBatch::updateVertexes()
 	{
 		uint32_t count = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
-			ShaderSpriteBatchEntry *entry = this->entries[i];
-			if (this->mustResize || entry->getChanges() & SHADER_SPRITE_UPDATE_VERTEXES)
+			ShaderTextBatchEntry *entry = this->entries[i];
+			if (this->mustResize || entry->getChanges() & SHADER_TEXT_UPDATE_VERTEXES)
 			{
 				std::memcpy(&this->vertexes[count], entry->getVertexes(), entry->getVerticesNumber() * 2 * sizeof(*this->vertexes));
-				entry->removeChange(SHADER_SPRITE_UPDATE_VERTEXES);
+				entry->removeChanges(SHADER_TEXT_UPDATE_VERTEXES);
 			}
 			count += entry->getVerticesNumber() * 2;
 		}
 		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, count * sizeof(*this->vertexes), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 	}
 
-	void ShaderSpriteBatch::updateIndices()
+	void ShaderTextBatch::updateIndices()
 	{
 		GLuint *indices = new GLuint[this->verticesNumber / 4 * 6];
 		uint32_t count = 0;
@@ -93,38 +93,38 @@ namespace librender
 		delete[] (indices);
 	}
 
-	void ShaderSpriteBatch::updateColors()
+	void ShaderTextBatch::updateColors()
 	{
 		uint32_t count = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
-			ShaderSpriteBatchEntry *entry = this->entries[i];
-			if (this->mustResize || entry->getChanges() & SHADER_SPRITE_UPDATE_COLORS)
+			ShaderTextBatchEntry *entry = this->entries[i];
+			if (this->mustResize || entry->getChanges() & SHADER_TEXT_UPDATE_COLORS)
 			{
 				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * 4 * sizeof(*this->colors));
-				entry->removeChange(SHADER_SPRITE_UPDATE_COLORS);
+				entry->removeChanges(SHADER_TEXT_UPDATE_COLORS);
 			}
 			count += entry->getVerticesNumber() * 4;
 		}
 		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, count * sizeof(*this->colors), GL_FLOAT, 4, GL_DYNAMIC_DRAW);
 	}
 
-	void ShaderSpriteBatch::resize()
+	void ShaderTextBatch::resize()
 	{
 		updateVerticesNumber();
 		if (!this->verticesNumber)
 			return;
 		delete[] (this->texCoords);
-		this->texCoords = new float[this->verticesNumber * 2];
+		this->texCoords = new GLfloat[this->verticesNumber * 2];
 		delete[] (this->vertexes);
-		this->vertexes = new float[this->verticesNumber * 2];
+		this->vertexes = new GLfloat[this->verticesNumber * 2];
 		delete[] (this->colors);
-		this->colors = new float[this->verticesNumber * 4];
+		this->colors = new GLfloat[this->verticesNumber * 4];
 	}
 
-	void ShaderSpriteBatch::draw(glm::mat4 &viewProj)
+	void ShaderTextBatch::draw(glm::mat4 &viewProj)
 	{
-		if (!this->texture || !this->program || !this->texCoordsLocation || !this->vertexesLocation || !this->colorsLocation || !this->mvpLocation)
+		if (!this->font || !this->program || !this->texCoordsLocation || !this->vertexesLocation || !this->colorsLocation || !this->mvpLocation)
 			return;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->update();
@@ -134,54 +134,73 @@ namespace librender
 			return;
 		if (this->mustResize)
 		{
-			this->changes = SHADER_SPRITE_UPDATE_TEX_COORDS | SHADER_SPRITE_UPDATE_VERTEXES | SHADER_SPRITE_UPDATE_COLORS;
+			this->changes = SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_COLORS;
 			updateIndices();
 		}
-		if (this->changes & SHADER_SPRITE_UPDATE_TEX_COORDS)
+		if (this->changes & SHADER_TEXT_UPDATE_TEX_COORDS)
 			updateTexCoords();
-		if (this->changes & SHADER_SPRITE_UPDATE_VERTEXES)
+		if (this->changes & SHADER_TEXT_UPDATE_VERTEXES)
 			updateVertexes();
-		if (this->changes & SHADER_SPRITE_UPDATE_COLORS)
+		if (this->changes & SHADER_TEXT_UPDATE_COLORS)
 			updateColors();
 		if (this->mustResize)
 			this->mustResize = false;
 		this->changes = 0;
-		this->texture->bind();
+		this->font->bind();
 		this->program->use();
 		this->texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
 		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
 		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
-		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 		glm::mat4 model(1);
 		model = glm::translate(model, glm::vec3(this->x, this->y, 0));
 		glm::mat4 mvp = viewProj * model;
 		this->mvpLocation->setMat4f(mvp);
-		glDrawElements(GL_TRIANGLES, this->verticesNumber * 6 / 4, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, NULL);
 	}
 
-	void ShaderSpriteBatch::addEntry(ShaderSpriteBatchEntry *entry)
+	void ShaderTextBatch::addEntry(ShaderTextBatchEntry *entry)
 	{
 		entry->setParent(this);
 		this->entries.push_back(entry);
+		this->mustResize = true;
+		this->changes = SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_COLORS;
 	}
 
-	void ShaderSpriteBatch::removeEntry(ShaderSpriteBatchEntry *entry)
+	void ShaderTextBatch::removeEntry(ShaderTextBatchEntry *entry)
 	{
-		entry->setParent(NULL);
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
 			if (this->entries[i] == entry)
 			{
 				this->entries.erase(this->entries.begin() + i);
+				entry->setParent(NULL);
+				this->mustResize = true;
+				this->changes = SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_COLORS;
 				return;
 			}
 		}
 	}
 
-	void ShaderSpriteBatch::setTexture(Texture *texture)
+	void ShaderTextBatch::clearEntries()
 	{
-		this->texture = texture;
-		this->changes = SHADER_SPRITE_UPDATE_TEX_COORDS | SHADER_SPRITE_UPDATE_VERTEXES | SHADER_SPRITE_UPDATE_COLORS;
+		for (uint32_t i = 0; i < this->entries.size(); ++i)
+			this->entries[i]->setParent(NULL);
+		this->entries.clear();
+		this->mustResize = true;
+		this->changes = SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_COLORS;
+	}
+
+	void ShaderTextBatch::setFont(Font *font)
+	{
+		this->font = font;
+		this->changes = SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_VERTEXES;
+		for (uint32_t i = 0; i < this->entries.size(); ++i)
+		{
+			ShaderTextBatchEntry *entry = this->entries[i];
+			entry->addChanges(SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_VERTEXES);
+			entry->recalcWidth();
+			entry->recalcHeight();
+		}
 	}
 
 }

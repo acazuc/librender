@@ -1,37 +1,37 @@
-#include "TextBatchEntry.h"
-#include "./TextUpdate.h"
-#include "./TextBatch.h"
+#include "ShaderTextBatchEntry.h"
+#include "./ShaderTextUpdate.h"
+#include "./ShaderTextBatch.h"
 
 namespace librender
 {
 
-	TextBatchEntry::TextBatchEntry()
-	: TextEntry()
+	ShaderTextBatchEntry::ShaderTextBatchEntry()
+	: ShaderTextEntry()
 	, parent(NULL)
 	, changes(0)
 	{
 		//Empty
 	}
 
-	TextBatchEntry::~TextBatchEntry()
+	ShaderTextBatchEntry::~ShaderTextBatchEntry()
 	{
 		if (this->parent)
 			this->parent->removeEntry(this);
 	}
 
-	void TextBatchEntry::resize(uint32_t len)
+	void ShaderTextBatchEntry::resize(uint32_t len)
 	{
 		if (this->parent)
 			this->parent->setMustResize(true);
-		TextEntry::resize(len);
+		ShaderTextEntry::resize(len);
 	}
 
-	void TextBatchEntry::update()
+	void ShaderTextBatchEntry::update()
 	{
 		uint8_t oldUpdates = this->updatesRequired;
-		TextEntry::update();
+		ShaderTextEntry::update();
 		this->changes = this->updatesRequired | oldUpdates;
-		if (this->changes & TEXT_UPDATE_VERTEXES && (this->x || this->y || this->scaleX || this->scaleY))
+		if (this->changes & SHADER_TEXT_UPDATE_VERTEXES && (this->x || this->y || this->scaleX || this->scaleY))
 		{
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
 			{
@@ -45,25 +45,25 @@ namespace librender
 			this->parent->addChanges(this->changes);
 	}
 
-	void TextBatchEntry::setParent(TextBatch *textBatch)
+	void ShaderTextBatchEntry::setParent(ShaderTextBatch *textBatch)
 	{
 		if (this->parent && (!textBatch || this->parent->getFont() != textBatch->getFont()))
 		{
-			this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-			this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-			this->updatesRequired |= TEXT_UPDATE_COLORS;
+			this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
+			this->updatesRequired |= SHADER_TEXT_UPDATE_TEX_COORDS;
+			this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
 		}
 		this->parent = textBatch;
 	}
 
-	Font *TextBatchEntry::getFont()
+	Font *ShaderTextBatchEntry::getFont()
 	{
 		if (this->parent)
 			return (this->parent->getFont());
 		return (NULL);
 	}
 
-	void TextBatchEntry::setX(float x)
+	void ShaderTextBatchEntry::setX(float x)
 	{
 		if (this->x == x)
 			return;
@@ -73,7 +73,7 @@ namespace librender
 		this->x = x;
 	}
 
-	void TextBatchEntry::setY(float y)
+	void ShaderTextBatchEntry::setY(float y)
 	{
 		if (this->y == y)
 			return;
@@ -83,7 +83,7 @@ namespace librender
 		this->y = y;
 	}
 
-	void TextBatchEntry::setScaleX(float scaleX)
+	void ShaderTextBatchEntry::setScaleX(float scaleX)
 	{
 		if (this->scaleX == scaleX)
 			return;
@@ -93,7 +93,7 @@ namespace librender
 		this->scaleX = scaleX;
 	}
 
-	void TextBatchEntry::setScaleY(float scaleY)
+	void ShaderTextBatchEntry::setScaleY(float scaleY)
 	{
 		if (this->scaleY == scaleY)
 			return;

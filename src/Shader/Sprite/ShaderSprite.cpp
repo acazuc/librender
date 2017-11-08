@@ -8,7 +8,12 @@ namespace librender
 
 	ShaderSprite::ShaderSprite()
 	: ShaderSpriteEntry()
+	, texCoordsLocation(NULL)
+	, vertexesLocation(NULL)
+	, colorsLocation(NULL)
+	, mvpLocation(NULL)
 	, texture(NULL)
+	, program(NULL)
 	{
 		GLuint indices[] = {0, 3, 1, 2, 1, 3};
 		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, sizeof(indices), GL_UNSIGNED_INT, 1, GL_STATIC_DRAW);
@@ -21,14 +26,14 @@ namespace librender
 
 	void ShaderSprite::draw(glm::mat4 &viewProj)
 	{
-		if (!this->texture)
+		if (!this->texture || !this->program || !this->texCoordsLocation || !this->vertexesLocation || !this->colorsLocation || !this->mvpLocation)
 			return;
 		uint8_t changes = this->updatesRequired;
 		update();
 		if (changes & SHADER_SPRITE_UPDATE_TEX_COORDS)
 			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, sizeof(*this->texCoords) * this->verticesNumber * 2, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_SPRITE_UPDATE_VERTEXES)
-			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertex, sizeof(*this->vertex) * this->verticesNumber * 2, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, sizeof(*this->vertexes) * this->verticesNumber * 2, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_SPRITE_UPDATE_COLORS)
 			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber * 4, GL_FLOAT, 4, GL_DYNAMIC_DRAW);
 		this->texture->bind();

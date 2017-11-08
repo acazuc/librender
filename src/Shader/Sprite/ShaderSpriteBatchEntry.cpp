@@ -51,7 +51,7 @@ namespace librender
 			return;
 		float delta = x - this->x;
 		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-			this->vertex[i * 2] += delta;
+			this->vertexes[i * 2] += delta;
 		this->x = x;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
@@ -62,28 +62,28 @@ namespace librender
 			return;
 		float delta = y - this->y;
 		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-			this->vertex[i * 2 + 1] += delta;
+			this->vertexes[i * 2 + 1] += delta;
 		this->y = y;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 	
 	void ShaderSpriteBatchEntry::setWidth(float width)
 	{
-		float delta = width - (this->vertex[2] - this->x);
+		float delta = width - (this->vertexes[2] - this->x);
 		if (!delta)
 			return;
-		this->vertex[2] = width + this->x;
-		this->vertex[4] = width + this->x;
+		this->vertexes[2] = width + this->x;
+		this->vertexes[4] = width + this->x;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
 	void ShaderSpriteBatchEntry::setHeight(float height)
 	{
-		float delta = height - (this->vertex[7] - this->y);
+		float delta = height - (this->vertexes[7] - this->y);
 		if (!delta)
 			return;
-		this->vertex[5] = height + this->y;
-		this->vertex[7] = height + this->y;
+		this->vertexes[5] = height + this->y;
+		this->vertexes[7] = height + this->y;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 

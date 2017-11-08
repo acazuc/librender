@@ -13,7 +13,7 @@ namespace librender
 	private:
 		std::vector<TextBatchEntry*> entries;
 		float *texCoords;
-		float *vertex;
+		float *vertexes;
 		float *colors;
 		Font *font;
 		uint32_t verticesNumber;
@@ -23,7 +23,7 @@ namespace librender
 		bool mustResize;
 		void updateVerticesNumber();
 		void updateTexCoords();
-		void updateVertex();
+		void updateVertexes();
 		void updateColors();
 		void resize();
 

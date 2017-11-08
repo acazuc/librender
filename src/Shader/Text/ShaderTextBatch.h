@@ -1,18 +1,18 @@
-#ifndef LIBRENDER_SHADER_SPRITE_BATCH_H
-# define LIBRENDER_SHADER_SPRITE_BATCH_H
+#ifndef LIBRENDER_SHADER_TEXT_BATCH_H
+# define LIBRENDER_SHADER_TEXT_BATCH_H
 
-# include "./ShaderSpriteBatchEntry.h"
+# include "./ShaderTextBatchEntry.h"
 # include "../Program.h"
 # include <vector>
 
 namespace librender
 {
 
-	class ShaderSpriteBatch
+	class ShaderTextBatch
 	{
 
 	private:
-		std::vector<ShaderSpriteBatchEntry*> entries;
+		std::vector<ShaderTextBatchEntry*> entries;
 		ProgramLocation *texCoordsLocation;
 		ProgramLocation *vertexesLocation;
 		ProgramLocation *colorsLocation;
@@ -21,13 +21,13 @@ namespace librender
 		VertexBuffer vertexesBuffer;
 		VertexBuffer indicesBuffer;
 		VertexBuffer colorsBuffer;
-		Texture *texture;
 		Program *program;
-		uint32_t verticesNumber;
-		uint8_t changes;
+		Font *font;
 		float *texCoords;
 		float *vertexes;
 		float *colors;
+		uint32_t verticesNumber;
+		uint8_t changes;
 		float x;
 		float y;
 		bool mustResize;
@@ -39,19 +39,19 @@ namespace librender
 		void resize();
 
 	public:
-		ShaderSpriteBatch();
-		~ShaderSpriteBatch();
+		ShaderTextBatch();
+		~ShaderTextBatch();
 		void draw(glm::mat4 &viewProj);
-		void addEntry(ShaderSpriteBatchEntry *entry);
-		void removeEntry(ShaderSpriteBatchEntry *entry);
+		void addEntry(ShaderTextBatchEntry *entry);
+		void removeEntry(ShaderTextBatchEntry *entry);
+		void clearEntries();
+		void setFont(Font *font);
+		inline Font *getFont() {return (this->font);};
 		inline void setTexCoordsLocation(ProgramLocation *location) {this->texCoordsLocation = location;};
 		inline void setVertexesLocation(ProgramLocation *location) {this->vertexesLocation = location;};
 		inline void setColorsLocation(ProgramLocation *location) {this->colorsLocation = location;};
 		inline void setMvpLocation(ProgramLocation *location) {this->mvpLocation = location;};
-		void setTexture(Texture *texture);
-		inline Texture *getTexture() {return (this->texture);};
 		inline void setProgram(Program *program) {this->program = program;};
-		inline std::vector<ShaderSpriteBatchEntry*> &getEntries() {return (this->entries);};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 		inline void setX(float x) {this->x = x;};

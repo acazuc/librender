@@ -16,7 +16,7 @@ namespace librender
 		uint32_t verticesNumber;
 		uint8_t changes;
 		float *texCoords;
-		float *vertex;
+		float *vertexes;
 		float *colors;
 		float x;
 		float y;
