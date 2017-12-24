@@ -26,9 +26,6 @@ namespace librender
 		T angle(TVec4 vec);
 		T length();
 		void normalize();
-		void min(T val);
-		void max(T val);
-		void clamp(T min, T max);
 		TVec3<T> xyz();
 		TVec3<T> rgb();
 		TVec2<T> xy();

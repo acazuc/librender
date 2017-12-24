@@ -33,31 +33,6 @@ namespace librender
 	}
 
 	template <typename T>
-	void TVec4<T>::min(T val)
-	{
-		this->x = std::min(val, this->x);
-		this->y = std::min(val, this->y);
-		this->z = std::min(val, this->z);
-		this->w = std::min(val, this->w);
-	}
-
-	template <typename T>
-	void TVec4<T>::max(T val)
-	{
-		this->x = std::max(val, this->x);
-		this->y = std::max(val, this->y);
-		this->z = std::max(val, this->z);
-		this->w = std::max(val, this->w);
-	}
-
-	template <typename T>
-	void TVec4<T>::clamp(T min, T max)
-	{
-		this->max(min);
-		this->min(max);
-	}
-
-	template <typename T>
 	TVec3<T> TVec4<T>::xyz()
 	{
 		return (TVec3<T>(this->x, this->y, this->z));
