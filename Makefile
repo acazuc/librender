@@ -19,7 +19,6 @@ INCLUDES_PATH+= -I lib
 INCLUDES_PATH+= -I lib/glfw/include
 INCLUDES_PATH+= -I lib/freetype/include
 INCLUDES_PATH+= -I lib/glad/include
-INCLUDES_PATH+= -I lib/glm
 
 SRCS_PATH = src/
 
@@ -59,12 +58,6 @@ SRCS_NAME = Color.cpp \
 		Sprite/SpriteEntry.cpp \
 		Sprite/SpriteBatch.cpp \
 		Sprite/SpriteBatchEntry.cpp \
-		#Vec/Vec2.cpp \
-		#Vec/Vec3.cpp \
-		#Vec/Vec4.cpp \
-		#Mat/Mat2.cpp \
-		#Mat/Mat3.cpp \
-		#Mat/Mat4.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
