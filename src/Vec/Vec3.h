@@ -6,49 +6,53 @@
 namespace librender
 {
 
-	class Vec3
+	template <typename T = float> class TVec3
 	{
 
 	public:
-		union {float x, r;};
-		union {float y, g;};
-		union {float z, b;};
-		Vec3(Vec2 vec, float z) : x(vec.x), y(vec.y), z(z) {};
-		Vec3(float x, float y, float z) : x(x), y(y), z(z) {};
-		Vec3(float xyz) : x(xyz), y(xyz), z(xyz) {};
-		Vec3() : x(0), y(0), z(0) {};
-		Vec3 reflect(Vec3 vec);
-		Vec3 cross(Vec3 vec);
-		float dot(Vec3 vec);
-		float angle(Vec3 vec);
-		float length();
+		union {T x, r;};
+		union {T y, g;};
+		union {T z, b;};
+		TVec3<T>(TVec2<T> vec, T z) : x(vec.x), y(vec.y), z(z) {};
+		TVec3<T>(T x, T y, T z) : x(x), y(y), z(z) {};
+		TVec3<T>(T xyz) : x(xyz), y(xyz), z(xyz) {};
+		TVec3<T>() : x(0), y(0), z(0) {};
+		TVec3<T> reflect(TVec3<T> vec);
+		TVec3<T> cross(TVec3<T> vec);
+		T dot(TVec3<T> vec);
+		T angle(TVec3<T> vec);
+		T length();
 		void normalize();
-		void min(float val);
-		void max(float val);
-		void clamp(float min, float max);
-		float &operator [] (int idx);
-		Vec3 operator - ();
-		Vec3 operator + (float val);
-		Vec3 operator - (float val);
-		Vec3 operator * (float val);
-		Vec3 operator / (float val);
-		Vec3 operator + (Vec3 vec);
-		Vec3 operator - (Vec3 vec);
-		Vec3 operator * (Vec3 vec);
-		Vec3 operator / (Vec3 vec);
-		Vec3 operator += (float val);
-		Vec3 operator -= (float val);
-		Vec3 operator *= (float val);
-		Vec3 operator /= (float val);
-		Vec3 operator += (Vec3 vec);
-		Vec3 operator -= (Vec3 vec);
-		Vec3 operator *= (Vec3 vec);
-		Vec3 operator /= (Vec3 vec);
-		bool operator == (Vec3 vec);
-		bool operator != (Vec3 vec);
+		void min(T val);
+		void max(T val);
+		void clamp(T min, T max);
+		T &operator [] (int idx);
+		TVec3<T> operator - ();
+		TVec3<T> operator + (T val);
+		TVec3<T> operator - (T val);
+		TVec3<T> operator * (T val);
+		TVec3<T> operator / (T val);
+		TVec3<T> operator + (TVec3<T> vec);
+		TVec3<T> operator - (TVec3<T> vec);
+		TVec3<T> operator * (TVec3<T> vec);
+		TVec3<T> operator / (TVec3<T> vec);
+		TVec3<T> operator += (T val);
+		TVec3<T> operator -= (T val);
+		TVec3<T> operator *= (T val);
+		TVec3<T> operator /= (T val);
+		TVec3<T> operator += (TVec3<T> vec);
+		TVec3<T> operator -= (TVec3<T> vec);
+		TVec3<T> operator *= (TVec3<T> vec);
+		TVec3<T> operator /= (TVec3<T> vec);
+		bool operator == (TVec3<T> vec);
+		bool operator != (TVec3<T> vec);
 
 	};
 
+	typedef TVec3<float> Vec3;
+
 }
+
+# include "Vec3.cpp"
 
 #endif

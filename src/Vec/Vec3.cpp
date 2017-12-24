@@ -1,3 +1,6 @@
+#ifndef VEC3_CPP
+# define VEC3_CPP
+
 #include "Vec3.h"
 #include <algorithm>
 #include <cmath>
@@ -5,154 +8,185 @@
 namespace librender
 {
 
-	Vec3 Vec3::reflect(Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::reflect(TVec3<T> vec)
 	{
 		return (*this - vec * 2 * this->dot(vec));
 	}
 
-	Vec3 Vec3::cross(Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::cross(TVec3<T> vec)
 	{
-		return (Vec3(this->y * vec.z - this->z * vec.y, this->z * vec.x - this->x * vec.z, this->x * vec.y - this->y * vec.x));
+		return (TVec3<T>(this->y * vec.z - this->z * vec.y, this->z * vec.x - this->x * vec.z, this->x * vec.y - this->y * vec.x));
 	}
 
-	float Vec3::dot(Vec3 vec)
+	template <typename T>
+	T TVec3<T>::dot(TVec3<T> vec)
 	{
 		return (this->x * vec.x + this->y * vec.y + this->z * vec.z);
 	}
 
-	float Vec3::angle(Vec3 vec)
+	template <typename T>
+	T TVec3<T>::angle(TVec3<T> vec)
 	{
 		return (acos(dot(vec) / (length() * vec.length())));
 	}
 
-	float Vec3::length()
+	template <typename T>
+	T TVec3<T>::length()
 	{
 		return (sqrt(dot(*this)));
 	}
 
-	void Vec3::normalize()
+	template <typename T>
+	void TVec3<T>::normalize()
 	{
 		*this /= this->length();
 	}
 
-	void Vec3::min(float val)
+	template <typename T>
+	void TVec3<T>::min(T val)
 	{
 		this->x = std::min(val, this->x);
 		this->y = std::min(val, this->y);
 		this->z = std::min(val, this->z);
 	}
 
-	void Vec3::max(float val)
+	template <typename T>
+	void TVec3<T>::max(T val)
 	{
 		this->x = std::max(val, this->x);
 		this->y = std::max(val, this->y);
 		this->z = std::max(val, this->z);
 	}
 
-	void Vec3::clamp(float min, float max)
+	template <typename T>
+	void TVec3<T>::clamp(T min, T max)
 	{
 		this->max(min);
 		this->min(max);
 	}
 
-	float &Vec3::operator [] (int idx)
+	template <typename T>
+	T &TVec3<T>::operator [] (int idx)
 	{
-		return (reinterpret_cast<float*>(this)[idx]);
+		return (reinterpret_cast<T*>(this)[idx]);
 	}
 
-	Vec3 Vec3::operator - ()
+	template <typename T>
+	TVec3<T> TVec3<T>::operator - ()
 	{
-		return (Vec3(-this->x, -this->y, -this->z));
+		return (TVec3<T>(-this->x, -this->y, -this->z));
 	}
 
-	Vec3 Vec3::operator + (float val)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator + (T val)
 	{
-		return (Vec3(this->x + val, this->y + val, this->z + val));
+		return (TVec3<T>(this->x + val, this->y + val, this->z + val));
 	}
 
-	Vec3 Vec3::operator - (float val)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator - (T val)
 	{
-		return (Vec3(this->x - val, this->y - val, this->z - val));
+		return (TVec3<T>(this->x - val, this->y - val, this->z - val));
 	}
 
-	Vec3 Vec3::operator * (float val)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator * (T val)
 	{
-		return (Vec3(this->x * val, this->y * val, this->z * val));
+		return (TVec3<T>(this->x * val, this->y * val, this->z * val));
 	}
 
-	Vec3 Vec3::operator / (float val)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator / (T val)
 	{
-		return (Vec3(this->x / val, this->y / val, this->z / val));
+		return (TVec3<T>(this->x / val, this->y / val, this->z / val));
 	}
 
-	Vec3 Vec3::operator + (Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator + (TVec3<T> vec)
 	{
-		return (Vec3(this->x + vec.x, this->y + vec.y, this->z + vec.z));
+		return (TVec3<T>(this->x + vec.x, this->y + vec.y, this->z + vec.z));
 	}
 
-	Vec3 Vec3::operator - (Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator - (TVec3<T> vec)
 	{
-		return (Vec3(this->x - vec.x, this->y - vec.y, this->z - vec.z));
+		return (TVec3<T>(this->x - vec.x, this->y - vec.y, this->z - vec.z));
 	}
 
-	Vec3 Vec3::operator * (Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator * (TVec3<T> vec)
 	{
-		return (Vec3(this->x * vec.x, this->y * vec.y, this->z * vec.z));
+		return (TVec3<T>(this->x * vec.x, this->y * vec.y, this->z * vec.z));
 	}
 
-	Vec3 Vec3::operator / (Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator / (TVec3<T> vec)
 	{
-		return (Vec3(this->x / vec.x, this->y / vec.y, this->z / vec.z));
+		return (TVec3<T>(this->x / vec.x, this->y / vec.y, this->z / vec.z));
 	}
 
-	Vec3 Vec3::operator += (float val)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator += (T val)
 	{
 		return (*this = *this + val);
 	}
 
-	Vec3 Vec3::operator -= (float val)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator -= (T val)
 	{
 		return (*this = *this - val);
 	}
 
-	Vec3 Vec3::operator *= (float val)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator *= (T val)
 	{
 		return (*this = *this * val);
 	}
 
-	Vec3 Vec3::operator /= (float val)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator /= (T val)
 	{
 		return (*this = *this / val);
 	}
 
-	Vec3 Vec3::operator += (Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator += (TVec3<T> vec)
 	{
 		return (*this = *this + vec);
 	}
 
-	Vec3 Vec3::operator -= (Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator -= (TVec3<T> vec)
 	{
 		return (*this = *this - vec);
 	}
 
-	Vec3 Vec3::operator *= (Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator *= (TVec3<T> vec)
 	{
 		return (*this = *this * vec);
 	}
 
-	Vec3 Vec3::operator /= (Vec3 vec)
+	template <typename T>
+	TVec3<T> TVec3<T>::operator /= (TVec3<T> vec)
 	{
 		return (*this = *this / vec);
 	}
 
-	bool Vec3::operator == (Vec3 vec)
+	template <typename T>
+	bool TVec3<T>::operator == (TVec3<T> vec)
 	{
 		return (this->x == vec.x && this->y == vec.y && this->z == vec.z);
 	}
 
-	bool Vec3::operator != (Vec3 vec)
+	template <typename T>
+	bool TVec3<T>::operator != (TVec3<T> vec)
 	{
 		return (!(*this == vec));
 	}
 
 }
+
+#endif

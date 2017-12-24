@@ -2,35 +2,43 @@
 # define MAT4_H
 
 # include "../Vec/Vec4.h"
+# include "../Vec/Vec3.h"
+
 
 namespace librender
 {
 
-	class Mat4
+	template <typename T> class TMat4
 	{
 	
-		public:
-			Vec4 data[4];
-			Mat4(Vec4 vec);
-			Mat4(float val);
-			Mat4() {};
-			static Mat4 rotate(Mat4 mat, float angle, Vec3 axis);
-			static Mat4 rotateX(Mat4 mat, float angle);
-			static Mat4 rotateY(Mat4 mat, float angle);
-			static Mat4 rotateZ(Mat4 mat, float angle);
-			static Mat4 translate(Mat4 mat, Vec3 vec);
-			static Mat4 scale(Mat4 mat, Vec3 vec);
-			static Mat4 perspective(float fov, float aspect, float znear, float zfar);
-			static Mat4 lookAt(Vec3 eye, Vec3 center, Vec3 up);
-			static Mat4 ortho(float left, float right, float bottom, float top, float near, float far);
-			Vec4 &operator [] (int i);
-			Mat4 operator * (Mat4 mat);
+	public:
+		TVec4<T> data[4];
+		TMat4(TVec4<T> vec);
+		TMat4(T val);
+		TMat4() {};
+		static TMat4<T> rotate(TMat4<T> mat, T angle, TVec3<T> axis);
+		static TMat4<T> rotateX(TMat4<T> mat, T angle);
+		static TMat4<T> rotateY(TMat4<T> mat, T angle);
+		static TMat4<T> rotateZ(TMat4<T> mat, T angle);
+		static TMat4<T> translate(TMat4<T> mat, TVec3<T> vec);
+		static TMat4<T> scale(TMat4<T> mat, TVec3<T> vec);
+		static TMat4<T> perspective(T fov, T aspect, T znear, T zfar);
+		static TMat4<T> lookAt(TVec3<T> eye, TVec3<T> center, TVec3<T> up);
+		static TMat4<T> ortho(T left, T right, T bottom, T top, T near, T far);
+		TVec4<T> &operator [] (int i);
+		TMat4<T> operator * (TMat4<T> mat);
 	
 	};
 
-	Vec4 operator * (Mat4 mat, Vec4 vec);
-	Vec4 operator * (Vec4 vec, Mat4 mat);
+	template <typename T>
+	TVec4<T> operator * (TMat4<T> mat, TVec4<T> vec);
+	template <typename T>
+	TVec4<T> operator * (TVec4<T> vec, TMat4<T> mat);
+
+	typedef TMat4<float> Mat4;
 
 }
+
+#include "Mat4.cpp"
 
 #endif

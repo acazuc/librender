@@ -1,3 +1,6 @@
+#ifndef VEC2_CPP
+# define VEC2_CPP
+
 #include "Vec2.h"
 #include <algorithm>
 #include <cmath>
@@ -5,137 +8,165 @@
 namespace librender
 {
 
-	float Vec2::dot(Vec2 uv)
+	template <typename T>
+	T TVec2<T>::dot(TVec2<T> uv)
 	{
 		return (this->x * uv.x + this->y * uv.y);
 	}
 
-	float Vec2::angle(Vec2 vec)
+	template <typename T>
+	T TVec2<T>::angle(TVec2<T> vec)
 	{
 		return (acos(dot(vec) / (length() * vec.length())));
 	}
 
-	float Vec2::length()
+	template <typename T>
+	T TVec2<T>::length()
 	{
 		return (sqrt(dot(*this)));
 	}
 
-	void Vec2::normalize()
+	template <typename T>
+	void TVec2<T>::normalize()
 	{
 		*this = *this / this->length();
 	}
 
-	void Vec2::min(float val)
+	template <typename T>
+	void TVec2<T>::min(T val)
 	{
 		this->x = std::min(val, this->x);
 		this->y = std::min(val, this->y);
 	}
 
-	void Vec2::max(float val)
+	template <typename T>
+	void TVec2<T>::max(T val)
 	{
 		this->x = std::max(val, this->x);
 		this->y = std::max(val, this->y);
 	}
 
-	void Vec2::clamp(float min, float max)
+	template <typename T>
+	void TVec2<T>::clamp(T min, T max)
 	{
 		this->max(min);
 		this->min(max);
 	}
 
-	float &Vec2::operator [] (int idx)
+	template <typename T>
+	T &TVec2<T>::operator [] (int idx)
 	{
-		return (reinterpret_cast<float*>(this)[idx]);
+		return (reinterpret_cast<T*>(this)[idx]);
 	}
 
-	Vec2 Vec2::operator + (float val)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator + (T val)
 	{
-		return (Vec2(this->x + val, this->y + val));
+		return (TVec2<T>(this->x + val, this->y + val));
 	}
 
-	Vec2 Vec2::operator - (float val)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator - (T val)
 	{
-		return (Vec2(this->x - val, this->y - val));
+		return (TVec2<T>(this->x - val, this->y - val));
 	}
 
-	Vec2 Vec2::operator * (float val)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator * (T val)
 	{
-		return (Vec2(this->x * val, this->y * val));
+		return (TVec2<T>(this->x * val, this->y * val));
 	}
 
-	Vec2 Vec2::operator / (float val)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator / (T val)
 	{
-		return (Vec2(this->x / val, this->y / val));
+		return (TVec2<T>(this->x / val, this->y / val));
 	}
 
-	Vec2 Vec2::operator + (Vec2 vec)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator + (TVec2<T> vec)
 	{
-		return (Vec2(this->x + vec.x, this->y + vec.y));
+		return (TVec2<T>(this->x + vec.x, this->y + vec.y));
 	}
 
-	Vec2 Vec2::operator - (Vec2 vec)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator - (TVec2<T> vec)
 	{
-		return (Vec2(this->x - vec.x, this->y - vec.y));
+		return (TVec2<T>(this->x - vec.x, this->y - vec.y));
 	}
 
-	Vec2 Vec2::operator * (Vec2 vec)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator * (TVec2<T> vec)
 	{
-		return (Vec2(this->x * vec.x, this->y * vec.y));
+		return (TVec2<T>(this->x * vec.x, this->y * vec.y));
 	}
 
-	Vec2 Vec2::operator / (Vec2 vec)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator / (TVec2<T> vec)
 	{
-		return (Vec2(this->x / vec.x, this->y / vec.y));
+		return (TVec2<T>(this->x / vec.x, this->y / vec.y));
 	}
 
-	Vec2 Vec2::operator += (float val)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator += (T val)
 	{
 		return (*this = *this + val);
 	}
 
-	Vec2 Vec2::operator -= (float val)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator -= (T val)
 	{
 		return (*this = *this - val);
 	}
 
-	Vec2 Vec2::operator *= (float val)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator *= (T val)
 	{
 		return (*this = *this * val);
 	}
 
-	Vec2 Vec2::operator /= (float val)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator /= (T val)
 	{
 		return (*this = *this / val);
 	}
 
-	Vec2 Vec2::operator += (Vec2 vec)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator += (TVec2<T> vec)
 	{
 		return (*this = *this + vec);
 	}
 
-	Vec2 Vec2::operator -= (Vec2 vec)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator -= (TVec2<T> vec)
 	{
 		return (*this = *this - vec);
 	}
 
-	Vec2 Vec2::operator *= (Vec2 vec)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator *= (TVec2<T> vec)
 	{
 		return (*this = *this * vec);
 	}
 
-	Vec2 Vec2::operator /= (Vec2 vec)
+	template <typename T>
+	TVec2<T> TVec2<T>::operator /= (TVec2<T> vec)
 	{
 		return (*this = *this / vec);
 	}
 
-	bool Vec2::operator == (Vec2 vec)
+	template <typename T>
+	bool TVec2<T>::operator == (TVec2<T> vec)
 	{
 		return (this->x == vec.x && this->y == vec.y);
 	}
 
-	bool Vec2::operator != (Vec2 vec)
+	template <typename T>
+	bool TVec2<T>::operator != (TVec2<T> vec)
 	{
 		return (!(*this == vec));
 	}
 
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef VEC4_CPP
+# define VEC4_CPP
+
 #include "Vec4.h"
 #include <algorithm>
 #include <cmath>
@@ -5,27 +8,32 @@
 namespace librender
 {
 
-	float Vec4::dot(Vec4 vec)
+	template <typename T>
+	T TVec4<T>::dot(TVec4<T> vec)
 	{
 		return (this->x * vec.x + this->y * vec.y + this->z * vec.z + this->w * vec.w);
 	}
 
-	float Vec4::angle(Vec4 vec)
+	template <typename T>
+	T TVec4<T>::angle(TVec4<T> vec)
 	{
 		return (acos(dot(vec) / (length() * vec.length())));
 	}
 
-	float Vec4::length()
+	template <typename T>
+	T TVec4<T>::length()
 	{
 		return (sqrt(dot(*this)));
 	}
 
-	void Vec4::normalize()
+	template <typename T>
+	void TVec4<T>::normalize()
 	{
 		*this = *this / this->length();
 	}
 
-	void Vec4::min(float val)
+	template <typename T>
+	void TVec4<T>::min(T val)
 	{
 		this->x = std::min(val, this->x);
 		this->y = std::min(val, this->y);
@@ -33,7 +41,8 @@ namespace librender
 		this->w = std::min(val, this->w);
 	}
 
-	void Vec4::max(float val)
+	template <typename T>
+	void TVec4<T>::max(T val)
 	{
 		this->x = std::max(val, this->x);
 		this->y = std::max(val, this->y);
@@ -41,125 +50,151 @@ namespace librender
 		this->w = std::max(val, this->w);
 	}
 
-	void Vec4::clamp(float min, float max)
+	template <typename T>
+	void TVec4<T>::clamp(T min, T max)
 	{
 		this->max(min);
 		this->min(max);
 	}
 
-	Vec3 Vec4::xyz()
+	template <typename T>
+	TVec3<T> TVec4<T>::xyz()
 	{
-		return (Vec3(this->x, this->y, this->z));
+		return (TVec3<T>(this->x, this->y, this->z));
 	}
 
-	Vec3 Vec4::rgb()
+	template <typename T>
+	TVec3<T> TVec4<T>::rgb()
 	{
-		return (Vec3(this->r, this->g, this->b));
+		return (TVec3<T>(this->r, this->g, this->b));
 	}
 
-	Vec2 Vec4::xy()
+	template <typename T>
+	TVec2<T> TVec4<T>::xy()
 	{
-		return (Vec2(this->x, this->y));
+		return (TVec2<T>(this->x, this->y));
 	}
 
-	Vec2 Vec4::zw()
+	template <typename T>
+	TVec2<T> TVec4<T>::zw()
 	{
-		return (Vec2(this->z, this->w));
+		return (TVec2<T>(this->z, this->w));
 	}
 
-	float &Vec4::operator [] (int idx)
+	template <typename T>
+	T &TVec4<T>::operator [] (int idx)
 	{
-		return (reinterpret_cast<float*>(this)[idx]);
+		return (reinterpret_cast<T*>(this)[idx]);
 	}
 
-	Vec4 Vec4::operator + (float val)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator + (T val)
 	{
-		return (Vec4(this->x + val, this->y + val, this->z + val, this->w + val));
+		return (TVec4(this->x + val, this->y + val, this->z + val, this->w + val));
 	}
 
-	Vec4 Vec4::operator - (float val)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator - (T val)
 	{
-		return (Vec4(this->x - val, this->y - val, this->z - val, this->w - val));
+		return (TVec4(this->x - val, this->y - val, this->z - val, this->w - val));
 	}
 
-	Vec4 Vec4::operator * (float val)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator * (T val)
 	{
-		return (Vec4(this->x * val, this->y * val, this->z * val, this->w * val));
+		return (TVec4(this->x * val, this->y * val, this->z * val, this->w * val));
 	}
 
-	Vec4 Vec4::operator / (float val)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator / (T val)
 	{
-		return (Vec4(this->x / val, this->y / val, this->z / val, this->w / val));
+		return (TVec4(this->x / val, this->y / val, this->z / val, this->w / val));
 	}
 
-	Vec4 Vec4::operator + (Vec4 vec)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator + (TVec4<T> vec)
 	{
-		return (Vec4(this->x + vec.x, this->y + vec.y, this->z + vec.z, this->w + vec.w));
+		return (TVec4(this->x + vec.x, this->y + vec.y, this->z + vec.z, this->w + vec.w));
 	}
 
-	Vec4 Vec4::operator - (Vec4 vec)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator - (TVec4<T> vec)
 	{
-		return (Vec4(this->x - vec.x, this->y - vec.y, this->z - vec.z, this->w - vec.w));
+		return (TVec4(this->x - vec.x, this->y - vec.y, this->z - vec.z, this->w - vec.w));
 	}
 
-	Vec4 Vec4::operator * (Vec4 vec)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator * (TVec4<T> vec)
 	{
-		return (Vec4(this->x * vec.x, this->y * vec.y, this->z * vec.z, this->w * vec.w));
+		return (TVec4(this->x * vec.x, this->y * vec.y, this->z * vec.z, this->w * vec.w));
 	}
 
-	Vec4 Vec4::operator / (Vec4 vec)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator / (TVec4<T> vec)
 	{
-		return (Vec4(this->x / vec.x, this->y / vec.y, this->z / vec.z, this->w / vec.w));
+		return (TVec4(this->x / vec.x, this->y / vec.y, this->z / vec.z, this->w / vec.w));
 	}
 
-	Vec4 Vec4::operator += (float val)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator += (T val)
 	{
 		return (*this = *this + val);
 	}
 
-	Vec4 Vec4::operator -= (float val)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator -= (T val)
 	{
 		return (*this = *this - val);
 	}
 
-	Vec4 Vec4::operator *= (float val)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator *= (T val)
 	{
 		return (*this = *this * val);
 	}
 
-	Vec4 Vec4::operator /= (float val)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator /= (T val)
 	{
 		return (*this = *this / val);
 	}
 
-	Vec4 Vec4::operator += (Vec4 vec)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator += (TVec4<T> vec)
 	{
 		return (*this = *this + vec);
 	}
 
-	Vec4 Vec4::operator -= (Vec4 vec)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator -= (TVec4<T> vec)
 	{
 		return (*this = *this - vec);
 	}
 
-	Vec4 Vec4::operator *= (Vec4 vec)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator *= (TVec4<T> vec)
 	{
 		return (*this = *this * vec);
 	}
 
-	Vec4 Vec4::operator /= (Vec4 vec)
+	template <typename T>
+	TVec4<T> TVec4<T>::operator /= (TVec4<T> vec)
 	{
 		return (*this = *this / vec);
 	}
 
-	bool Vec4::operator == (Vec4 vec)
+	template <typename T>
+	bool TVec4<T>::operator == (TVec4<T> vec)
 	{
 		return (this->x == vec.x && this->y == vec.y && this->z == vec.z && this->w == vec.w);
 	}
 
-	bool Vec4::operator != (Vec4 vec)
+	template <typename T>
+	bool TVec4<T>::operator != (TVec4<T> vec)
 	{
 		return (!(*this == vec));
 	}
 
 }
+
+#endif

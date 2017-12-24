@@ -1,87 +1,97 @@
+#ifndef MAT3_CPP
+# define MAT3_CPP
+
 #include "Mat3.h"
 #include <cmath>
 
 namespace librender
 {
 
-	Mat3::Mat3(Vec3 vec)
+	template <typename T>
+	TMat3<T>::TMat3(TVec3<T> vec)
 	{
-		for (int i = 0; i < 3; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				this->data[i][j] = 0;
-			}
-		}
-		for (int i = 0; i < 3; ++i)
-			this->data[i][i] = vec[i];
+		this->data[0] = TVec3<T>(vec.x, 0, 0);
+		this->data[1] = TVec3<T>(0, vec.y, 0);
+		this->data[2] = TVec3<T>(0, 0, vec.z);
 	}
 
-	Mat3::Mat3(float value)
+	template <typename T>
+	TMat3<T>::TMat3(T value)
 	{
-		for (int i = 0; i < 3; ++i)
-		{
-			for (int j = 0; j < 3; ++j)
-			{
-				this->data[i][j] = 0;
-			}
-		}
-		for (int i = 0; i < 3; ++i)
-			this->data[i][i] = value;
+		this->data[0] = TVec3<T>(value, 0, 0);
+		this->data[1] = TVec3<T>(0, value, 0);
+		this->data[2] = TVec3<T>(0, 0, value);
 	}
 
-	Vec3 &Mat3::operator [] (int i)
+	template <typename T>
+	TVec3<T> &TMat3<T>::operator [] (int i)
 	{
 		return (this->data[i]);
 	}
 
-	Mat3 Mat3::rotateX(Mat3 mat, float angle)
+	template <typename T>
+	TMat3<T> TMat3<T>::rotateX(TMat3<T> mat, T angle)
 	{
-		float c = cos(angle);
-		float s = sin(angle);
-		Mat3 rotate;
-		rotate[0] = Vec3(1,  0, 0);
-		rotate[1] = Vec3(0,  c, s);
-		rotate[2] = Vec3(0, -s, c);
+		T c = cos(angle);
+		T s = sin(angle);
+		TMat3<T> rotate;
+		rotate[0] = TVec3<T>(1,  0, 0);
+		rotate[1] = TVec3<T>(0,  c, s);
+		rotate[2] = TVec3<T>(0, -s, c);
 		return (mat * rotate);
 	}
 
-	Mat3 Mat3::rotateY(Mat3 mat, float angle)
+	template <typename T>
+	TMat3<T> TMat3<T>::rotateY(TMat3<T> mat, T angle)
 	{
-		float c = cos(angle);
-		float s = sin(angle);
-		Mat3 rotate;
-		rotate[0] = Vec3(c, 0, -s);
-		rotate[1] = Vec3(0, 1,  0);
-		rotate[2] = Vec3(s, 0,  c);
+		T c = cos(angle);
+		T s = sin(angle);
+		TMat3<T> rotate;
+		rotate[0] = TVec3<T>(c, 0, -s);
+		rotate[1] = TVec3<T>(0, 1,  0);
+		rotate[2] = TVec3<T>(s, 0,  c);
 		return (mat * rotate);
 	}
 
-	Mat3 Mat3::rotateZ(Mat3 mat, float angle)
+	template <typename T>
+	TMat3<T> TMat3<T>::rotateZ(TMat3<T> mat, T angle)
 	{
-		float c = cos(angle);
-		float s = sin(angle);
-		Mat3 rotate;
-		rotate[0] = Vec3( c, s, 0);
-		rotate[1] = Vec3(-s, c, 0);
-		rotate[2] = Vec3( 0, 0, 1);
+		T c = cos(angle);
+		T s = sin(angle);
+		TMat3<T> rotate;
+		rotate[0] = TVec3<T>( c, s, 0);
+		rotate[1] = TVec3<T>(-s, c, 0);
+		rotate[2] = TVec3<T>( 0, 0, 1);
 		return (mat * rotate);
 	}
 
-	Mat3 Mat3::operator * (Mat3 mat)
+	template <typename T>
+	TMat3<T> TMat3<T>::operator * (TMat3<T> mat)
 	{
-		Mat3 result;
+		TMat3<T> result;
 		for (int i = 0; i < 3; ++i)
 			result[i] = (*this)[0] * mat[i][0] + (*this)[1] * mat[i][1] + (*this)[2] * mat[i][2];
 		return (result);
 	}
 
-	Vec3 Mat3::operator * (Vec3 vec)
+	template <typename T>
+	TVec3<T> operator * (TMat3<T> mat, TVec3<T> vec)
 	{
-		Vec3 result;
+		TVec3<T> result;
 		for (int i = 0; i < 3; ++i)
-			result[i] = vec[0] * (*this)[0][i] + vec[1] * (*this)[1][i] + vec[2] * (*this)[2][i];
+			result[i] = vec.x * mat[0][i] + vec.y * mat[1][i] + vec.z * mat[2][i];
+		return (result);
+	}
+
+	template <typename T>
+	TVec3<T> operator * (TVec3<T> vec, TMat3<T> mat)
+	{
+		TVec3<T> result;
+		for (int i = 0; i < 3; ++i)
+			result[i] = vec.x * mat[i].x + vec.y * mat[i].y + vec.z * mat[i].z;
 		return (result);
 	}
 
 }
+
+#endif

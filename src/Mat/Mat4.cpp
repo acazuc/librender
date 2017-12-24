@@ -1,176 +1,185 @@
+#ifndef MAT4_CPP
+# define MAT4_CPP
+
 #include "Mat4.h"
 #include <cmath>
 
 namespace librender
 {
 
-	Mat4::Mat4(Vec4 vec)
+	template <typename T>
+	TMat4<T>::TMat4(TVec4<T> vec)
 	{
-		for (int i = 0; i < 4; ++i)
-		{
-			for (int j = 0; j < 4; ++j)
-			{
-				this->data[i][j] = 0;
-			}
-		}
-		for (int i = 0; i < 4; ++i)
-			this->data[i][i] = vec[i];
+		this->data[0] = TVec4<T>(vec.x, 0, 0, 0);
+		this->data[1] = TVec4<T>(0, vec.y, 0, 0);
+		this->data[2] = TVec4<T>(0, 0, vec.z, 0);
+		this->data[3] = TVec4<T>(0, 0, 0, vec.w);
 	}
 
-	Mat4::Mat4(float value)
+	template <typename T>
+	TMat4<T>::TMat4(T value)
 	{
-		for (int i = 0; i < 4; ++i)
-		{
-			for (int j = 0; j < 4; ++j)
-			{
-				this->data[i][j] = 0;
-			}
-		}
-		for (int i = 0; i < 4; ++i)
-			this->data[i][i] = value;
+		this->data[0] = TVec4<T>(value, 0, 0, 0);
+		this->data[1] = TVec4<T>(0, value, 0, 0);
+		this->data[2] = TVec4<T>(0, 0, value, 0);
+		this->data[3] = TVec4<T>(0, 0, 0, value);
 	}
 
-	Vec4 &Mat4::operator [] (int i)
+	template <typename T>
+	TVec4<T> &TMat4<T>::operator [] (int i)
 	{
 		return (this->data[i]);
 	}
 
-	Mat4 Mat4::rotate(Mat4 mat, float angle, Vec3 axis)
+	template <typename T>
+	TMat4<T> TMat4<T>::rotate(TMat4<T> mat, T angle, TVec3<T> axis)
 	{
-		float c = cos(angle);
-		float s = sin(angle);
-		float c1 = 1 - c;
-		float xs = s * axis.x;
-		float ys = s * axis.y;
-		float zs = s * axis.z;
-		float xx = axis.x * axis.x * c1;
-		float xy = axis.x * axis.y * c1;
-		float xz = axis.x * axis.z * c1;
-		float yy = axis.y * axis.y * c1;
-		float yz = axis.y * axis.z * c1;
-		float zz = axis.z * axis.z * c1;
+		T c = cos(angle);
+		T s = sin(angle);
+		TVec3<T> t(axis * (1 - c));
+		TVec3<T> vx(t * axis.x);
+		TVec3<T> u(axis * s);
+		T yy = axis.y * t.y;
+		T yz = axis.y * t.z;
+		T zz = axis.z * t.z;
 		axis.normalize();
-		Mat4 rotate;
-		rotate[0][0] = xx + c;
-		rotate[0][1] = xy + zs;
-		rotate[0][2] = xz - ys;
-		rotate[0][3] = 0;
-		rotate[1][0] = xy - zs;
+		TMat4<T> rotate;
+		rotate[0][0] = vx.x + c;
+		rotate[0][1] = vx.y + u.z;
+		rotate[0][2] = vx.z - u.y;
+		rotate[1][0] = vx.y - u.x;
 		rotate[1][1] = yy + c;
-		rotate[1][2] = yz + xs;
-		rotate[1][3] = 0;
-		rotate[2][0] = xz + ys;
-		rotate[2][1] = yz - xs;
+		rotate[1][2] = yz + u.z;
+		rotate[2][0] = vx.z + u.y;
+		rotate[2][1] = yz - u.x;
 		rotate[2][2] = zz + c;
-		rotate[2][3] = 0;
-		rotate[3] = Vec4(0, 0, 0, 1);
+		TMat4<T> result;
+		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
+		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
+		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
+		result[3] = mat[3];
+		return (result);
+	}
+
+	template <typename T>
+	TMat4<T> TMat4<T>::rotateX(TMat4<T> mat, T angle)
+	{
+		T c = cos(angle);
+		T s = sin(angle);
+		TMat4<T> rotate;
+		rotate[0] = TVec4<T>(1,  0, 0, 0);
+		rotate[1] = TVec4<T>(0,  c, s, 0);
+		rotate[2] = TVec4<T>(0, -s, c, 0);
+		rotate[3] = TVec4<T>(0,  0, 0, 1);
 		return (mat * rotate);
 	}
 
-	Mat4 Mat4::rotateX(Mat4 mat, float angle)
+	template <typename T>
+	TMat4<T> TMat4<T>::rotateY(TMat4<T> mat, T angle)
 	{
-		float c = cos(angle);
-		float s = sin(angle);
-		Mat4 rotate;
-		rotate[0] = Vec4(1,  0, 0, 0);
-		rotate[1] = Vec4(0,  c, s, 0);
-		rotate[2] = Vec4(0, -s, c, 0);
-		rotate[3] = Vec4(0,  0, 0, 1);
+		T c = cos(angle);
+		T s = sin(angle);
+		TMat4<T> rotate;
+		rotate[0] = TVec4<T>(c, 0, -s, 0);
+		rotate[1] = TVec4<T>(0, 1,  0, 0);
+		rotate[2] = TVec4<T>(s, 0,  c, 0);
+		rotate[3] = TVec4<T>(0, 0,  0, 1);
 		return (mat * rotate);
 	}
 
-	Mat4 Mat4::rotateY(Mat4 mat, float angle)
+	template <typename T>
+	TMat4<T> TMat4<T>::rotateZ(TMat4<T> mat, T angle)
 	{
-		float c = cos(angle);
-		float s = sin(angle);
-		Mat4 rotate;
-		rotate[0] = Vec4(c, 0, -s, 0);
-		rotate[1] = Vec4(0, 1,  0, 0);
-		rotate[2] = Vec4(s, 0,  c, 0);
-		rotate[3] = Vec4(0, 0,  0, 1);
+		T c = cos(angle);
+		T s = sin(angle);
+		TMat4<T> rotate;
+		rotate[0] = TVec4<T>( c, s, 0, 0);
+		rotate[1] = TVec4<T>(-s, c, 0, 0);
+		rotate[2] = TVec4<T>( 0, 0, 1, 0);
+		rotate[3] = TVec4<T>( 0, 0, 0, 1);
 		return (mat * rotate);
 	}
 
-	Mat4 Mat4::rotateZ(Mat4 mat, float angle)
+	template <typename T>
+	TMat4<T> TMat4<T>::translate(TMat4<T> mat, TVec3<T> vec)
 	{
-		float c = cos(angle);
-		float s = sin(angle);
-		Mat4 rotate;
-		rotate[0] = Vec4( c, s, 0, 0);
-		rotate[1] = Vec4(-s, c, 0, 0);
-		rotate[2] = Vec4( 0, 0, 1, 0);
-		rotate[3] = Vec4( 0, 0, 0, 1);
-		return (mat * rotate);
+		TMat4<T> result(mat);
+		result[3] = mat[0] * vec[0] + mat[1] * vec[1] + mat[2] * vec[2] + mat[3];
+		return (result);
 	}
 
-	Mat4 Mat4::translate(Mat4 mat, Vec3 vec)
+	template <typename T>
+	TMat4<T> TMat4<T>::scale(TMat4<T> mat, TVec3<T> vec)
 	{
-		Mat4 translate(1);
-		translate[3] = Vec4(vec, 1);
-		return (mat * translate);
+		TMat4<T> result;
+		result[0] = mat[0] * vec[0];
+		result[1] = mat[1] * vec[1];
+		result[2] = mat[2] * vec[2];
+		result[3] = mat[3];
+		return (result);
 	}
 
-	Mat4 Mat4::scale(Mat4 mat, Vec3 vec)
+	template <typename T>
+	TMat4<T> TMat4<T>::perspective(T fov, T aspect, T znear, T zfar)
 	{
-		Mat4 scale(Vec4(vec, 1));
-		return (mat * scale);
-	}
-
-	Mat4 Mat4::perspective(float fov, float aspect, float znear, float zfar)
-	{
-		float f = 1 / tan(fov / 2);
-		Mat4 mat(Vec4(f / aspect, f, (zfar + znear) / (znear - zfar), 0));
+		T f = 1 / tan(fov / 2);
+		TMat4<T> mat(TVec4<T>(f / aspect, f, (zfar + znear) / (znear - zfar), 0));
 		mat[2][3] = -1;
 		mat[3][2] = (2 * zfar * znear) / (znear - zfar);
 		return (mat);
 	}
 
-	Mat4 Mat4::lookAt(Vec3 eye, Vec3 center, Vec3 up)
+	template <typename T>
+	TMat4<T> TMat4<T>::lookAt(TVec3<T> eye, TVec3<T> center, TVec3<T> up)
 	{
-		Vec3 f(center - eye);
+		TVec3<T> f(center - eye);
 		f.normalize();
 		up.normalize();
-		Vec3 s(f.cross(up));
-		Vec3 ss(s);
+		TVec3<T> s(f.cross(up));
+		TVec3<T> ss(s);
 		ss.normalize();
-		Vec3 u(ss.cross(f));
+		TVec3<T> u(ss.cross(f));
 		f = -f;
-		Mat4 mat;
-		mat[0] = Vec4(s[0], u[0], f[0], 0);
-		mat[1] = Vec4(s[1], u[1], f[1], 0);
-		mat[2] = Vec4(s[2], u[2], f[2], 0);
-		mat[3] = Vec4(0   , 0   , 0   , 1);
-		return (translate(mat, Vec3(-eye)));
+		TMat4<T> mat;
+		mat[0] = TVec4<T>(s[0], u[0], f[0], 0);
+		mat[1] = TVec4<T>(s[1], u[1], f[1], 0);
+		mat[2] = TVec4<T>(s[2], u[2], f[2], 0);
+		mat[3] = TVec4<T>(0   , 0   , 0   , 1);
+		return (translate(mat, TVec3<T>(-eye)));
 	}
 
-	Mat4 Mat4::ortho(float left, float right, float bottom, float top, float near, float far)
+	template <typename T>
+	TMat4<T> TMat4<T>::ortho(T left, T right, T bottom, T top, T near, T far)
 	{
-		Mat4 mat(Vec4(2 / (right - left), 2 / (top - bottom), -2 / (far - near), 1));
+		TMat4<T> mat(TVec4<T>(2 / (right - left), 2 / (top - bottom), -2 / (far - near), 1));
 		mat[3][0] = -(right + left) / (right - left);
 		mat[3][1] = -(top + bottom) / (top - bottom);
 		mat[3][2] = -(far + near) / (far - near);
 		return (mat);
 	}
 
-	Mat4 Mat4::operator * (Mat4 mat)
+	template <typename T>
+	TMat4<T> TMat4<T>::operator * (TMat4<T> mat)
 	{
-		Mat4 result;
+		TMat4<T> result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = (*this)[0] * mat[i][0] + (*this)[1] * mat[i][1] + (*this)[2] * mat[i][2] + (*this)[3] * mat[i][3];
 		return (result);
 	}
 
-	Vec4 operator * (Mat4 mat, Vec4 vec)
+	template <typename T>
+	TVec4<T> operator * (TMat4<T> mat, TVec4<T> vec)
 	{
-		Vec4 result;
+		TVec4<T> result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = vec.x * mat[0][i] + vec.y * mat[1][i] + vec.z * mat[2][i] + vec.w * mat[3][i];
 		return (result);
 	}
 
-	Vec4 operator * (Vec4 vec, Mat4 mat)
+	template <typename T>
+	TVec4<T> operator * (TVec4<T> vec, TMat4<T> mat)
 	{
-		Vec4 result;
+		TVec4<T> result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = vec.x * mat[i].x + vec.y * mat[i].y + vec.z * mat[i].z + vec.w * mat[i].w;
 		return (result);
@@ -178,3 +187,5 @@ namespace librender
 
 
 }
+
+#endif

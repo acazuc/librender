@@ -6,20 +6,28 @@
 namespace librender
 {
 
-	class Mat2
+	template <typename T> class TMat2
 	{
 
 	public:
-		Vec2 data[2];
-		Mat2(Vec2 vec);
-		Mat2(float val);
-		Mat2() {};
-		Vec2 &operator [] (int i);
-		Mat2 operator * (Mat2 mat);
-		Vec2 operator * (Vec2 vec);
+		TVec2<T> data[2];
+		TMat2(TVec2<T> vec);
+		TMat2(T val);
+		TMat2() {};
+		TVec2<T> &operator [] (int i);
+		TMat2<T> operator * (TMat2<T> mat);
 
 	};
 
+	template <typename T>
+	TVec2<T> operator * (TMat2<T> mat, TVec2<T> vec);
+	template <typename T>
+	TVec2<T> operator * (TVec2<T> vec, TMat2<T> mat);
+
+	typedef TMat2<float> Mat2;
+
 }
+
+# include "Mat2.cpp"
 
 #endif
