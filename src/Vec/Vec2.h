@@ -21,10 +21,6 @@ namespace librender
 		void max(T val);
 		void clamp(T min, T max);
 		T &operator [] (int idx);
-		TVec2<T> operator + (T val);
-		TVec2<T> operator - (T val);
-		TVec2<T> operator * (T val);
-		TVec2<T> operator / (T val);
 		TVec2<T> operator + (TVec2<T> vec);
 		TVec2<T> operator - (TVec2<T> vec);
 		TVec2<T> operator * (TVec2<T> vec);
@@ -42,6 +38,50 @@ namespace librender
 
 	};
 
+	template <typename T>
+	TVec2<T> operator + (TVec2<T> vec, T val);
+	template <typename T>
+	TVec2<T> operator + (T val, TVec2<T> vec);
+	template <typename T>
+	TVec2<T> operator - (TVec2<T> vec, T val);
+	template <typename T>
+	TVec2<T> operator - (T val, TVec2<T> vec);
+	template <typename T>
+	TVec2<T> operator * (TVec2<T> vec, T val);
+	template <typename T>
+	TVec2<T> operator * (T val, TVec2<T> vec);
+	template <typename T>
+	TVec2<T> operator / (TVec2<T> vec, T val);
+	template <typename T>
+	TVec2<T> operator / (T val, TVec2<T> vec);
+
+	template <typename T>
+	TVec2<T> min(TVec2<T> vec1, TVec2<T> vec2);
+	template <typename T>
+	TVec2<T> min(TVec2<T> vec, T val);
+	template <typename T>
+	TVec2<T> min(T val, TVec2<T> vec);
+
+	template <typename T>
+	TVec2<T> max(TVec2<T> vec1, TVec2<T> vec2);
+	template <typename T>
+	TVec2<T> max(TVec2<T> vec, T val);
+	template <typename T>
+	TVec2<T> max(T val, TVec2<T> vec);
+
+	template <typename T>
+	TVec2<T> clamp(TVec2<T> vec, T min, T max);
+	template <typename T>
+	TVec2<T> mod(TVec2<T> vec, T val);
+	template <typename T>
+	TVec2<T> floor(TVec2<T> vec);
+	template <typename T>
+	TVec2<T> round(TVec2<T> vec);
+	template <typename T>
+	TVec2<T> ceil(TVec2<T> vec);
+	template <typename T>
+	TVec2<T> fract(TVec2<T> vec);
+	
 	typedef TVec2<float> Vec2;
 
 }

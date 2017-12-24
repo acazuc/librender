@@ -34,27 +34,67 @@ namespace librender
 		TVec2<T> xy();
 		TVec2<T> zw();
 		T &operator [] (int idx);
-		TVec4 operator + (T val);
-		TVec4 operator - (T val);
-		TVec4 operator * (T val);
-		TVec4 operator / (T val);
-		TVec4 operator + (TVec4<T> vec);
-		TVec4 operator - (TVec4<T> vec);
-		TVec4 operator * (TVec4<T> vec);
-		TVec4 operator / (TVec4<T> vec);
-		TVec4 operator += (T val);
-		TVec4 operator -= (T val);
-		TVec4 operator *= (T val);
-		TVec4 operator /= (T val);
-		TVec4 operator += (TVec4<T> vec);
-		TVec4 operator -= (TVec4<T> vec);
-		TVec4 operator *= (TVec4<T> vec);
-		TVec4 operator /= (TVec4<T> vec);
+		TVec4<T> operator + (TVec4<T> vec);
+		TVec4<T> operator - (TVec4<T> vec);
+		TVec4<T> operator * (TVec4<T> vec);
+		TVec4<T> operator / (TVec4<T> vec);
+		TVec4<T> operator += (T val);
+		TVec4<T> operator -= (T val);
+		TVec4<T> operator *= (T val);
+		TVec4<T> operator /= (T val);
+		TVec4<T> operator += (TVec4<T> vec);
+		TVec4<T> operator -= (TVec4<T> vec);
+		TVec4<T> operator *= (TVec4<T> vec);
+		TVec4<T> operator /= (TVec4<T> vec);
 		bool operator == (TVec4<T> vec);
 		bool operator != (TVec4<T> vec);
 
 	};
 
+	template <typename T>
+	TVec4<T> operator + (TVec4<T> vec, T val);
+	template <typename T>
+	TVec4<T> operator + (T val, TVec4<T> vec);
+	template <typename T>
+	TVec4<T> operator - (TVec4<T> vec, T val);
+	template <typename T>
+	TVec4<T> operator - (T val, TVec4<T> vec);
+	template <typename T>
+	TVec4<T> operator * (TVec4<T> vec, T val);
+	template <typename T>
+	TVec4<T> operator * (T val, TVec4<T> vec);
+	template <typename T>
+	TVec4<T> operator / (TVec4<T> vec, T val);
+	template <typename T>
+	TVec4<T> operator / (T val, TVec4<T> vec);
+
+	template <typename T>
+	TVec4<T> min(TVec4<T> vec1, TVec4<T> vec2);
+	template <typename T>
+	TVec4<T> min(TVec4<T> vec, T val);
+	template <typename T>
+	TVec4<T> min(T val, TVec4<T> vec);
+
+	template <typename T>
+	TVec4<T> max(TVec4<T> vec1, TVec4<T> vec2);
+	template <typename T>
+	TVec4<T> max(TVec4<T> vec, T val);
+	template <typename T>
+	TVec4<T> max(T val, TVec4<T> vec);
+
+	template <typename T>
+	TVec4<T> clamp(TVec4<T> vec, T min, T max);
+	template <typename T>
+	TVec4<T> mod(TVec4<T> vec, T val);
+	template <typename T>
+	TVec4<T> floor(TVec4<T> vec);
+	template <typename T>
+	TVec4<T> round(TVec4<T> vec);
+	template <typename T>
+	TVec4<T> ceil(TVec4<T> vec);
+	template <typename T>
+	TVec4<T> fract(TVec4<T> vec);
+	
 	typedef TVec4<float> Vec4;
 
 }

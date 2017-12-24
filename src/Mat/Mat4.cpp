@@ -2,6 +2,7 @@
 # define MAT4_CPP
 
 #include "Mat4.h"
+#include "Mat3.h"
 #include <cmath>
 
 namespace librender
@@ -43,7 +44,7 @@ namespace librender
 		T yz = axis.y * t.z;
 		T zz = axis.z * t.z;
 		axis.normalize();
-		TMat4<T> rotate;
+		TMat3<T> rotate;
 		rotate[0][0] = vx.x + c;
 		rotate[0][1] = vx.y + u.z;
 		rotate[0][2] = vx.z - u.y;
