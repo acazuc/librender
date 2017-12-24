@@ -54,9 +54,15 @@ namespace librender
 			return;
 		uint16_t max;
 		if (this->shadowSize == 1)
+		{
 			max = 1;
+		}
 		else
-			max = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - 4 * (this->shadowSize - 1);
+		{
+			int16_t tmp = this->shadowSize - 1;
+			int16_t tmp2 = 1 + tmp * 2;
+			max = tmp2 * tmp2 - 1 - 4 * tmp;
+		}
 		for (uint32_t i = 0; i < max; ++i)
 		{
 			std::memcpy(&texCoords[this->charsNumber * 8 * (i + 1)], &texCoords[0], this->charsNumber * 8 * sizeof(*texCoords));
@@ -67,11 +73,19 @@ namespace librender
 	{
 		int32_t shadowLen;
 		if (this->shadowSize <= 0)
+		{
 			shadowLen = 0;
+		}
 		else if (this->shadowSize == 1)
+		{
 		 	shadowLen = 1;
+		}
 		else
-			shadowLen = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - (this->shadowSize - 1) * 4;
+		{
+			int16_t tmp = this->shadowSize - 1;
+			int16_t tmp2 = 1 + tmp * 2;
+			shadowLen = tmp2 * tmp2 - 1 - 4 * tmp;
+		}
 		float x = 0;
 		float y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
@@ -146,11 +160,19 @@ namespace librender
 	{
 		int32_t shadowLen;
 		if (this->shadowSize <= 0)
+		{
 			shadowLen = 0;
+		}
 		else if (this->shadowSize == 1)
+		{
 		 	shadowLen = 1;
+		}
 		else
-			shadowLen = (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - (this->shadowSize - 1) * 4;
+		{
+			int16_t tmp = this->shadowSize - 1;
+			int16_t tmp2 = 1 + tmp * 2;
+			shadowLen = tmp2 * tmp2 - 1 - 4 * tmp;
+		}
 		{
 			float tab[4] = {this->color.getRed(), this->color.getGreen(), this->color.getBlue(), this->color.getAlpha() * this->opacity};
 			int32_t tmp = (shadowLen * this->charsNumber * 4) * 4;
@@ -197,9 +219,15 @@ namespace librender
 			if (this->shadowSize > 0)
 			{
 				if (this->shadowSize == 1)
+				{
 					fac += 1;
+				}
 				else
-					fac += (1 + (this->shadowSize - 1) * 2) * (1 + (this->shadowSize - 1) * 2) - 1 - 4 * (this->shadowSize - 1);
+				{
+					int16_t tmp = this->shadowSize - 1;
+					int16_t tmp2 = 1 + tmp * 2;
+					fac += tmp2 * tmp2 - 1 - 4 * tmp;
+				}
 				if (fac < 1)
 					fac = 1;
 			}
@@ -258,8 +286,6 @@ namespace librender
 			return;
 		this->shadowX = shadowX;
 		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
 	}
 
 	void TextEntry::setShadowY(int32_t shadowY)
@@ -268,8 +294,6 @@ namespace librender
 			return;
 		this->shadowY = shadowY;
 		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
 	}
 
 	void TextEntry::setOpacity(float opacity)

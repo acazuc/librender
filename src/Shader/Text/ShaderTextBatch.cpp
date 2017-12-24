@@ -1,7 +1,6 @@
 #include "ShaderTextBatch.h"
 #include "./ShaderTextUpdate.h"
 #include "../../GL.h"
-#include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
 
 namespace librender
@@ -122,7 +121,7 @@ namespace librender
 		this->colors = new GLfloat[this->verticesNumber * 4];
 	}
 
-	void ShaderTextBatch::draw(glm::mat4 &viewProj)
+	void ShaderTextBatch::draw(Mat4 &viewProj)
 	{
 		if (!this->font || !this->program || !this->texCoordsLocation || !this->vertexesLocation || !this->colorsLocation || !this->mvpLocation)
 			return;
@@ -151,9 +150,8 @@ namespace librender
 		this->texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
 		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
 		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
-		glm::mat4 model(1);
-		model = glm::translate(model, glm::vec3(this->x, this->y, 0));
-		glm::mat4 mvp = viewProj * model;
+		Mat4 model(Mat4::translate(model, Vec3(this->x, this->y, 0)));
+		Mat4 mvp(viewProj * model);
 		this->mvpLocation->setMat4f(mvp);
 		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, NULL);
 	}

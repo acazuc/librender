@@ -41,7 +41,7 @@ namespace librender
 	public:
 		ShaderTextBatch();
 		~ShaderTextBatch();
-		void draw(glm::mat4 &viewProj);
+		void draw(Mat4 &viewProj);
 		void addEntry(ShaderTextBatchEntry *entry);
 		void removeEntry(ShaderTextBatchEntry *entry);
 		void clearEntries();

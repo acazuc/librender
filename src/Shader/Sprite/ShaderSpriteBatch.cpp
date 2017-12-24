@@ -1,7 +1,6 @@
 #include "ShaderSpriteBatch.h"
 #include "./ShaderSpriteUpdate.h"
 #include "../../GL.h"
-#include <glm/gtc/matrix_transform.hpp>
 #include <cstring>
 
 namespace librender
@@ -122,7 +121,7 @@ namespace librender
 		this->colors = new float[this->verticesNumber * 4];
 	}
 
-	void ShaderSpriteBatch::draw(glm::mat4 &viewProj)
+	void ShaderSpriteBatch::draw(Mat4 &viewProj)
 	{
 		if (!this->texture || !this->program || !this->texCoordsLocation || !this->vertexesLocation || !this->colorsLocation || !this->mvpLocation)
 			return;
@@ -152,9 +151,8 @@ namespace librender
 		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
 		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
-		glm::mat4 model(1);
-		model = glm::translate(model, glm::vec3(this->x, this->y, 0));
-		glm::mat4 mvp = viewProj * model;
+		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->x, this->y, 0)));
+		Mat4 mvp(viewProj * model);
 		this->mvpLocation->setMat4f(mvp);
 		glDrawElements(GL_TRIANGLES, this->verticesNumber * 6 / 4, GL_UNSIGNED_INT, NULL);
 	}

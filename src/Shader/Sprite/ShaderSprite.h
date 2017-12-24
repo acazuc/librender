@@ -26,7 +26,7 @@ namespace librender
 	public:
 		ShaderSprite();
 		~ShaderSprite();
-		void draw(glm::mat4 &viewProj);
+		void draw(Mat4 &viewProj);
 		inline void setTexCoordsLocation(ProgramLocation *location) {this->texCoordsLocation = location;};
 		inline void setVertexesLocation(ProgramLocation *location) {this->vertexesLocation = location;};
 		inline void setColorsLocation(ProgramLocation *location) {this->colorsLocation = location;};

@@ -41,7 +41,7 @@ namespace librender
 	public:
 		ShaderSpriteBatch();
 		~ShaderSpriteBatch();
-		void draw(glm::mat4 &viewProj);
+		void draw(Mat4 &viewProj);
 		void addEntry(ShaderSpriteBatchEntry *entry);
 		void removeEntry(ShaderSpriteBatchEntry *entry);
 		inline void setTexCoordsLocation(ProgramLocation *location) {this->texCoordsLocation = location;};

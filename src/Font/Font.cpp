@@ -4,9 +4,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <cmath>
-#include <iostream>
-
-#define WIDTH_CORRECT 2
 
 namespace librender
 {
@@ -27,18 +24,14 @@ namespace librender
 
 	Font::~Font()
 	{
-		glDeleteTextures(1, &this->textureID);
 		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
-		{
-			if (this->glyphs[i])
-				delete (this->glyphs[i]);
-		}
+			delete (this->glyphs[i]);
 		delete[] (this->glyphs);
 	}
 	
 	void Font::bind()
 	{
-		glBindTexture(GL_TEXTURE_2D, this->textureID);
+		this->texture.bind();
 	}
 
 	void Font::loadList(int size)
@@ -127,20 +120,17 @@ namespace librender
 		{
 			for (uint32_t tX = 0; tX < glyph->getWidth(); ++tX)
 			{
-				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffff | glyph_data[tY * glyph->getWidth() + tX] << 24;
+				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffff | (glyph_data[tY * glyph->getWidth() + tX] << 24);
 			}
 		}
 	}
 
 	void Font::buildGLTexture(char *data, uint32_t width, uint32_t height)
 	{
-		glGenTextures(1, &this->textureID);
-		glBindTexture(GL_TEXTURE_2D, this->textureID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		this->texture.bind();
+		this->texture.setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);
+		this->texture.setWrap(TEXTURE_WRAP_CLAMP_TO_BORDER, TEXTURE_WRAP_CLAMP_TO_BORDER);
+		this->texture.setData(data, width, height);
 	}
 
 	FontGlyph *Font::getGlyph(uint32_t character)
@@ -156,10 +146,10 @@ namespace librender
 
 	int32_t Font::getWidth(std::string &text)
 	{
-		char *iter = const_cast<char*>(text.c_str());
 		uint32_t maxWidth = 0;
 		uint32_t currentWidth = 0;
-		char *end = const_cast<char*>(text.c_str()) + text.length();
+		char *iter = const_cast<char*>(text.c_str());
+		char *end = iter + text.length();
 		while (iter != end)
 		{
 			uint32_t currentChar = utf8::next(iter, end);
@@ -183,9 +173,9 @@ namespace librender
 
 	int32_t Font::getHeight(std::string &text)
 	{
-		char *iter = const_cast<char*>(text.c_str());
 		uint32_t nlNb = 1;
-		char *end = const_cast<char*>(text.c_str() + text.length());
+		char *iter = const_cast<char*>(text.c_str());
+		char *end = iter + text.length();
 		while (iter != end)
 		{
 			if (utf8::next(iter, end) == '\n')

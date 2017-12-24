@@ -12,7 +12,7 @@ RANLIB = gcc-ranlib
 
 RANLIBFLAGS =
 
-CLFAGS = -g -Wall -Wextra -Werror -O2 -pipe -mtune=generic -fuse-linker-plugin -flto=8
+CLFAGS = -g -Wall -Wextra -Werror -O3 -pipe -mtune=generic -fuse-linker-plugin -flto=8
 
 INCLUDES_PATH = -I src
 INCLUDES_PATH+= -I lib
@@ -59,6 +59,12 @@ SRCS_NAME = Color.cpp \
 		Sprite/SpriteEntry.cpp \
 		Sprite/SpriteBatch.cpp \
 		Sprite/SpriteBatchEntry.cpp \
+		Vec/Vec2.cpp \
+		Vec/Vec3.cpp \
+		Vec/Vec4.cpp \
+		Mat/Mat2.cpp \
+		Mat/Mat3.cpp \
+		Mat/Mat4.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
@@ -88,6 +94,8 @@ odir:
 	@mkdir -p $(OBJS_PATH)Text
 	@mkdir -p $(OBJS_PATH)Font
 	@mkdir -p $(OBJS_PATH)Sprite
+	@mkdir -p $(OBJS_PATH)Vec
+	@mkdir -p $(OBJS_PATH)Mat
 
 clean:
 	@echo " - Cleaning objs"

@@ -11,9 +11,9 @@ namespace librender
 
 	void SpriteTessellator::clear()
 	{
-		std::vector<glm::vec2> emptyTexCoords;
-		std::vector<glm::vec2> emptyVertexes;
-		std::vector<glm::vec4> emptyColors;
+		std::vector<Vec2> emptyTexCoords;
+		std::vector<Vec2> emptyVertexes;
+		std::vector<Vec4> emptyColors;
 		this->texCoords.swap(emptyTexCoords);
 		this->vertexes.swap(emptyVertexes);
 		this->colors.swap(emptyColors);
@@ -35,7 +35,7 @@ namespace librender
 		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	}
 
-	void SpriteTessellator::add(glm::vec2 vertex, glm::vec2 texCoords, glm::vec4 color)
+	void SpriteTessellator::add(Vec2 vertex, Vec2 texCoords, Vec4 color)
 	{
 		this->texCoords.push_back(texCoords);
 		this->vertexes.push_back(vertex);

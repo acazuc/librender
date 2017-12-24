@@ -1,13 +1,13 @@
 #ifndef LIBRENDER_FONT_H
 # define LIBRENDER_FONT_H
 
+# include "../Texture.h"
 # include "FontModel.h"
 # include "FontGlyph.h"
 # include "../Color.h"
 # include <ft2build.h>
 # include FT_FREETYPE_H
 # include <cstdint>
-# include <vector>
 # include <string>
 
 namespace librender
@@ -20,8 +20,8 @@ namespace librender
 		static FT_Library ftLib;
 		FontGlyph **glyphs;
 		FontModel *parent;
+		Texture texture;
 		FT_Face ftFace;
-		unsigned int textureID;
 		char **glyphs_datas;
 		uint32_t textureHeight;
 		uint32_t textureWidth;
@@ -41,7 +41,7 @@ namespace librender
 		int32_t getWidth(std::string &text);
 		int32_t getHeight(std::string &text);
 		inline int32_t getLineHeight() {return (this->height);};
-		inline unsigned int getTextureId() {return (this->textureID);};
+		inline Texture &getTexture() {return (this->texture);};
 		void bind();
 		void drawBegin();
 		void drawEnd();

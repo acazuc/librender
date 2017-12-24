@@ -1,10 +1,9 @@
 #ifndef SPRITE_TESSELLATOR_H
 # define SPRITE_TESSELLATOR_H
 
+# include "../Vec/Vec4.h"
 # include "../Texture.h"
 # include "../GL.h"
-# include <glm/vec4.hpp>
-# include <glm/vec2.hpp>
 # include <vector>
 
 namespace librender
@@ -14,16 +13,16 @@ namespace librender
 	{
 
 	private:
-		std::vector<glm::vec2> texCoords;
-		std::vector<glm::vec2> vertexes;
-		std::vector<glm::vec4> colors;
+		std::vector<Vec2> texCoords;
+		std::vector<Vec2> vertexes;
+		std::vector<Vec4> colors;
 		Texture *texture;
 
 	public:
 		SpriteTessellator();
 		void clear();
 		void draw();
-		void add(glm::vec2 vertex, glm::vec2 texCoords, glm::vec4 color);
+		void add(Vec2 vertex, Vec2 texCoords, Vec4 color);
 		inline void setTexture(Texture *texture) {this->texture = texture;};
 
 	};

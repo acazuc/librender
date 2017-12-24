@@ -28,7 +28,6 @@ namespace librender
 		uint32_t width;
 		uint32_t height;
 		uint32_t id;
-		uint8_t sprites;
 
 	public:
 		Texture(char *data, uint32_t width, uint32_t height);
