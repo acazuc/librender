@@ -10,12 +10,11 @@ namespace librender
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				if (i == j)
-					this->data[i][j] = vec[i];
-				else
-					this->data[i][j] = 0;
+				this->data[i][j] = 0;
 			}
 		}
+		for (int i = 0; i < 4; ++i)
+			this->data[i][i] = vec[i];
 	}
 
 	Mat4::Mat4(float value)
@@ -24,17 +23,48 @@ namespace librender
 		{
 			for (int j = 0; j < 4; ++j)
 			{
-				if (i == j)
-					this->data[i][j] = value;
-				else
-					this->data[i][j] = 0;
+				this->data[i][j] = 0;
 			}
 		}
+		for (int i = 0; i < 4; ++i)
+			this->data[i][i] = value;
 	}
 
 	Vec4 &Mat4::operator [] (int i)
 	{
 		return (this->data[i]);
+	}
+
+	Mat4 Mat4::rotate(Mat4 mat, float angle, Vec3 axis)
+	{
+		float c = cos(angle);
+		float s = sin(angle);
+		float c1 = 1 - c;
+		float xs = s * axis.x;
+		float ys = s * axis.y;
+		float zs = s * axis.z;
+		float xx = axis.x * axis.x * c1;
+		float xy = axis.x * axis.y * c1;
+		float xz = axis.x * axis.z * c1;
+		float yy = axis.y * axis.y * c1;
+		float yz = axis.y * axis.z * c1;
+		float zz = axis.z * axis.z * c1;
+		axis.normalize();
+		Mat4 rotate;
+		rotate[0][0] = xx + c;
+		rotate[0][1] = xy + zs;
+		rotate[0][2] = xz - ys;
+		rotate[0][3] = 0;
+		rotate[1][0] = xy - zs;
+		rotate[1][1] = yy + c;
+		rotate[1][2] = yz + xs;
+		rotate[1][3] = 0;
+		rotate[2][0] = xz + ys;
+		rotate[2][1] = yz - xs;
+		rotate[2][2] = zz + c;
+		rotate[2][3] = 0;
+		rotate[3] = Vec4(0, 0, 0, 1);
+		return (mat * rotate);
 	}
 
 	Mat4 Mat4::rotateX(Mat4 mat, float angle)

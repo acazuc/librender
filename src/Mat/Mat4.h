@@ -14,6 +14,7 @@ namespace librender
 			Mat4(Vec4 vec);
 			Mat4(float val);
 			Mat4() {};
+			static Mat4 rotate(Mat4 mat, float angle, Vec3 axis);
 			static Mat4 rotateX(Mat4 mat, float angle);
 			static Mat4 rotateY(Mat4 mat, float angle);
 			static Mat4 rotateZ(Mat4 mat, float angle);

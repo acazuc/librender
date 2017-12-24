@@ -10,12 +10,11 @@ namespace librender
 		{
 			for (int j = 0; j < 3; ++j)
 			{
-				if (i == j)
-					this->data[i][j] = vec[i];
-				else
-					this->data[i][j] = 0;
+				this->data[i][j] = 0;
 			}
 		}
+		for (int i = 0; i < 3; ++i)
+			this->data[i][i] = vec[i];
 	}
 
 	Mat3::Mat3(float value)
@@ -24,12 +23,11 @@ namespace librender
 		{
 			for (int j = 0; j < 3; ++j)
 			{
-				if (i == j)
-					this->data[i][j] = value;
-				else
-					this->data[i][j] = 0;
+				this->data[i][j] = 0;
 			}
 		}
+		for (int i = 0; i < 3; ++i)
+			this->data[i][i] = value;
 	}
 
 	Vec3 &Mat3::operator [] (int i)
