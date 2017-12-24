@@ -113,6 +113,15 @@ namespace librender
 		return (translate(mat, Vec3(-eye)));
 	}
 
+	Mat4 Mat4::ortho(float left, float right, float bottom, float top, float near, float far)
+	{
+		Mat4 mat(Vec4(2 / (right - left), 2 / (top - bottom), -2 / (far - near), 1));
+		mat[3][0] = -(right + left) / (right - left);
+		mat[3][1] = -(top + bottom) / (top - bottom);
+		mat[3][2] = -(far + near) / (far - near);
+		return (mat);
+	}
+
 	Mat4 Mat4::operator * (Mat4 mat)
 	{
 		Mat4 result;
@@ -121,12 +130,21 @@ namespace librender
 		return (result);
 	}
 
-	Vec4 Mat4::operator * (Vec4 vec)
+	Vec4 operator * (Mat4 mat, Vec4 vec)
 	{
 		Vec4 result;
 		for (int i = 0; i < 4; ++i)
-			result[i] = vec[0] * (*this)[0][i] + vec[1] * (*this)[1][i] + vec[2] * (*this)[2][i] + vec[3] * (*this)[3][i];
+			result[i] = vec.x * mat[0][i] + vec.y * mat[1][i] + vec.z * mat[2][i] + vec.w * mat[3][i];
 		return (result);
 	}
+
+	Vec4 operator * (Vec4 vec, Mat4 mat)
+	{
+		Vec4 result;
+		for (int i = 0; i < 4; ++i)
+			result[i] = vec.x * mat[i].x + vec.y * mat[i].y + vec.z * mat[i].z + vec.w * mat[i].w;
+		return (result);
+	}
+
 
 }

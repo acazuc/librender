@@ -37,6 +37,8 @@ namespace librender
 		Vec2 operator -= (Vec2 vec);
 		Vec2 operator *= (Vec2 vec);
 		Vec2 operator /= (Vec2 vec);
+		bool operator == (Vec2 vec);
+		bool operator != (Vec2 vec);
 
 	};
 

@@ -50,6 +50,8 @@ namespace librender
 			Vec4 operator -= (Vec4 vec);
 			Vec4 operator *= (Vec4 vec);
 			Vec4 operator /= (Vec4 vec);
+			bool operator == (Vec4 vec);
+			bool operator != (Vec4 vec);
 
 	};
 

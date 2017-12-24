@@ -62,7 +62,7 @@ namespace librender
 		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
 		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
-		Mat4 model(Mat4::translate(model, Vec3(this->x, this->y, 0)));
+		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->x, this->y, 0)));
 		model = Mat4::scale(model, Vec3(this->scaleX, this->scaleY, 1));
 		Mat4 mvp(viewProj * model);
 		this->mvpLocation->setMat4f(mvp);

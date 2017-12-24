@@ -152,4 +152,14 @@ namespace librender
 		return (*this = *this / vec);
 	}
 
+	bool Vec4::operator == (Vec4 vec)
+	{
+		return (this->x == vec.x && this->y == vec.y && this->z == vec.z && this->w == vec.w);
+	}
+
+	bool Vec4::operator != (Vec4 vec)
+	{
+		return (!(*this == vec));
+	}
+
 }

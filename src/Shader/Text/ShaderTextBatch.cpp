@@ -150,7 +150,7 @@ namespace librender
 		this->texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
 		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
 		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
-		Mat4 model(Mat4::translate(model, Vec3(this->x, this->y, 0)));
+		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->x, this->y, 0)));
 		Mat4 mvp(viewProj * model);
 		this->mvpLocation->setMat4f(mvp);
 		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, NULL);

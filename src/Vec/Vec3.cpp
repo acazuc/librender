@@ -32,7 +32,7 @@ namespace librender
 
 	void Vec3::normalize()
 	{
-		*this = *this / this->length();
+		*this /= this->length();
 	}
 
 	void Vec3::min(float val)
@@ -143,6 +143,16 @@ namespace librender
 	Vec3 Vec3::operator /= (Vec3 vec)
 	{
 		return (*this = *this / vec);
+	}
+
+	bool Vec3::operator == (Vec3 vec)
+	{
+		return (this->x == vec.x && this->y == vec.y && this->z == vec.z);
+	}
+
+	bool Vec3::operator != (Vec3 vec)
+	{
+		return (!(*this == vec));
 	}
 
 }

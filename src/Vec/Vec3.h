@@ -44,6 +44,8 @@ namespace librender
 		Vec3 operator -= (Vec3 vec);
 		Vec3 operator *= (Vec3 vec);
 		Vec3 operator /= (Vec3 vec);
+		bool operator == (Vec3 vec);
+		bool operator != (Vec3 vec);
 
 	};
 
