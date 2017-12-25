@@ -17,14 +17,8 @@ namespace librender
 		T angle(TVec2<T> vec);
 		T length();
 		void normalize();
-		void min(T val);
-		void max(T val);
-		void clamp(T min, T max);
 		T &operator [] (int idx);
-		TVec2<T> operator + (TVec2<T> vec);
-		TVec2<T> operator - (TVec2<T> vec);
-		TVec2<T> operator * (TVec2<T> vec);
-		TVec2<T> operator / (TVec2<T> vec);
+		TVec2<T> operator - ();
 		TVec2<T> operator += (T val);
 		TVec2<T> operator -= (T val);
 		TVec2<T> operator *= (T val);
@@ -39,17 +33,25 @@ namespace librender
 	};
 
 	template <typename T>
+	TVec2<T> operator + (TVec2<T> vec1, TVec2<T> vec2);
+	template <typename T>
 	TVec2<T> operator + (TVec2<T> vec, T val);
 	template <typename T>
 	TVec2<T> operator + (T val, TVec2<T> vec);
+	template <typename T>
+	TVec2<T> operator - (TVec2<T> vec1, TVec2<T> vec2);
 	template <typename T>
 	TVec2<T> operator - (TVec2<T> vec, T val);
 	template <typename T>
 	TVec2<T> operator - (T val, TVec2<T> vec);
 	template <typename T>
+	TVec2<T> operator * (TVec2<T> vec1, TVec2<T> vec2);
+	template <typename T>
 	TVec2<T> operator * (TVec2<T> vec, T val);
 	template <typename T>
 	TVec2<T> operator * (T val, TVec2<T> vec);
+	template <typename T>
+	TVec2<T> operator / (TVec2<T> vec1, TVec2<T> vec2);
 	template <typename T>
 	TVec2<T> operator / (TVec2<T> vec, T val);
 	template <typename T>

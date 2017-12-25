@@ -25,10 +25,6 @@ namespace librender
 		void normalize();
 		T &operator [] (int idx);
 		TVec3<T> operator - ();
-		TVec3<T> operator + (TVec3<T> vec);
-		TVec3<T> operator - (TVec3<T> vec);
-		TVec3<T> operator * (TVec3<T> vec);
-		TVec3<T> operator / (TVec3<T> vec);
 		TVec3<T> operator += (T val);
 		TVec3<T> operator -= (T val);
 		TVec3<T> operator *= (T val);
@@ -43,17 +39,25 @@ namespace librender
 	};
 
 	template <typename T>
+	TVec3<T> operator + (TVec3<T> vec1, TVec3<T> vec2);
+	template <typename T>
 	TVec3<T> operator + (TVec3<T> vec, T val);
 	template <typename T>
 	TVec3<T> operator + (T val, TVec3<T> vec);
+	template <typename T>
+	TVec3<T> operator - (TVec3<T> vec1, TVec3<T> vec2);
 	template <typename T>
 	TVec3<T> operator - (TVec3<T> vec, T val);
 	template <typename T>
 	TVec3<T> operator - (T val, TVec3<T> vec);
 	template <typename T>
+	TVec3<T> operator * (TVec3<T> vec1, TVec3<T> vec2);
+	template <typename T>
 	TVec3<T> operator * (TVec3<T> vec, T val);
 	template <typename T>
 	TVec3<T> operator * (T val, TVec3<T> vec);
+	template <typename T>
+	TVec3<T> operator / (TVec3<T> vec1, TVec3<T> vec2);
 	template <typename T>
 	TVec3<T> operator / (TVec3<T> vec, T val);
 	template <typename T>

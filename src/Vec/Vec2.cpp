@@ -33,54 +33,15 @@ namespace librender
 	}
 
 	template <typename T>
-	void TVec2<T>::min(T val)
-	{
-		this->x = std::min(val, this->x);
-		this->y = std::min(val, this->y);
-	}
-
-	template <typename T>
-	void TVec2<T>::max(T val)
-	{
-		this->x = std::max(val, this->x);
-		this->y = std::max(val, this->y);
-	}
-
-	template <typename T>
-	void TVec2<T>::clamp(T min, T max)
-	{
-		this->max(min);
-		this->min(max);
-	}
-
-	template <typename T>
 	T &TVec2<T>::operator [] (int idx)
 	{
 		return (reinterpret_cast<T*>(this)[idx]);
 	}
 
 	template <typename T>
-	TVec2<T> TVec2<T>::operator + (TVec2<T> vec)
+	TVec2<T> TVec2<T>::operator - ()
 	{
-		return (TVec2<T>(this->x + vec.x, this->y + vec.y));
-	}
-
-	template <typename T>
-	TVec2<T> TVec2<T>::operator - (TVec2<T> vec)
-	{
-		return (TVec2<T>(this->x - vec.x, this->y - vec.y));
-	}
-
-	template <typename T>
-	TVec2<T> TVec2<T>::operator * (TVec2<T> vec)
-	{
-		return (TVec2<T>(this->x * vec.x, this->y * vec.y));
-	}
-
-	template <typename T>
-	TVec2<T> TVec2<T>::operator / (TVec2<T> vec)
-	{
-		return (TVec2<T>(this->x / vec.x, this->y / vec.y));
+		return (TVec2<T>(-this->x, -this->y));
 	}
 
 	template <typename T>
@@ -144,6 +105,12 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec2<T> operator + (TVec2<T> vec1, TVec2<T> vec2)
+	{
+		return (TVec2<T>(vec1.x + vec2.x, vec1.y + vec2.y));
+	}
+
+	template <typename T>
 	TVec2<T> operator + (TVec2<T> vec, T val)
 	{
 		return (TVec2<T>(vec.x + val, vec.y + val));
@@ -153,6 +120,12 @@ namespace librender
 	TVec2<T> operator + (T val, TVec2<T> vec)
 	{
 		return (TVec2<T>(val + vec.x, val + vec.y));
+	}
+
+	template <typename T>
+	TVec2<T> operator - (TVec2<T> vec1, TVec2<T> vec2)
+	{
+		return (TVec2<T>(vec1.x - vec2.x, vec1.y - vec2.y));
 	}
 
 	template <typename T>
@@ -168,6 +141,12 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec2<T> operator * (TVec2<T> vec1, TVec2<T> vec2)
+	{
+		return (TVec2<T>(vec1.x * vec2.x, vec1.y * vec2.y));
+	}
+
+	template <typename T>
 	TVec2<T> operator * (TVec2<T> vec, T val)
 	{
 		return (TVec2<T>(vec.x * val, vec.y * val));
@@ -177,6 +156,12 @@ namespace librender
 	TVec2<T> operator * (T val, TVec2<T> vec)
 	{
 		return (TVec2<T>(val * vec.x, val * vec.y));
+	}
+
+	template <typename T>
+	TVec2<T> operator / (TVec2<T> vec1, TVec2<T> vec2)
+	{
+		return (TVec2<T>(vec1.x / vec2.x, vec1.y / vec2.y));
 	}
 
 	template <typename T>

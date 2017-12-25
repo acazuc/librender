@@ -31,10 +31,7 @@ namespace librender
 		TVec2<T> xy();
 		TVec2<T> zw();
 		T &operator [] (int idx);
-		TVec4<T> operator + (TVec4<T> vec);
-		TVec4<T> operator - (TVec4<T> vec);
-		TVec4<T> operator * (TVec4<T> vec);
-		TVec4<T> operator / (TVec4<T> vec);
+		TVec4<T> operator - ();
 		TVec4<T> operator += (T val);
 		TVec4<T> operator -= (T val);
 		TVec4<T> operator *= (T val);
@@ -49,17 +46,25 @@ namespace librender
 	};
 
 	template <typename T>
+	TVec4<T> operator + (TVec4<T> vec1, TVec4<T> vec2);
+	template <typename T>
 	TVec4<T> operator + (TVec4<T> vec, T val);
 	template <typename T>
 	TVec4<T> operator + (T val, TVec4<T> vec);
+	template <typename T>
+	TVec4<T> operator - (TVec4<T> vec1, TVec4<T> vec2);
 	template <typename T>
 	TVec4<T> operator - (TVec4<T> vec, T val);
 	template <typename T>
 	TVec4<T> operator - (T val, TVec4<T> vec);
 	template <typename T>
+	TVec4<T> operator * (TVec4<T> vec1, TVec4<T> vec2);
+	template <typename T>
 	TVec4<T> operator * (TVec4<T> vec, T val);
 	template <typename T>
 	TVec4<T> operator * (T val, TVec4<T> vec);
+	template <typename T>
+	TVec4<T> operator / (TVec4<T> vec1, TVec4<T> vec2);
 	template <typename T>
 	TVec4<T> operator / (TVec4<T> vec, T val);
 	template <typename T>

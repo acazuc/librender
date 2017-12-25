@@ -51,27 +51,9 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec3<T> TVec3<T>::operator + (TVec3<T> vec)
+	TVec3<T> TVec3<T>::operator - ()
 	{
-		return (TVec3<T>(this->x + vec.x, this->y + vec.y, this->z + vec.z));
-	}
-
-	template <typename T>
-	TVec3<T> TVec3<T>::operator - (TVec3<T> vec)
-	{
-		return (TVec3<T>(this->x - vec.x, this->y - vec.y, this->z - vec.z));
-	}
-
-	template <typename T>
-	TVec3<T> TVec3<T>::operator * (TVec3<T> vec)
-	{
-		return (TVec3<T>(this->x * vec.x, this->y * vec.y, this->z * vec.z));
-	}
-
-	template <typename T>
-	TVec3<T> TVec3<T>::operator / (TVec3<T> vec)
-	{
-		return (TVec3<T>(this->x / vec.x, this->y / vec.y, this->z / vec.z));
+		return (TVec3<T>(-this->x, -this->y, -this->z));
 	}
 
 	template <typename T>
@@ -135,6 +117,12 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec3<T> operator + (TVec3<T> vec1, TVec3<T> vec2)
+	{
+		return (TVec3<T>(vec1.x + vec2.x, vec1.y + vec2.y, vec1.z + vec2.z));
+	}
+
+	template <typename T>
 	TVec3<T> operator + (TVec3<T> vec, T val)
 	{
 		return (TVec3<T>(vec.x + val, vec.y + val, vec.z + val));
@@ -144,6 +132,12 @@ namespace librender
 	TVec3<T> operator + (T val, TVec3<T> vec)
 	{
 		return (TVec3<T>(val + vec.x, val + vec.y, val + vec.z));
+	}
+
+	template <typename T>
+	TVec3<T> operator - (TVec3<T> vec1, TVec3<T> vec2)
+	{
+		return (TVec3<T>(vec1.x - vec2.x, vec1.y - vec2.y, vec1.z - vec2.z));
 	}
 
 	template <typename T>
@@ -159,6 +153,12 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec3<T> operator * (TVec3<T> vec1, TVec3<T> vec2)
+	{
+		return (TVec3<T>(vec1.x * vec2.x, vec1.y * vec2.y, vec1.z * vec2.z));
+	}
+
+	template <typename T>
 	TVec3<T> operator * (TVec3<T> vec, T val)
 	{
 		return (TVec3<T>(vec.x * val, vec.y * val, vec.z * val));
@@ -168,6 +168,12 @@ namespace librender
 	TVec3<T> operator * (T val, TVec3<T> vec)
 	{
 		return (TVec3<T>(val * vec.x, val * vec.y, val * vec.z));
+	}
+
+	template <typename T>
+	TVec3<T> operator / (TVec3<T> vec1, TVec3<T> vec2)
+	{
+		return (TVec3<T>(vec1.x / vec2.x, vec1.y / vec2.y, vec1.z / vec2.z));
 	}
 
 	template <typename T>

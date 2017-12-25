@@ -63,27 +63,9 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec4<T> TVec4<T>::operator + (TVec4<T> vec)
+	TVec4<T> TVec4<T>::operator - ()
 	{
-		return (TVec4(this->x + vec.x, this->y + vec.y, this->z + vec.z, this->w + vec.w));
-	}
-
-	template <typename T>
-	TVec4<T> TVec4<T>::operator - (TVec4<T> vec)
-	{
-		return (TVec4(this->x - vec.x, this->y - vec.y, this->z - vec.z, this->w - vec.w));
-	}
-
-	template <typename T>
-	TVec4<T> TVec4<T>::operator * (TVec4<T> vec)
-	{
-		return (TVec4(this->x * vec.x, this->y * vec.y, this->z * vec.z, this->w * vec.w));
-	}
-
-	template <typename T>
-	TVec4<T> TVec4<T>::operator / (TVec4<T> vec)
-	{
-		return (TVec4(this->x / vec.x, this->y / vec.y, this->z / vec.z, this->w / vec.w));
+		return (TVec4<T>(-this->x, -this->y, -this->z, -this->w));
 	}
 
 	template <typename T>
@@ -147,15 +129,27 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec4<T> operator + (TVec4<T> vec1, TVec4<T> vec2)
+	{
+		return (TVec4<T>(vec1.x + vec2.x, vec1.y + vec2.y, vec1.z + vec2.z, vec1.w + vec2.w));
+	}
+
+	template <typename T>
 	TVec4<T> operator + (TVec4<T> vec, T val)
 	{
-		return (TVec4<T>(vec.x + val, vec.y + val, vec.z + val, vec.z + val));
+		return (TVec4<T>(vec.x + val, vec.y + val, vec.z + val, vec.w + val));
 	}
 
 	template <typename T>
 	TVec4<T> operator + (T val, TVec4<T> vec)
 	{
 		return (TVec4<T>(val + vec.x, val + vec.y, val + vec.z, val + vec.w));
+	}
+
+	template <typename T>
+	TVec4<T> operator - (TVec4<T> vec1, TVec4<T> vec2)
+	{
+		return (TVec4<T>(vec1.x - vec2.x, vec1.y - vec2.y, vec1.z - vec2.z, vec1.w - vec2.w));
 	}
 
 	template <typename T>
@@ -171,6 +165,12 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec4<T> operator * (TVec4<T> vec1, TVec4<T> vec2)
+	{
+		return (TVec4<T>(vec1.x * vec2.x, vec1.y * vec2.y, vec1.z * vec2.z, vec1.w * vec2.w));
+	}
+
+	template <typename T>
 	TVec4<T> operator * (TVec4<T> vec, T val)
 	{
 		return (TVec4<T>(vec.x * val, vec.y * val, vec.z * val, vec.w * val));
@@ -180,6 +180,12 @@ namespace librender
 	TVec4<T> operator * (T val, TVec4<T> vec)
 	{
 		return (TVec4<T>(val * vec.x, val * vec.y, val * vec.z, val * vec.w));
+	}
+
+	template <typename T>
+	TVec4<T> operator / (TVec4<T> vec1, TVec4<T> vec2)
+	{
+		return (TVec4<T>(vec1.x / vec2.x, vec1.y / vec2.y, vec1.z / vec2.z, vec1.w / vec2.w));
 	}
 
 	template <typename T>
