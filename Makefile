@@ -58,6 +58,7 @@ SRCS_NAME = Color.cpp \
 		Sprite/SpriteEntry.cpp \
 		Sprite/SpriteBatch.cpp \
 		Sprite/SpriteBatchEntry.cpp \
+		Sprite/SpriteTessellator.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 

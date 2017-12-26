@@ -6,7 +6,7 @@ namespace librender
 {
 
 	GeometryShader::GeometryShader(const char *data)
-	: Shader(GL_VERTEX_SHADER, data)
+	: Shader(GL_GEOMETRY_SHADER_ARB, data)
 	{
 		//Empty
 	}

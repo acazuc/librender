@@ -8,11 +8,13 @@ namespace librender
 {
 
 	ShaderTextEntry::ShaderTextEntry()
-	: texCoords(NULL)
+	: shadowColor(Color::BLACK)
+	, color(Color::WHITE)
+	, texCoords(NULL)
 	, vertexes(NULL)
 	, colors(NULL)
-	, shadowColor(Color::BLACK)
-	, color(Color::WHITE)
+	, scale(1)
+	, pos(0)
 	, verticesNumber(0)
 	, charsNumber(0)
 	, updatesRequired(0)
@@ -24,10 +26,6 @@ namespace librender
 	, height(0)
 	, width(0)
 	, opacity(1)
-	, scaleX(1)
-	, scaleY(1)
-	, x(0)
-	, y(0)
 	, mustCalcHeight(false)
 	, mustCalcWidth(false)
 	{
@@ -41,14 +39,14 @@ namespace librender
 		delete[] (this->colors);
 	}
 
-	void ShaderTextEntry::fillTexCoords(GLfloat *texCoords)
+	void ShaderTextEntry::fillTexCoords(Vec2 *texCoords)
 	{
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = iter + this->text.length();
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t currentChar = utf8::next(iter, end);
-			getFont()->glArrayCharPart(currentChar, &texCoords[i * 8]);
+			getFont()->glArrayCharPart(currentChar, reinterpret_cast<float*>(&texCoords[i * 4]));
 		}
 		if (this->shadowSize <= 0)
 			return;
@@ -65,11 +63,11 @@ namespace librender
 		}
 		for (uint32_t i = 0; i < max; ++i)
 		{
-			std::memcpy(&texCoords[this->charsNumber * 8 * (i + 1)], &texCoords[0], this->charsNumber * 8 * sizeof(*texCoords));
+			std::memcpy(&texCoords[this->charsNumber * 4 * (i + 1)], &texCoords[0], this->charsNumber * 4 * sizeof(*texCoords));
 		}
 	}
 
-	void ShaderTextEntry::fillVertexes(GLfloat *vertexes)
+	void ShaderTextEntry::fillVertexes(Vec2 *vertexes)
 	{
 		int32_t shadowLen;
 		if (this->shadowSize <= 0)
@@ -90,7 +88,7 @@ namespace librender
 		float y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = iter + this->text.length();
-		int32_t index = (shadowLen * this->charsNumber) * 8;
+		int32_t index = (shadowLen * this->charsNumber) * 4;
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t currentChar = utf8::next(iter, end);
@@ -98,15 +96,15 @@ namespace librender
 			{
 				y += getLineHeight();
 				x = 0;
-				std::memset(&vertexes[index], 0, 8 * sizeof(*this->vertexes));
-				index += 8;
+				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes));
+				index += 4;
 				continue;
 			}
 			FontGlyph *glyph = getFont()->getGlyph(currentChar);
 			if (!glyph)
 			{
-				std::memset(&vertexes[index], 0, 8 * sizeof(*this->vertexes));
-				index += 8;
+				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes));
+				index += 4;
 				continue;
 			}
 			else
@@ -116,14 +114,18 @@ namespace librender
 				float charRenderHeight = glyph->getHeight();
 				float charRenderX = x + glyph->getOffsetX();
 				float charRenderY = y + glyph->getOffsetY();
-				vertexes[index++] = charRenderX;
-				vertexes[index++] = charRenderY;
-				vertexes[index++] = charRenderX + charRenderWidth;
-				vertexes[index++] = charRenderY;
-				vertexes[index++] = charRenderX + charRenderWidth;
-				vertexes[index++] = charRenderY + charRenderHeight;
-				vertexes[index++] = charRenderX;
-				vertexes[index++] = charRenderY + charRenderHeight;
+				vertexes[index].x = charRenderX;
+				vertexes[index].y = charRenderY;
+				index++;
+				vertexes[index].x = charRenderX + charRenderWidth;
+				vertexes[index].y = charRenderY;
+				index++;
+				vertexes[index].x = charRenderX + charRenderWidth;
+				vertexes[index].y = charRenderY + charRenderHeight;
+				index++;
+				vertexes[index].x = charRenderX;
+				vertexes[index].y = charRenderY + charRenderHeight;
+				index++;
 				x += charWidth;
 			}
 			if (this->maxWidth > 0 && x >= this->maxWidth)
@@ -136,27 +138,27 @@ namespace librender
 			return;
 		uint32_t tmp = 1 + (this->shadowSize - 1) * 2;
 		uint8_t arrCount = 0;
-		int32_t tmp2 = shadowLen * this->charsNumber * 8;
-		for (uint8_t i = 0; i < tmp * tmp; ++i)
+		int32_t tmp2 = shadowLen * this->charsNumber * 4;
+		int32_t tmptmp = tmp * tmp;
+		for (uint8_t i = 0; i < tmptmp; ++i)
 		{
 			int8_t sx = i % tmp - (this->shadowSize - 1);
 			int8_t sy = i / tmp - (this->shadowSize - 1);
 			if (std::abs(sx) == std::abs(sy) && this->shadowSize != 1)
 				continue;
-			uint32_t index = this->charsNumber * 8 * arrCount;
+			uint32_t index = this->charsNumber * 4 * arrCount;
 			uint32_t add = 0;
+			Vec2 vtmp(this->shadowX + sx, this->shadowY + sy);
 			for (uint32_t j = 0; j < this->charsNumber * 4; ++j)
 			{
-				vertexes[index + add] = vertexes[tmp2 + add] + (sx + this->shadowX);
-				++add;
-				vertexes[index + add] = vertexes[tmp2 + add] + (sy + this->shadowY);
+				vertexes[index + add] = vertexes[tmp2 + add] + vtmp;
 				++add;
 			}
 			arrCount++;
 		}
 	}
 
-	void ShaderTextEntry::fillColors(GLfloat *colors)
+	void ShaderTextEntry::fillColors(Vec4 *colors)
 	{
 		int32_t shadowLen;
 		if (this->shadowSize <= 0)
@@ -175,11 +177,11 @@ namespace librender
 		}
 		{
 			float tab[4] = {this->color.getRed(), this->color.getGreen(), this->color.getBlue(), this->color.getAlpha() * this->opacity};
-			int32_t tmp = (shadowLen * this->charsNumber * 4) * 4;
+			int32_t tmp = shadowLen * this->charsNumber * 4;
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
 			{
 				std::memcpy(&colors[tmp], tab, sizeof(tab));
-				tmp += 4;
+				tmp++;
 			}
 		}
 		if (this->shadowSize <= 0)
@@ -187,10 +189,10 @@ namespace librender
 		{
 			float tab[4] = {this->shadowColor.getRed(), this->shadowColor.getGreen(), this->shadowColor.getBlue(), this->shadowColor.getAlpha() * this->opacity};
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-				std::memcpy(&colors[i * 4], tab, sizeof(tab));
+				std::memcpy(&colors[i], tab, sizeof(tab));
 		}
 		for (uint16_t i = 1; i < shadowLen; ++i)
-			std::memcpy(&colors[this->charsNumber * 4 * 4 * i], &colors[0], this->charsNumber * 4 * 4 * sizeof(*colors));
+			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * 4 * sizeof(*colors));
 	}
 
 	void ShaderTextEntry::update()
@@ -234,11 +236,11 @@ namespace librender
 			this->verticesNumber *= fac;
 		}
 		delete[] (this->texCoords);
-		this->texCoords = new GLfloat[this->verticesNumber * 2 + 1];
+		this->texCoords = new Vec2[this->verticesNumber + 1];
 		delete[] (this->vertexes);
-		this->vertexes = new GLfloat[this->verticesNumber * 2 + 1];
+		this->vertexes = new Vec2[this->verticesNumber + 1];
 		delete[] (this->colors);
-		this->colors = new GLfloat[this->verticesNumber * 4 + 1];
+		this->colors = new Vec4[this->verticesNumber + 1];
 	}
 
 	void ShaderTextEntry::setText(std::string &text)
@@ -306,16 +308,16 @@ namespace librender
 
 	void ShaderTextEntry::setScaleX(float scaleX)
 	{
-		if (this->scaleX == scaleX)
+		if (this->scale.x == scaleX)
 			return;
-		this->scaleX = scaleX;
+		this->scale.x = scaleX;
 	}
 
 	void ShaderTextEntry::setScaleY(float scaleY)
 	{
-		if (this->scaleY == scaleY)
+		if (this->scale.y == scaleY)
 			return;
-		this->scaleY = scaleY;
+		this->scale.y = scaleY;
 	}
 
 	void ShaderTextEntry::setMaxWidth(int32_t maxWidth)
@@ -336,7 +338,7 @@ namespace librender
 				this->width = getFont()->getWidth(this->text);
 			this->mustCalcWidth = false;
 		}
-		return (this->width * this->scaleX);
+		return (this->width * this->scale.x);
 	}
 
 	int32_t ShaderTextEntry::getHeight()
@@ -349,7 +351,7 @@ namespace librender
 				this->height = getFont()->getHeight(this->text);
 			this->mustCalcHeight = false;
 		}
-		return (this->height * this->scaleY);
+		return (this->height * this->scale.y);
 	}
 
 	int32_t ShaderTextEntry::getLineHeight()
@@ -358,9 +360,9 @@ namespace librender
 		{
 			if (!getFont())
 				return (0);
-			return (getFont()->getLineHeight() * this->scaleY);
+			return (getFont()->getLineHeight() * this->scale.y);
 		}
-		return (this->lineHeight * this->scaleY);
+		return (this->lineHeight * this->scale.y);
 	}
 
 }

@@ -47,43 +47,43 @@ namespace librender
 
 	void ShaderSpriteBatchEntry::setX(float x)
 	{
-		if (this->x == x)
+		if (this->pos.x == x)
 			return;
-		float delta = x - this->x;
+		float delta = x - this->pos.x;
 		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-			this->vertexes[i * 2] += delta;
-		this->x = x;
+			this->vertexes[i].x += delta;
+		this->pos.x = x;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
 	void ShaderSpriteBatchEntry::setY(float y)
 	{
-		if (this->y == y)
+		if (this->pos.y == y)
 			return;
-		float delta = y - this->y;
+		float delta = y - this->pos.y;
 		for (uint32_t i = 0; i < this->verticesNumber; ++i)
-			this->vertexes[i * 2 + 1] += delta;
-		this->y = y;
+			this->vertexes[i].y += delta;
+		this->pos.y = y;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 	
 	void ShaderSpriteBatchEntry::setWidth(float width)
 	{
-		float delta = width - (this->vertexes[2] - this->x);
+		float delta = width - (this->vertexes[1].x - this->pos.x);
 		if (!delta)
 			return;
-		this->vertexes[2] = width + this->x;
-		this->vertexes[4] = width + this->x;
+		this->vertexes[1].x = width + this->pos.x;
+		this->vertexes[2].x = width + this->pos.x;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
 	void ShaderSpriteBatchEntry::setHeight(float height)
 	{
-		float delta = height - (this->vertexes[7] - this->y);
+		float delta = height - (this->vertexes[3].y - this->pos.y);
 		if (!delta)
 			return;
-		this->vertexes[5] = height + this->y;
-		this->vertexes[7] = height + this->y;
+		this->vertexes[2].y = height + this->pos.y;
+		this->vertexes[3].y = height + this->pos.y;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 

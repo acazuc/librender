@@ -7,25 +7,19 @@ namespace librender
 {
 
 	ShaderSpriteEntry::ShaderSpriteEntry()
-	: verticesNumber(4)
+	: scale(1)
+	, pos(0)
+	, verticesNumber(4)
 	, updatesRequired(0)
-	, scaleX(1)
-	, scaleY(1)
-	, x(0)
-	, y(0)
 	{
-		texCoords[0] = 0;
-		texCoords[1] = 0;
-		texCoords[2] = 1;
-		texCoords[3] = 0;
-		texCoords[4] = 1;
-		texCoords[5] = 1;
-		texCoords[6] = 0;
-		texCoords[7] = 1;
-		for (uint8_t i = 0; i < 16; ++i)
-			colors[i] = 1;
-		for (uint8_t i = 0; i < 8; ++i)
-			vertexes[i] = 0;
+		texCoords[0] = Vec2(0, 0);
+		texCoords[1] = Vec2(1, 0);
+		texCoords[2] = Vec2(1, 1);
+		texCoords[3] = Vec2(0, 1);
+		for (uint8_t i = 0; i < 4; ++i)
+			colors[i] = Vec4(1);
+		for (uint8_t i = 0; i < 4; ++i)
+			vertexes[i] = Vec2(0);
 		this->updatesRequired = SHADER_SPRITE_UPDATE_TEX_COORDS | SHADER_SPRITE_UPDATE_VERTEXES | SHADER_SPRITE_UPDATE_COLORS;
 	}
 
@@ -34,17 +28,17 @@ namespace librender
 		//Empty
 	}
 
-	void ShaderSpriteEntry::fillTexCoords(GLfloat *texCoords)
+	void ShaderSpriteEntry::fillTexCoords(Vec2 *texCoords)
 	{
 		std::memcpy(texCoords, this->texCoords, sizeof(this->texCoords));
 	}
 
-	void ShaderSpriteEntry::fillVertexes(GLfloat *vertexes)
+	void ShaderSpriteEntry::fillVertexes(Vec2 *vertexes)
 	{
 		std::memcpy(vertexes, this->vertexes, sizeof(this->vertexes));
 	}
 
-	void ShaderSpriteEntry::fillColors(GLfloat *colors)
+	void ShaderSpriteEntry::fillColors(Vec4 *colors)
 	{
 		std::memcpy(colors, this->colors, sizeof(this->colors));
 	}
@@ -94,59 +88,59 @@ namespace librender
 
 	void ShaderSpriteEntry::setTopRightColor(Color &color)
 	{
-		std::memcpy(&this->colors[4], &color, sizeof(*this->colors) * 4);
+		std::memcpy(&this->colors[1], &color, sizeof(*this->colors) * 4);
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
 	void ShaderSpriteEntry::setBotLeftColor(Color &color)
 	{
-		std::memcpy(&this->colors[12], &color, sizeof(*this->colors) * 4);
+		std::memcpy(&this->colors[2], &color, sizeof(*this->colors) * 4);
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
 	void ShaderSpriteEntry::setBotRightColor(Color &color)
 	{
-		std::memcpy(&this->colors[8], &color, sizeof(*this->colors) * 4);
+		std::memcpy(&this->colors[3], &color, sizeof(*this->colors) * 4);
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
 	void ShaderSpriteEntry::setScaleX(float scaleX)
 	{
-		if (this->scaleX == scaleX)
+		if (this->scale.x == scaleX)
 			return;
-		this->scaleX = scaleX;
+		this->scale.y = scaleX;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
 	void ShaderSpriteEntry::setScaleY(float scaleY)
 	{
-		if (this->scaleY == scaleY)
+		if (this->scale.x == scaleY)
 			return;
-		this->scaleY = scaleY;
+		this->scale.y = scaleY;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
 	void ShaderSpriteEntry::setTexX(float texX)
 	{
-		float delta = texX - this->texCoords[0];
+		float delta = texX - this->texCoords[0].x;
 		if (!delta)
 			return;
-		this->texCoords[0] = texX;
-		this->texCoords[6] = texX;
-		this->texCoords[2] += delta;
-		this->texCoords[4] += delta;
+		this->texCoords[0].x = texX;
+		this->texCoords[1].x += delta;
+		this->texCoords[2].x += delta;
+		this->texCoords[3].x = texX;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
 	}
 
 	void ShaderSpriteEntry::setTexY(float texY)
 	{
-		float delta = texY - this->texCoords[1];
+		float delta = texY - this->texCoords[0].y;
 		if (!delta)
 			return;
-		this->texCoords[1] = texY;
-		this->texCoords[3] = texY;
-		this->texCoords[5] += delta;
-		this->texCoords[7] += delta;
+		this->texCoords[0].y = texY;
+		this->texCoords[1].y = texY;
+		this->texCoords[2].y += delta;
+		this->texCoords[3].y += delta;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
 	}
 
@@ -158,21 +152,21 @@ namespace librender
 
 	void ShaderSpriteEntry::setTexWidth(float texWidth)
 	{
-		float delta = texWidth - (this->texCoords[2] - this->texCoords[0]);
+		float delta = texWidth - (this->texCoords[1].x - this->texCoords[0].x);
 		if (!delta)
 			return;
-		this->texCoords[2] = texWidth + this->texCoords[0];
-		this->texCoords[4] = texWidth + this->texCoords[0];
+		this->texCoords[1].x = texWidth + this->texCoords[0].x;
+		this->texCoords[2].x = texWidth + this->texCoords[0].x;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
 	}
 
 	void ShaderSpriteEntry::setTexHeight(float texHeight)
 	{
-		float delta = texHeight - (this->texCoords[7] - this->texCoords[1]);
+		float delta = texHeight - (this->texCoords[3].y - this->texCoords[0].y);
 		if (!delta)
 			return;
-		this->texCoords[5] = texHeight + this->texCoords[1];
-		this->texCoords[7] = texHeight + this->texCoords[1];
+		this->texCoords[2].y = texHeight + this->texCoords[0].y;
+		this->texCoords[3].y = texHeight + this->texCoords[0].y;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
 	}
 
@@ -184,21 +178,21 @@ namespace librender
 
 	void ShaderSpriteEntry::setWidth(float width)
 	{
-		float delta = width - (this->vertexes[2] - this->vertexes[0]);
+		float delta = width - (this->vertexes[1].x - this->vertexes[0].x);
 		if (!delta)
 			return;
-		this->vertexes[2] = width;
-		this->vertexes[4] = width;
+		this->vertexes[1].x = width;
+		this->vertexes[2].x = width;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
 	void ShaderSpriteEntry::setHeight(float height)
 	{
-		float delta = height - (this->vertexes[7] - this->vertexes[1]);
+		float delta = height - (this->vertexes[3].y - this->vertexes[0].y);
 		if (!delta)
 			return;
-		this->vertexes[5] = height;
-		this->vertexes[7] = height;
+		this->vertexes[2].y = height;
+		this->vertexes[3].y = height;
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 

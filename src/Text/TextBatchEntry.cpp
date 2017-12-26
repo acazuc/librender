@@ -36,7 +36,7 @@ namespace librender
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
 			{
 				this->vertexes[i * 2 + 0] *= this->scaleX;
-				this->vertexes[i * 2 + 0] *= this->scaleY;
+				this->vertexes[i * 2 + 1] *= this->scaleY;
 				this->vertexes[i * 2 + 0] += this->x;
 				this->vertexes[i * 2 + 1] += this->y;
 			}

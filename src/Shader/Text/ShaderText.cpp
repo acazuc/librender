@@ -32,11 +32,11 @@ namespace librender
 		uint8_t changes = this->updatesRequired;
 		update();
 		if (changes & SHADER_TEXT_UPDATE_TEX_COORDS)
-			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, sizeof(*this->texCoords) * this->verticesNumber * 2, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, sizeof(*this->texCoords) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_TEXT_UPDATE_VERTEXES)
-			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, sizeof(*this->vertexes) * this->verticesNumber * 2, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, sizeof(*this->vertexes) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_TEXT_UPDATE_COLORS)
-			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber * 4, GL_FLOAT, 4, GL_DYNAMIC_DRAW);
+			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber, GL_FLOAT, 4, GL_DYNAMIC_DRAW);
 		if (this->verticesNumber != this->oldVerticesNumber)
 		{
 			this->oldVerticesNumber = this->verticesNumber;
@@ -62,8 +62,8 @@ namespace librender
 		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
 		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
-		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->x, this->y, 0)));
-		model = Mat4::scale(model, Vec3(this->scaleX, this->scaleY, 1));
+		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
+		model = Mat4::scale(model, Vec3(this->scale, 1));
 		Mat4 mvp(viewProj * model);
 		this->mvpLocation->setMat4f(mvp);
 		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, NULL);

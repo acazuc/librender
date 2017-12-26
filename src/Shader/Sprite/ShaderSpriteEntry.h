@@ -1,6 +1,8 @@
 #ifndef LIBRENDER_SHADER_SPRITE_ENTRY_H
 # define LIBRENDER_SHADER_SPRITE_ENTRY_H
 
+# include "../../Vec/Vec4.h"
+# include "../../Vec/Vec2.h"
 # include "../../Texture.h"
 # include <cstdlib>
 
@@ -11,26 +13,24 @@ namespace librender
 	{
 
 	protected:
-		float texCoords[8];
-		float vertexes[8];
-		float colors[16];
+		Vec2 texCoords[4];
+		Vec2 vertexes[4];
+		Vec4 colors[4];
+		Vec2 scale;
+		Vec2 pos;
 		uint32_t verticesNumber;
 		uint8_t updatesRequired;
-		float scaleX;
-		float scaleY;
-		float x;
-		float y;
-		void fillTexCoords(float *texCoords);
-		void fillVertexes(float *vertexes);
-		void fillColors(float *colors);
+		void fillTexCoords(Vec2 *texCoords);
+		void fillVertexes(Vec2 *vertexes);
+		void fillColors(Vec4 *colors);
 
 	public:
 		ShaderSpriteEntry();
 		virtual ~ShaderSpriteEntry();
 		virtual void update();
-		inline float *getTexCoords() {return (this->texCoords);};
-		inline float *getVertexes() {return (this->vertexes);};
-		inline float *getColors() {return (this->colors);};
+		inline Vec2 *getTexCoords() {return (this->texCoords);};
+		inline Vec2 *getVertexes() {return (this->vertexes);};
+		inline Vec4 *getColors() {return (this->colors);};
 		void setColor(Color &color);
 		void setTopColor(Color &color);
 		void setBotColor(Color &color);
@@ -43,9 +43,9 @@ namespace librender
 		virtual Texture *getTexture() {return (NULL);};
 		inline uint32_t getVerticesNumber() {return (this->verticesNumber);};
 		void setScaleX(float scaleX);
-		inline float getScaleX() {return (this->scaleX);};
+		inline float getScaleX() {return (this->scale.x);};
 		void setScaleY(float scaleY);
-		inline float getScaleY() {return (this->scaleY);};
+		inline float getScaleY() {return (this->scale.y);};
 		void setScale(float scale) {setScaleX(scale);setScaleY(scale);};
 		void setTexX(float texX);
 		void setTexY(float texY);
@@ -56,10 +56,10 @@ namespace librender
 		virtual void setWidth(float width);
 		virtual void setHeight(float height);
 		void setSize(float width, float height);
-		inline virtual void setX(float x) {this->x = x;};
-		inline float getX() {return (this->x);};
-		inline virtual void setY(float y) {this->y = y;};
-		inline float getY() {return (this->y);};
+		inline virtual void setX(float x) {this->pos.x = x;};
+		inline float getX() {return (this->pos.x);};
+		inline virtual void setY(float y) {this->pos.y = y;};
+		inline float getY() {return (this->pos.y);};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 		int32_t getTextureWidth();
 		int32_t getTextureHeight();
