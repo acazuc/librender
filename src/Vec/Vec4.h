@@ -16,7 +16,7 @@ namespace librender
 		union {T z, b;};
 		union {T w, a;};
 		TVec4(TVec2<T> vec1, TVec2<T> vec2) : x(vec1.x), y(vec1.y), z(vec2.x), w(vec2.y) {};
-		TVec4(TVec2<T> vec1, T z, T w) : x(vec1.x), y(vec1.y), z(z), w(w) {};
+		TVec4(TVec2<T> vec, T z, T w) : x(vec.x), y(vec.y), z(z), w(w) {};
 		TVec4(TVec3<T> vec, T w) : x(vec.x), y(vec.y), z(vec.z), w(w) {};
 		TVec4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {};
 		TVec4(T xyz, T w) : x(xyz), y(xyz), z(xyz), w(w) {};
@@ -96,7 +96,7 @@ namespace librender
 	TVec4<T> ceil(TVec4<T> vec);
 	template <typename T>
 	TVec4<T> fract(TVec4<T> vec);
-	
+
 	typedef TVec4<float> Vec4;
 
 }

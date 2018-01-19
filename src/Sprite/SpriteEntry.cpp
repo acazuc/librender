@@ -1,31 +1,24 @@
 #include "SpriteEntry.h"
 #include "./SpriteUpdate.h"
-#include "../GL.h"
 #include <cstring>
 
 namespace librender
 {
 
 	SpriteEntry::SpriteEntry()
-	: verticesNumber(4)
+	: scale(1)
+	, pos(0)
+	, verticesNumber(4)
 	, updatesRequired(0)
-	, scaleX(1)
-	, scaleY(1)
-	, x(0)
-	, y(0)
 	{
-		texCoords[0] = 0;
-		texCoords[1] = 0;
-		texCoords[2] = 1;
-		texCoords[3] = 0;
-		texCoords[4] = 1;
-		texCoords[5] = 1;
-		texCoords[6] = 0;
-		texCoords[7] = 1;
-		for (uint8_t i = 0; i < 16; ++i)
-			colors[i] = 1;
-		for (uint8_t i = 0; i < 8; ++i)
-			vertexes[i] = 0;
+		texCoords[0] = Vec2(0, 0);
+		texCoords[1] = Vec2(1, 0);
+		texCoords[2] = Vec2(1, 1);
+		texCoords[3] = Vec2(0, 1);
+		for (uint8_t i = 0; i < 4; ++i)
+			colors[i] = Vec4(1);
+		for (uint8_t i = 0; i < 4; ++i)
+			vertexes[i] = Vec2(0);
 	}
 
 	SpriteEntry::~SpriteEntry()
@@ -33,17 +26,17 @@ namespace librender
 		//Empty
 	}
 
-	void SpriteEntry::fillTexCoords(GLfloat *texCoords)
+	void SpriteEntry::fillTexCoords(Vec2 *texCoords)
 	{
 		std::memcpy(texCoords, this->texCoords, sizeof(this->texCoords));
 	}
 
-	void SpriteEntry::fillVertexes(GLfloat *vertexes)
+	void SpriteEntry::fillVertexes(Vec2 *vertexes)
 	{
 		std::memcpy(vertexes, this->vertexes, sizeof(this->vertexes));
 	}
 
-	void SpriteEntry::fillColors(GLfloat *colors)
+	void SpriteEntry::fillColors(Vec4 *colors)
 	{
 		std::memcpy(colors, this->colors, sizeof(this->colors));
 	}
@@ -87,65 +80,65 @@ namespace librender
 
 	void SpriteEntry::setTopLeftColor(Color &color)
 	{
-		std::memcpy(&this->colors[0], &color, sizeof(*this->colors) * 4);
+		std::memcpy(&this->colors[0], &color, sizeof(*this->colors));
 		this->updatesRequired |= SPRITE_UPDATE_COLORS;
 	}
 
 	void SpriteEntry::setTopRightColor(Color &color)
 	{
-		std::memcpy(&this->colors[4], &color, sizeof(*this->colors) * 4);
+		std::memcpy(&this->colors[1], &color, sizeof(*this->colors));
 		this->updatesRequired |= SPRITE_UPDATE_COLORS;
 	}
 
 	void SpriteEntry::setBotLeftColor(Color &color)
 	{
-		std::memcpy(&this->colors[12], &color, sizeof(*this->colors) * 4);
+		std::memcpy(&this->colors[3], &color, sizeof(*this->colors));
 		this->updatesRequired |= SPRITE_UPDATE_COLORS;
 	}
 
 	void SpriteEntry::setBotRightColor(Color &color)
 	{
-		std::memcpy(&this->colors[8], &color, sizeof(*this->colors) * 4);
+		std::memcpy(&this->colors[2], &color, sizeof(*this->colors));
 		this->updatesRequired |= SPRITE_UPDATE_COLORS;
 	}
 
 	void SpriteEntry::setScaleX(float scaleX)
 	{
-		if (this->scaleX == scaleX)
+		if (this->scale.x == scaleX)
 			return;
-		this->scaleX = scaleX;
+		this->scale.x = scaleX;
 		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
 	}
 
 	void SpriteEntry::setScaleY(float scaleY)
 	{
-		if (this->scaleY == scaleY)
+		if (this->scale.y == scaleY)
 			return;
-		this->scaleY = scaleY;
+		this->scale.y = scaleY;
 		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
 	}
 
 	void SpriteEntry::setTexX(float texX)
 	{
-		float delta = texX - this->texCoords[0];
+		float delta = texX - this->texCoords[0].x;
 		if (!delta)
 			return;
-		this->texCoords[0] = texX;
-		this->texCoords[6] = texX;
-		this->texCoords[2] += delta;
-		this->texCoords[4] += delta;
+		this->texCoords[0].x = texX;
+		this->texCoords[3].x = texX;
+		this->texCoords[1].x += delta;
+		this->texCoords[2].x += delta;
 		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
 	}
 
 	void SpriteEntry::setTexY(float texY)
 	{
-		float delta = texY - this->texCoords[1];
+		float delta = texY - this->texCoords[0].y;
 		if (!delta)
 			return;
-		this->texCoords[1] = texY;
-		this->texCoords[3] = texY;
-		this->texCoords[5] += delta;
-		this->texCoords[7] += delta;
+		this->texCoords[0].y = texY;
+		this->texCoords[1].y = texY;
+		this->texCoords[2].y += delta;
+		this->texCoords[3].y += delta;
 		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
 	}
 
@@ -157,21 +150,21 @@ namespace librender
 
 	void SpriteEntry::setTexWidth(float texWidth)
 	{
-		float delta = texWidth - (this->texCoords[2] - this->texCoords[0]);
+		float delta = texWidth - (this->texCoords[1].x - this->texCoords[0].x);
 		if (!delta)
 			return;
-		this->texCoords[2] = texWidth + this->texCoords[0];
-		this->texCoords[4] = texWidth + this->texCoords[0];
+		this->texCoords[1].x = texWidth + this->texCoords[0].x;
+		this->texCoords[2].x = texWidth + this->texCoords[0].x;
 		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
 	}
 
 	void SpriteEntry::setTexHeight(float texHeight)
 	{
-		float delta = texHeight - (this->texCoords[7] - this->texCoords[1]);
+		float delta = texHeight - (this->texCoords[3].y - this->texCoords[0].y);
 		if (!delta)
 			return;
-		this->texCoords[5] = texHeight + this->texCoords[1];
-		this->texCoords[7] = texHeight + this->texCoords[1];
+		this->texCoords[2].y = texHeight + this->texCoords[0].y;
+		this->texCoords[3].y = texHeight + this->texCoords[0].y;
 		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
 	}
 
@@ -183,21 +176,21 @@ namespace librender
 
 	void SpriteEntry::setWidth(float width)
 	{
-		float delta = width - (this->vertexes[2] - this->vertexes[0]);
+		float delta = width - (this->vertexes[1].x - this->vertexes[0].x);
 		if (!delta)
 			return;
-		this->vertexes[2] = width;
-		this->vertexes[4] = width;
+		this->vertexes[1].x = width;
+		this->vertexes[2].x = width;
 		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
 	}
 
 	void SpriteEntry::setHeight(float height)
 	{
-		float delta = height - (this->vertexes[7] - this->vertexes[1]);
+		float delta = height - (this->vertexes[3].y - this->vertexes[0].y);
 		if (!delta)
 			return;
-		this->vertexes[5] = height;
-		this->vertexes[7] = height;
+		this->vertexes[2].y = height;
+		this->vertexes[3].y = height;
 		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
 	}
 

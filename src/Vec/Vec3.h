@@ -89,7 +89,7 @@ namespace librender
 	TVec3<T> ceil(TVec3<T> vec);
 	template <typename T>
 	TVec3<T> fract(TVec3<T> vec);
-	
+
 	typedef TVec3<float> Vec3;
 
 }

@@ -29,7 +29,7 @@ namespace librender
 	template <typename T>
 	void TVec2<T>::normalize()
 	{
-		*this = *this / this->length();
+		*this /= this->length();
 	}
 
 	template <typename T>

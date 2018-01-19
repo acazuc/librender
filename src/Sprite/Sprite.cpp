@@ -30,7 +30,7 @@ namespace librender
 		glVertexPointer(2, GL_FLOAT, 0, this->vertexes);
 		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
 		glPushMatrix();
-		glTranslatef(this->x, this->y, 0);
+		glTranslatef(this->pos.x, this->pos.y, 0);
 		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
 		glPopMatrix();
 		glDisableClientState(GL_VERTEX_ARRAY);

@@ -11,10 +11,9 @@ namespace librender
 	, vertexes(NULL)
 	, colors(NULL)
 	, font(NULL)
+	, pos(0)
 	, verticesNumber(0)
 	, changes(0)
-	, x(0)
-	, y(0)
 	, mustResize(true)
 	{
 		//Empty
@@ -44,10 +43,10 @@ namespace librender
 			TextBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & TEXT_UPDATE_TEX_COORDS)
 			{
-				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * 2 * sizeof(*this->texCoords));
+				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * sizeof(*this->texCoords));
 				entry->removeChanges(TEXT_UPDATE_TEX_COORDS);
 			}
-			count += entry->getVerticesNumber() * 2;
+			count += entry->getVerticesNumber();
 		}
 	}
 
@@ -59,10 +58,10 @@ namespace librender
 			TextBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & TEXT_UPDATE_VERTEXES)
 			{
-				std::memcpy(&this->vertexes[count], entry->getVertexes(), entry->getVerticesNumber() * 2 * sizeof(*this->vertexes));
+				std::memcpy(&this->vertexes[count], entry->getVertexes(), entry->getVerticesNumber() * sizeof(*this->vertexes));
 				entry->removeChanges(TEXT_UPDATE_VERTEXES);
 			}
-			count += entry->getVerticesNumber() * 2;
+			count += entry->getVerticesNumber();
 		}
 	}
 
@@ -74,10 +73,10 @@ namespace librender
 			TextBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & TEXT_UPDATE_COLORS)
 			{
-				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * 4 * sizeof(*this->colors));
+				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * sizeof(*this->colors));
 				entry->removeChanges(TEXT_UPDATE_COLORS);
 			}
-			count += entry->getVerticesNumber() * 4;
+			count += entry->getVerticesNumber();
 		}
 	}
 
@@ -87,11 +86,11 @@ namespace librender
 		if (!this->verticesNumber)
 			return;
 		delete[] (this->texCoords);
-		this->texCoords = new GLfloat[this->verticesNumber * 2 + 1];
+		this->texCoords = new Vec2[std::max(1u, this->verticesNumber)];
 		delete[] (this->vertexes);
-		this->vertexes = new GLfloat[this->verticesNumber * 2 + 1];
+		this->vertexes = new Vec2[std::max(1u, this->verticesNumber)];
 		delete[] (this->colors);
-		this->colors = new GLfloat[this->verticesNumber * 4 + 1];
+		this->colors = new Vec4[std::max(1u, this->verticesNumber)];
 	}
 
 	void TextBatch::draw()
@@ -123,7 +122,7 @@ namespace librender
 		glVertexPointer(2, GL_FLOAT, 0, this->vertexes);
 		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
 		glPushMatrix();
-		glTranslatef(this->x, this->y, 0);
+		glTranslatef(this->pos.x, this->pos.y, 0);
 		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
 		glPopMatrix();
 		glDisableClientState(GL_VERTEX_ARRAY);

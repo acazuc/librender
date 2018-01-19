@@ -1,35 +1,31 @@
 #ifndef LIBRENDER_COLOR_H
 # define LIBRENDER_COLOR_H
 
+# include "Vec/Vec4.h"
+
 namespace librender
 {
 
-	class Color
+	class Color : public Vec4
 	{
-
-	private:
-		float red;
-		float green;
-		float blue;
-		float alpha;
 
 	public:
 		Color(Color &color);
-		Color(float red, float green, float blue, float alpha = 1);
-		Color(float rgb, float alpha = 1);
-		inline void set(float red, float green, float blue, float alpha = 1) {this->red = red;this->green = green;this->blue = blue;this->alpha = alpha;};
-		inline void set(float rgb, float alpha = 1) {this->red = rgb;this->green = rgb;this->blue = rgb;this->alpha = alpha;};
+		Color(float r, float g, float b, float a = 1);
+		Color(float rgb, float a = 1);
+		inline void set(float r, float g, float b, float a = 1) {this->r = r;this->g = g;this->b = b;this->a = a;};
+		inline void set(float rgb, float a = 1) {this->r = rgb;this->g = rgb;this->b = rgb;this->a = a;};
 		bool compare(Color &color);
 		bool compare(Color *color);
 		void bind();
-		void setRed(float red) {this->red = red;};
-		float getRed() {return (this->red);};
-		void setGreen(float green) {this->green = green;};
-		float getGreen() {return (this->green);};
-		void setBlue(float blue) {this->blue = blue;};
-		float getBlue() {return (this->blue);};
-		void setAlpha(float alpha) {this->alpha = alpha;};
-		float getAlpha() {return (this->alpha);};
+		void setRed(float r) {this->r = r;};
+		float getRed() {return (this->r);};
+		void setGreen(float g) {this->g = g;};
+		float getGreen() {return (this->g);};
+		void setBlue(float b) {this->b = b;};
+		float getBlue() {return (this->b);};
+		void setAlpha(float a) {this->a = a;};
+		float getAlpha() {return (this->a);};
 		Color &operator += (float val);
 		Color &operator -= (float val);
 		Color &operator = (Color &color);

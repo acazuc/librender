@@ -29,37 +29,31 @@ namespace librender
 	Color Color::LIGHTPURPLE(1, 0, 1);
 
 	Color::Color(Color &color)
+	: Vec4(color.r, color.g, color.b, color.a)
 	{
-		this->red = color.red;
-		this->green = color.green;
-		this->blue = color.blue;
-		this->alpha = color.alpha;
+		//Empty
 	}
 
-	Color::Color(float red, float green, float blue, float alpha)
+	Color::Color(float r, float g, float b, float a)
+	: Vec4(r, g, b, a)
 	{
-		this->red = red;
-		this->green = green;
-		this->blue = blue;
-		this->alpha = alpha;
+		//Empty
 	}
 
-	Color::Color(float rgb, float alpha)
+	Color::Color(float rgb, float a)
+	: Vec4(rgb, a)
 	{
-		this->red = rgb;
-		this->green = rgb;
-		this->blue = rgb;
-		this->alpha = alpha;
+		//Empty
 	}
 	
 	void Color::bind()
 	{
-		glColor4f(this->red, this->green, this->blue, this->alpha);
+		glColor4f(this->r, this->g, this->b, this->a);
 	}
 
 	bool Color::compare(Color &color)
 	{
-		return (this->red != color.getRed() || this->green != color.getGreen() || this->blue != color.getBlue() || this->alpha != color.getAlpha());
+		return (this->r != color.r || this->g != color.g || this->b != color.b || this->a != color.a);
 	}
 
 	bool Color::compare(Color *color)
@@ -69,26 +63,26 @@ namespace librender
 
 	Color &Color::operator += (float val)
 	{
-		this->red += val;
-		this->green += val;
-		this->blue += val;
+		this->r += val;
+		this->g += val;
+		this->b += val;
 		return (*this);
 	}
 
 	Color &Color::operator -= (float val)
 	{
-		this->red -= val;
-		this->green -= val;
-		this->blue -= val;
+		this->r -= val;
+		this->g -= val;
+		this->b -= val;
 		return (*this);
 	}
 
 	Color &Color::operator = (Color &color)
 	{
-		this->red = color.red;
-		this->green = color.green;
-		this->blue = color.blue;
-		this->alpha = color.alpha;
+		this->r = color.r;
+		this->g = color.g;
+		this->b = color.b;
+		this->a = color.a;
 		return (*this);
 	}
 

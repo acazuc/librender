@@ -174,12 +174,11 @@ namespace librender
 	int32_t Font::getHeight(std::string &text)
 	{
 		uint32_t nlNb = 1;
-		char *iter = const_cast<char*>(text.c_str());
-		char *end = iter + text.length();
-		while (iter != end)
+		size_t pos = 0;
+		while ((pos = text.find('\n', pos)) != std::string::npos)
 		{
-			if (utf8::next(iter, end) == '\n')
-				nlNb++;
+			++pos;
+			++nlNb;
 		}
 		return (this->height * nlNb);
 	}
@@ -251,11 +250,13 @@ namespace librender
 			, glyph->getWidth(), glyph->getHeight());
 	}
 
-	void Font::glArrayCharPart(uint32_t character, float *texCoords)
+	void Font::glChar(uint32_t character, float *texCoords)
 	{
-		if (character == '\n')
-			return;
-		FontGlyph *glyph = getGlyph(character);
+		glGlyph(getGlyph(character), texCoords);
+	}
+
+	void Font::glGlyph(FontGlyph *glyph, float *texCoords)
+	{
 		if (!glyph)
 		{
 			std::memset(texCoords, 0, 8 * sizeof(*texCoords));

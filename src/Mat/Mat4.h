@@ -4,7 +4,6 @@
 # include "../Vec/Vec4.h"
 # include "../Vec/Vec3.h"
 
-
 namespace librender
 {
 
@@ -39,6 +38,6 @@ namespace librender
 
 }
 
-#include "Mat4.cpp"
+# include "Mat4.cpp"
 
 #endif

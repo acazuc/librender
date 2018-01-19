@@ -2,6 +2,7 @@
 # define LIBRENDER_TEXT_ENTRY_H
 
 # include "../Font/Font.h"
+# include "../Vec/Vec4.h"
 # include "../Color.h"
 # include <cstdint>
 # include <string>
@@ -14,11 +15,13 @@ namespace librender
 
 	protected:
 		std::string text;
-		float *texCoords;
-		float *vertexes;
-		float *colors;
 		Color shadowColor;
 		Color color;
+		Vec2 *texCoords;
+		Vec2 *vertexes;
+		Vec4 *colors;
+		Vec2 scale;
+		Vec2 pos;
 		uint32_t verticesNumber;
 		uint32_t charsNumber;
 		uint8_t updatesRequired;
@@ -30,18 +33,14 @@ namespace librender
 		int32_t height;
 		int32_t width;
 		float opacity;
-		float scaleX;
-		float scaleY;
-		float x;
-		float y;
 		bool mustCalcHeight;
 		bool mustCalcWidth;
 		inline void updateTexCoords() {fillTexCoords(this->texCoords);};
 		inline void updateVertexes() {fillVertexes(this->vertexes);};
 		inline void updateColors() {fillColors(this->colors);};
-		void fillTexCoords(float *texCoords);
-		void fillVertexes(float *vertexes);
-		void fillColors(float *colors);
+		void fillTexCoords(Vec2 *texCoords);
+		void fillVertexes(Vec2 *vertexes);
+		void fillColors(Vec4 *colors);
 		virtual void resize(uint32_t len);
 
 	public:
@@ -50,9 +49,9 @@ namespace librender
 		virtual void update();
 		void setText(std::string &text);
 		inline std::string &getText() {return (this->text);};
-		inline float *getTexCoords() {return (this->texCoords);};
-		inline float *getVertexes() {return (this->vertexes);};
-		inline float *getColors() {return (this->colors);};
+		inline Vec2 *getTexCoords() {return (this->texCoords);};
+		inline Vec2 *getVertexes() {return (this->vertexes);};
+		inline Vec4 *getColors() {return (this->colors);};
 		void setShadowColor(Color &color);
 		inline Color &getShadowColor() {return (this->shadowColor);};
 		void setColor(Color &color);
@@ -71,16 +70,16 @@ namespace librender
 		void setOpacity(float opacity);
 		inline float getOpacity() {return (this->opacity);};
 		virtual void setScaleX(float scaleX);
-		inline float getScaleX() {return (this->scaleX);};
+		inline float getScaleX() {return (this->scale.x);};
 		virtual void setScaleY(float scaleY);
-		inline float getScaleY() {return (this->scaleY);};
+		inline float getScaleY() {return (this->scale.y);};
 		void setScale(float scale) {setScaleX(scale);setScaleY(scale);};
 		void setMaxWidth(int32_t width);
 		inline int32_t getMaxWidth() {return (this->maxWidth);};
-		inline virtual void setX(float x) {this->x = x;};
-		inline float getX() {return (this->x);};
-		inline virtual void setY(float y) {this->y = y;};
-		inline float getY() {return (this->y);};
+		inline virtual void setX(float x) {this->pos.x = x;};
+		inline float getX() {return (this->pos.x);};
+		inline virtual void setY(float y) {this->pos.y = y;};
+		inline float getY() {return (this->pos.y);};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 		inline void recalcWidth() {this->mustCalcWidth = true;};
 		inline void recalcHeight() {this->mustCalcHeight = true;};

@@ -1,6 +1,5 @@
 #include "ShaderTextEntry.h"
 #include "./ShaderTextUpdate.h"
-#include "../../GL.h"
 #include <cstring>
 #include <utf8.h>
 
@@ -46,7 +45,7 @@ namespace librender
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t currentChar = utf8::next(iter, end);
-			getFont()->glArrayCharPart(currentChar, reinterpret_cast<float*>(&texCoords[i * 4]));
+			getFont()->glChar(currentChar, reinterpret_cast<float*>(&texCoords[i * 4]));
 		}
 		if (this->shadowSize <= 0)
 			return;
@@ -62,9 +61,7 @@ namespace librender
 			max = tmp2 * tmp2 - 1 - 4 * tmp;
 		}
 		for (uint32_t i = 0; i < max; ++i)
-		{
 			std::memcpy(&texCoords[this->charsNumber * 4 * (i + 1)], &texCoords[0], this->charsNumber * 4 * sizeof(*texCoords));
-		}
 	}
 
 	void ShaderTextEntry::fillVertexes(Vec2 *vertexes)
@@ -116,16 +113,16 @@ namespace librender
 				float charRenderY = y + glyph->getOffsetY();
 				vertexes[index].x = charRenderX;
 				vertexes[index].y = charRenderY;
-				index++;
+				++index;
 				vertexes[index].x = charRenderX + charRenderWidth;
 				vertexes[index].y = charRenderY;
-				index++;
+				++index;
 				vertexes[index].x = charRenderX + charRenderWidth;
 				vertexes[index].y = charRenderY + charRenderHeight;
-				index++;
+				++index;
 				vertexes[index].x = charRenderX;
 				vertexes[index].y = charRenderY + charRenderHeight;
-				index++;
+				++index;
 				x += charWidth;
 			}
 			if (this->maxWidth > 0 && x >= this->maxWidth)
@@ -147,13 +144,9 @@ namespace librender
 			if (std::abs(sx) == std::abs(sy) && this->shadowSize != 1)
 				continue;
 			uint32_t index = this->charsNumber * 4 * arrCount;
-			uint32_t add = 0;
 			Vec2 vtmp(this->shadowX + sx, this->shadowY + sy);
 			for (uint32_t j = 0; j < this->charsNumber * 4; ++j)
-			{
-				vertexes[index + add] = vertexes[tmp2 + add] + vtmp;
-				++add;
-			}
+				vertexes[index + j] = vertexes[tmp2 + j] + vtmp;
 			arrCount++;
 		}
 	}
@@ -192,7 +185,7 @@ namespace librender
 				std::memcpy(&colors[i], tab, sizeof(tab));
 		}
 		for (uint16_t i = 1; i < shadowLen; ++i)
-			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * 4 * sizeof(*colors));
+			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * sizeof(*colors));
 	}
 
 	void ShaderTextEntry::update()
@@ -236,11 +229,11 @@ namespace librender
 			this->verticesNumber *= fac;
 		}
 		delete[] (this->texCoords);
-		this->texCoords = new Vec2[this->verticesNumber + 1];
+		this->texCoords = new Vec2[std::max(1u, this->verticesNumber)];
 		delete[] (this->vertexes);
-		this->vertexes = new Vec2[this->verticesNumber + 1];
+		this->vertexes = new Vec2[std::max(1u, this->verticesNumber)];
 		delete[] (this->colors);
-		this->colors = new Vec4[this->verticesNumber + 1];
+		this->colors = new Vec4[std::max(1u, this->verticesNumber)];
 	}
 
 	void ShaderTextEntry::setText(std::string &text)
@@ -326,6 +319,8 @@ namespace librender
 			return;
 		this->maxWidth = maxWidth;
 		this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
+		recalcWidth();
+		recalcHeight();
 	}
 
 	int32_t ShaderTextEntry::getWidth()
@@ -336,6 +331,8 @@ namespace librender
 				this->width = 0;
 			else
 				this->width = getFont()->getWidth(this->text);
+			if (this->maxWidth > 0 && this->width > this->maxWidth)
+				this->width = this->maxWidth;
 			this->mustCalcWidth = false;
 		}
 		return (this->width * this->scale.x);
@@ -345,10 +342,33 @@ namespace librender
 	{
 		if (this->mustCalcWidth)
 		{
-			if (!getFont())
-				this->height = 0;
-			else
-				this->height = getFont()->getHeight(this->text);
+			this->height = 0;
+			if (getFont())
+			{
+				this->height = getLineHeight();
+				char *iter = const_cast<char*>(this->text.c_str());
+				char *end = iter + this->text.length();
+				float x = 0;
+				for (uint32_t i = 0; i < this->charsNumber; ++i)
+				{
+					uint32_t character = utf8::next(iter, end);
+					if (character == '\n')
+					{
+						x = 0;
+						this->height += getLineHeight();
+						continue;
+					}
+					FontGlyph *glyph = getFont()->getGlyph(character);
+					if (!glyph)
+						continue;
+					x += glyph->getAdvance();
+					if (this->maxWidth > 0 && x >= this->maxWidth)
+					{
+						this->height += getLineHeight();
+						x = 0;
+					}
+				}
+			}
 			this->mustCalcHeight = false;
 		}
 		return (this->height * this->scale.y);

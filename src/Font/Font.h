@@ -47,7 +47,8 @@ namespace librender
 		void drawEnd();
 		void drawChar(float x, float y, uint32_t character, Color &color, float scaleX = 1, float scaleY = 1, float opacity = 1);
 		void drawCharPart(float x, float y, uint32_t character, float scaleX = 1, float scaleY = 1);
-		void glArrayCharPart(uint32_t character, float *texCoords);
+		void glChar(uint32_t character, float *texCoords);
+		void glGlyph(FontGlyph *glyph, float *texCoords);
 		void drawStringPart(float x, float y, std::string &text, Color &color, float opacity = 1);
 		void drawStringPart(float x, float y, std::string &text, Color &color, float scaleX, float scaleY, float opacity = 1);
 		void drawString(float x, float y, std::string &text, Color &color, float opacity = 1);

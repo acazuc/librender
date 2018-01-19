@@ -13,13 +13,12 @@ namespace librender
 	private:
 		std::vector<SpriteBatchEntry*> entries;
 		Texture *texture;
+		Vec2 *texCoords;
+		Vec2 *vertexes;
+		Vec4 *colors;
+		Vec2 pos;
 		uint32_t verticesNumber;
 		uint8_t changes;
-		float *texCoords;
-		float *vertexes;
-		float *colors;
-		float x;
-		float y;
 		bool mustResize;
 		void updateVerticesNumber();
 		void updateTexCoords();
@@ -38,8 +37,8 @@ namespace librender
 		inline std::vector<SpriteBatchEntry*> &getEntries() {return (this->entries);};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
-		inline void setX(float x) {this->x = x;};
-		inline void setY(float y) {this->y = y;};
+		inline void setX(float x) {this->pos.x = x;};
+		inline void setY(float y) {this->pos.y = y;};
 		inline void setMustResize(bool mustResize) {this->mustResize = mustResize;};
 
 	};

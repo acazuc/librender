@@ -29,6 +29,7 @@ SRCS_NAME = Color.cpp \
 		Text/TextEntry.cpp \
 		Text/TextBatch.cpp \
 		Text/TextBatchEntry.cpp \
+		Text/TextTessellator.cpp \
 		Font/FontGlyph.cpp \
 		Font/FontModel.cpp \
 		Font/Font.cpp \
@@ -46,6 +47,7 @@ SRCS_NAME = Color.cpp \
 		Shader/Sprite/ShaderSpriteEntry.cpp \
 		Shader/Sprite/ShaderSpriteBatch.cpp \
 		Shader/Sprite/ShaderSpriteBatchEntry.cpp \
+		Shader/Sprite/ShaderSpriteTessellator.cpp \
 		Shader/Text/ShaderText.cpp \
 		Shader/Text/ShaderTextEntry.cpp \
 		Shader/Text/ShaderTextBatch.cpp \

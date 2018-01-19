@@ -15,7 +15,7 @@ namespace librender
 
 	public:
 		Text();
-		~Text();
+		virtual ~Text();
 		void draw();
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};
