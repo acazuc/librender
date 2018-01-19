@@ -6,13 +6,7 @@ namespace librender
 {
 
 	ShaderSprite::ShaderSprite()
-	: ShaderSpriteEntry()
-	, texCoordsLocation(NULL)
-	, vertexesLocation(NULL)
-	, colorsLocation(NULL)
-	, mvpLocation(NULL)
-	, texture(NULL)
-	, program(NULL)
+	: texture(NULL)
 	{
 		GLuint indices[] = {0, 3, 1, 2, 1, 3};
 		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, sizeof(indices), GL_UNSIGNED_INT, 1, GL_STATIC_DRAW);
@@ -25,7 +19,7 @@ namespace librender
 
 	void ShaderSprite::draw(Mat4 &viewProj)
 	{
-		if (!this->texture || !this->program || !this->texCoordsLocation || !this->vertexesLocation || !this->colorsLocation || !this->mvpLocation)
+		if (!this->texture || !this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
 			return;
 		uint8_t changes = this->updatesRequired;
 		update();
@@ -36,14 +30,14 @@ namespace librender
 		if (changes & SHADER_SPRITE_UPDATE_COLORS)
 			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber, GL_FLOAT, 4, GL_DYNAMIC_DRAW);
 		this->texture->bind();
-		this->program->use();
-		this->texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
-		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
-		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
+		this->program.program->use();
+		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
+		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);
+		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
 		Mat4 mvp(viewProj * model);
-		this->mvpLocation->setMat4f(mvp);
+		this->program.mvpLocation->setMat4f(mvp);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 	}
 

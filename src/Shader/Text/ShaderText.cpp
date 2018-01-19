@@ -6,13 +6,7 @@ namespace librender
 {
 
 	ShaderText::ShaderText()
-	: ShaderTextEntry()
-	, texCoordsLocation(NULL)
-	, vertexesLocation(NULL)
-	, colorsLocation(NULL)
-	, mvpLocation(NULL)
-	, program(NULL)
-	, font(NULL)
+	: font(NULL)
 	, oldVerticesNumber(0)
 	{
 		//Empty
@@ -25,7 +19,7 @@ namespace librender
 
 	void ShaderText::draw(Mat4 &viewProj)
 	{
-		if (!this->font || !this->program || !this->texCoordsLocation || !this->vertexesLocation || !this->colorsLocation || !this->mvpLocation)
+		if (!this->font || !this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
 			return;
 		if (!this->verticesNumber)
 			return;
@@ -56,16 +50,16 @@ namespace librender
 			this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, sizeof(*indices) * this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, 1, GL_DYNAMIC_DRAW);
 			delete[] (indices);
 		}
-		this->program->use();
+		this->program.program->use();
 		this->font->bind();
-		this->texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
-		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
-		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
+		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
+		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);
+		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
 		model = Mat4::scale(model, Vec3(this->scale, 1));
 		Mat4 mvp(viewProj * model);
-		this->mvpLocation->setMat4f(mvp);
+		this->program.mvpLocation->setMat4f(mvp);
 		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, NULL);
 	}
 

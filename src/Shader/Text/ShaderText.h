@@ -1,9 +1,9 @@
 #ifndef LIBRENDER_SHADER_TEXT_H
 # define LIBRENDER_SHADER_TEXT_H
 
+# include "./ShaderTextProgram.h"
 # include "./ShaderTextEntry.h"
 # include "../../Font/Font.h"
-# include "../Program.h"
 
 namespace librender
 {
@@ -12,15 +12,11 @@ namespace librender
 	{
 
 	protected:
-		ProgramLocation *texCoordsLocation;
-		ProgramLocation *vertexesLocation;
-		ProgramLocation *colorsLocation;
-		ProgramLocation *mvpLocation;
+		ShaderTextProgram program;
 		VertexBuffer texCoordsBuffer;
 		VertexBuffer vertexesBuffer;
 		VertexBuffer indicesBuffer;
 		VertexBuffer colorsBuffer;
-		Program *program;
 		Font *font;
 		uint32_t oldVerticesNumber;
 
@@ -28,11 +24,7 @@ namespace librender
 		ShaderText();
 		~ShaderText();
 		void draw(Mat4 &viewProj);
-		inline void setTexCoordsLocation(ProgramLocation *location) {this->texCoordsLocation = location;};
-		inline void setVertexesLocation(ProgramLocation *location) {this->vertexesLocation = location;};
-		inline void setColorsLocation(ProgramLocation *location) {this->colorsLocation = location;};
-		inline void setMvpLocation(ProgramLocation *location) {this->mvpLocation = location;};
-		inline void setProgram(Program *program) {this->program = program;};
+		inline ShaderTextProgram &getProgram() {return (this->program);};
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};
 

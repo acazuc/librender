@@ -18,14 +18,6 @@ namespace librender
 		bool compare(Color &color);
 		bool compare(Color *color);
 		void bind();
-		void setRed(float r) {this->r = r;};
-		float getRed() {return (this->r);};
-		void setGreen(float g) {this->g = g;};
-		float getGreen() {return (this->g);};
-		void setBlue(float b) {this->b = b;};
-		float getBlue() {return (this->b);};
-		void setAlpha(float a) {this->a = a;};
-		float getAlpha() {return (this->a);};
 		Color &operator += (float val);
 		Color &operator -= (float val);
 		Color &operator = (Color &color);

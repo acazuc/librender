@@ -1,9 +1,9 @@
 #ifndef LIBRENDER_SHADER_SPRITE_H
 # define LIBRENDER_SHADER_SPRITE_H
 
+# include "./ShaderSpriteProgram.h"
 # include "./ShaderSpriteEntry.h"
 # include "../../Texture.h"
-# include "../Program.h"
 
 namespace librender
 {
@@ -12,26 +12,18 @@ namespace librender
 	{
 
 	protected:
-		ProgramLocation *texCoordsLocation;
-		ProgramLocation *vertexesLocation;
-		ProgramLocation *colorsLocation;
-		ProgramLocation *mvpLocation;
+		ShaderSpriteProgram program;
 		VertexBuffer texCoordsBuffer;
 		VertexBuffer vertexesBuffer;
 		VertexBuffer indicesBuffer;
 		VertexBuffer colorsBuffer;
 		Texture *texture;
-		Program *program;
 
 	public:
 		ShaderSprite();
 		~ShaderSprite();
 		void draw(Mat4 &viewProj);
-		inline void setTexCoordsLocation(ProgramLocation *location) {this->texCoordsLocation = location;};
-		inline void setVertexesLocation(ProgramLocation *location) {this->vertexesLocation = location;};
-		inline void setColorsLocation(ProgramLocation *location) {this->colorsLocation = location;};
-		inline void setMvpLocation(ProgramLocation *location) {this->mvpLocation = location;};
-		inline void setProgram(Program *program) {this->program = program;};
+		inline ShaderSpriteProgram &getProgram() {return (this->program);};
 		void setTexture(Texture *texture);
 		inline Texture *getTexture() {return (this->texture);};
 

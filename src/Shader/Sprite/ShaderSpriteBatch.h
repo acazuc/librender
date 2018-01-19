@@ -2,7 +2,7 @@
 # define LIBRENDER_SHADER_SPRITE_BATCH_H
 
 # include "./ShaderSpriteBatchEntry.h"
-# include "../Program.h"
+# include "./ShaderSpriteProgram.h"
 # include <vector>
 
 namespace librender
@@ -13,16 +13,12 @@ namespace librender
 
 	private:
 		std::vector<ShaderSpriteBatchEntry*> entries;
-		ProgramLocation *texCoordsLocation;
-		ProgramLocation *vertexesLocation;
-		ProgramLocation *colorsLocation;
-		ProgramLocation *mvpLocation;
+		ShaderSpriteProgram program;
 		VertexBuffer texCoordsBuffer;
 		VertexBuffer vertexesBuffer;
 		VertexBuffer indicesBuffer;
 		VertexBuffer colorsBuffer;
 		Texture *texture;
-		Program *program;
 		Vec2 *texCoords;
 		Vec2 *vertexes;
 		Vec4 *colors;
@@ -43,14 +39,10 @@ namespace librender
 		void draw(Mat4 &viewProj);
 		void addEntry(ShaderSpriteBatchEntry *entry);
 		void removeEntry(ShaderSpriteBatchEntry *entry);
-		inline void setTexCoordsLocation(ProgramLocation *location) {this->texCoordsLocation = location;};
-		inline void setVertexesLocation(ProgramLocation *location) {this->vertexesLocation = location;};
-		inline void setColorsLocation(ProgramLocation *location) {this->colorsLocation = location;};
-		inline void setMvpLocation(ProgramLocation *location) {this->mvpLocation = location;};
+		inline ShaderSpriteProgram &getProgram() {return (this->program);};
+		inline std::vector<ShaderSpriteBatchEntry*> &getEntries() {return (this->entries);};
 		void setTexture(Texture *texture);
 		inline Texture *getTexture() {return (this->texture);};
-		inline void setProgram(Program *program) {this->program = program;};
-		inline std::vector<ShaderSpriteBatchEntry*> &getEntries() {return (this->entries);};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 		inline void setX(float x) {this->pos.x = x;};

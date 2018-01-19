@@ -40,27 +40,11 @@ namespace librender
 		FontGlyph *getGlyph(uint32_t character);
 		int32_t getWidth(std::string &text);
 		int32_t getHeight(std::string &text);
-		inline int32_t getLineHeight() {return (this->height);};
-		inline Texture &getTexture() {return (this->texture);};
 		void bind();
-		void drawBegin();
-		void drawEnd();
-		void drawChar(float x, float y, uint32_t character, Color &color, float scaleX = 1, float scaleY = 1, float opacity = 1);
-		void drawCharPart(float x, float y, uint32_t character, float scaleX = 1, float scaleY = 1);
 		void glChar(uint32_t character, float *texCoords);
 		void glGlyph(FontGlyph *glyph, float *texCoords);
-		void drawStringPart(float x, float y, std::string &text, Color &color, float opacity = 1);
-		void drawStringPart(float x, float y, std::string &text, Color &color, float scaleX, float scaleY, float opacity = 1);
-		void drawString(float x, float y, std::string &text, Color &color, float opacity = 1);
-		void drawString(float x, float y, std::string &text, Color &color, float scaleX, float scaleY, float opacity = 1);
-		void drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float opacity = 1);
-		void drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float scaleX, float scaleY, float opacity);
-		void drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY);
-		void drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY, float scaleX, float scaleY, float opacity = 1);
-		void drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float opacity = 1);
-		void drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float scaleX, float scaleY, float opacity);
-		void drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY);
-		void drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY, float scaleX, float scaleY, float opacity = 1);
+		inline Texture &getTexture() {return (this->texture);};
+		inline int32_t getLineHeight() {return (this->height);};
 
 	};
 

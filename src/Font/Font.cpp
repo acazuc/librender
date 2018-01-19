@@ -183,17 +183,6 @@ namespace librender
 		return (this->height * nlNb);
 	}
 
-	void Font::drawBegin()
-	{
-		bind();
-		glBegin(GL_QUADS);
-	}
-
-	void Font::drawEnd()
-	{
-		glEnd();
-	}
-
 	void Font::drawQuad(float x, float y, float width, float height, int texX, int texY, int texWidth, int texHeight)
 	{
 		float textureSrcX = static_cast<float>(texX) / this->textureWidth;
@@ -226,30 +215,6 @@ namespace librender
 		texCoords[7] = textureSrcY + renderHeight;
 	}
 
-	void Font::drawChar(float x, float y, uint32_t character, Color &color, float scaleX, float scaleY, float opacity)
-	{
-		if (!opacity)
-			return;
-		bind();
-		glBegin(GL_QUADS);
-		glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() * opacity);
-		drawCharPart(x, y, character, scaleX, scaleY);
-		glEnd();
-	}
-
-	void Font::drawCharPart(float x, float y, uint32_t character, float scaleX, float scaleY)
-	{
-		if (character == '\n')
-			return;
-		FontGlyph *glyph = getGlyph(character);
-		if (!glyph)
-			return;
-		drawQuad(x + glyph->getOffsetX() * scaleX, y + glyph->getOffsetY() * scaleY
-			, glyph->getWidth() * scaleX, glyph->getHeight() * scaleY
-			, glyph->getTexX(), glyph->getTexY()
-			, glyph->getWidth(), glyph->getHeight());
-	}
-
 	void Font::glChar(uint32_t character, float *texCoords)
 	{
 		glGlyph(getGlyph(character), texCoords);
@@ -263,109 +228,6 @@ namespace librender
 			return;
 		}
 		glArrayQuad(glyph->getTexX(), glyph->getTexY(), glyph->getWidth(), glyph->getHeight(), texCoords);
-	}
-
-	void Font::drawStringPart(float x, float y, std::string &text, Color &color, float opacity)
-	{
-		drawStringPart(x, y, text, color, 1, 1, opacity);
-	}
-
-	void Font::drawStringPart(float x, float y, std::string &text, Color &color, float scaleX, float scaleY, float opacity)
-	{
-		if (!opacity)
-			return;
-		float totalHeight = 0;
-		float totalWidth = 0;
-		char *iter = const_cast<char*>(text.c_str());
-		char *end = const_cast<char*>(text.c_str() + text.length());
-		glColor4f(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha() * opacity);
-		while (iter != end)
-		{
-			uint32_t currentChar = utf8::next(iter, end);
-			if (currentChar == '\n')
-			{
-				totalHeight += this->height * scaleY;
-				totalWidth = 0;
-				continue;
-			}
-			FontGlyph *glyph = getGlyph(currentChar);
-			if (!glyph)
-				continue;
-			drawCharPart(totalWidth + x, totalHeight + y, currentChar, scaleX, scaleY);
-			totalWidth += glyph->getAdvance() * scaleX;
-		}
-	}
-
-	void Font::drawString(float x, float y, std::string &text, Color &color, float opacity)
-	{
-		drawString(x, y, text, color, 1, 1, opacity);
-	}
-
-	void Font::drawString(float x, float y, std::string &text, Color &color, float scaleX, float scaleY, float opacity)
-	{
-		if (!opacity)
-			return;
-		bind();
-		glBegin(GL_QUADS);
-		drawStringPart(x, y, text, color, scaleX, scaleY, opacity);
-		glEnd();
-	}
-
-	void Font::drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float opacity)
-	{
-		drawStringShadow(x, y, text, color, shadowColor, shadowSize, 0, 0, 1, 1, opacity);
-	}
-
-	void Font::drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float scaleX, float scaleY, float opacity)
-	{
-		drawStringShadow(x, y, text, color, shadowColor, shadowSize, 0, 0, scaleX, scaleY, opacity);
-	}
-
-	void Font::drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY)
-	{
-		drawStringShadow(x, y, text, color, shadowColor, shadowSize, shadowX, shadowY, 1, 1, 1);
-	}
-
-	void Font::drawStringShadow(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY, float scaleX, float scaleY, float opacity)
-	{
-		if (!opacity)
-			return;
-		bind();
-		glBegin(GL_QUADS);
-		drawStringShadowPart(x, y, text, color, shadowColor, shadowSize, shadowX, shadowY, scaleX, scaleY, opacity);
-		glEnd();
-	}
-
-	void Font::drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float opacity)
-	{
-		drawStringShadowPart(x, y, text, color, shadowColor, shadowSize, 0, 0, 1, 1, opacity);
-	}
-
-	void Font::drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float scaleX, float scaleY, float opacity)
-	{
-		drawStringShadowPart(x, y, text, color, shadowColor, shadowSize, 0, 0, scaleX, scaleY, opacity);
-	}
-
-	void Font::drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY)
-	{
-		drawStringShadowPart(x, y, text, color, shadowColor, shadowSize, shadowX, shadowY, 1, 1, 1);
-	}
-
-	void Font::drawStringShadowPart(float x, float y, std::string &text, Color &color, Color &shadowColor, float shadowSize, float shadowX, float shadowY, float scaleX, float scaleY, float opacity)
-	{
-		if (!opacity)
-			return;
-		for (float xx = x - shadowSize * scaleX + shadowX; xx <= x + shadowSize * scaleX + shadowX; xx += scaleX)
-		{
-			for (float yy = y - shadowSize * scaleY + shadowY; yy <= y + shadowSize * scaleY + shadowY; yy += scaleY)
-			{
-				if (std::fabs(xx - x - shadowX) != std::fabs(yy - y - shadowY))
-				{
-					drawStringPart(xx, yy, text, shadowColor, scaleX, scaleY, opacity);
-				}
-			}
-		}
-		drawStringPart(x, y, text, color, scaleX, scaleY, opacity);
 	}
 
 }
