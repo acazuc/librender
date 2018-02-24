@@ -186,7 +186,6 @@ namespace librender
 		return (result);
 	}
 
-
 }
 
 #endif

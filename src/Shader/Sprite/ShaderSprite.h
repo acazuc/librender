@@ -23,6 +23,7 @@ namespace librender
 		ShaderSprite();
 		~ShaderSprite();
 		void draw(Mat4 &viewProj);
+		inline void setProgram(ShaderSpriteProgram program) {this->program = program;};
 		inline ShaderSpriteProgram &getProgram() {return (this->program);};
 		void setTexture(Texture *texture);
 		inline Texture *getTexture() {return (this->texture);};

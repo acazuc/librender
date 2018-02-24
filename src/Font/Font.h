@@ -31,8 +31,7 @@ namespace librender
 		void copyChar(int32_t x, int32_t y, char *data, uint32_t size, FontGlyph *glyph, char *glyph_data);
 		char *imageCrop(char *data, int32_t size, int32_t height);
 		void buildGLTexture(char *data, uint32_t width, uint32_t height);
-		void drawQuad(float x, float y, float width, float height, int texX, int texY, int texWidth, int texHeight);
-		void glArrayQuad(int texX, int texY, int texWidth, int texHeight, float *texCoords);
+		void glArrayQuad(int32_t texX, int32_t texY, int32_t texWidth, int32_t texHeight, float *texCoords);
 
 	public:
 		Font(FontModel *parent, FT_Face ftFace, int size);

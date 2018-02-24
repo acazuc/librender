@@ -39,6 +39,7 @@ namespace librender
 		void draw(Mat4 &viewProj);
 		void addEntry(ShaderSpriteBatchEntry *entry);
 		void removeEntry(ShaderSpriteBatchEntry *entry);
+		inline void setProgram(ShaderSpriteProgram program) {this->program = program;};
 		inline ShaderSpriteProgram &getProgram() {return (this->program);};
 		inline std::vector<ShaderSpriteBatchEntry*> &getEntries() {return (this->entries);};
 		void setTexture(Texture *texture);

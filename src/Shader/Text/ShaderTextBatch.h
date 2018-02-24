@@ -40,6 +40,7 @@ namespace librender
 		void addEntry(ShaderTextBatchEntry *entry);
 		void removeEntry(ShaderTextBatchEntry *entry);
 		void clearEntries();
+		inline void setProgram(ShaderTextProgram program) {this->program = program;};
 		inline ShaderTextProgram &getProgram() {return (this->program);};
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};

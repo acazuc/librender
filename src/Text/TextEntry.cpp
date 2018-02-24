@@ -168,7 +168,7 @@ namespace librender
 			shadowLen = tmp2 * tmp2 - 1 - 4 * tmp;
 		}
 		{
-			float tab[4] = {this->color.getRed(), this->color.getGreen(), this->color.getBlue(), this->color.getAlpha() * this->opacity};
+			float tab[4] = {this->color.r, this->color.g, this->color.b, this->color.a * this->opacity};
 			int32_t tmp = shadowLen * this->charsNumber * 4;
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
 			{
@@ -179,7 +179,7 @@ namespace librender
 		if (this->shadowSize <= 0)
 			return;
 		{
-			float tab[4] = {this->shadowColor.getRed(), this->shadowColor.getGreen(), this->shadowColor.getBlue(), this->shadowColor.getAlpha() * this->opacity};
+			float tab[4] = {this->shadowColor.r, this->shadowColor.g, this->shadowColor.b, this->shadowColor.a * this->opacity};
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
 				std::memcpy(&colors[i], tab, sizeof(tab));
 		}

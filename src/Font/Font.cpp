@@ -183,23 +183,7 @@ namespace librender
 		return (this->height * nlNb);
 	}
 
-	void Font::drawQuad(float x, float y, float width, float height, int texX, int texY, int texWidth, int texHeight)
-	{
-		float textureSrcX = static_cast<float>(texX) / this->textureWidth;
-		float textureSrcY = static_cast<float>(texY) / this->textureHeight;
-		float renderWidth = static_cast<float>(texWidth) / this->textureWidth;
-		float renderHeight = static_cast<float>(texHeight) / this->textureHeight;
-		glTexCoord2f(textureSrcX, textureSrcY);
-		glVertex2f(x, y);
-		glTexCoord2f(textureSrcX, textureSrcY + renderHeight);
-		glVertex2f(x, y + height);
-		glTexCoord2f(textureSrcX + renderWidth, textureSrcY + renderHeight);
-		glVertex2f(x + width, y + height);
-		glTexCoord2f(textureSrcX + renderWidth, textureSrcY);
-		glVertex2f(x + width, y);
-	}
-
-	void Font::glArrayQuad(int texX, int texY, int texWidth, int texHeight, float *texCoords)
+	void Font::glArrayQuad(int32_t texX, int32_t texY, int32_t texWidth, int32_t texHeight, float *texCoords)
 	{
 		float textureSrcX = static_cast<float>(texX) / this->textureWidth;
 		float textureSrcY = static_cast<float>(texY) / this->textureHeight;

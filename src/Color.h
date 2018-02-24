@@ -20,7 +20,6 @@ namespace librender
 		void bind();
 		Color &operator += (float val);
 		Color &operator -= (float val);
-		Color &operator = (Color &color);
 		static Color WHITE;
 		static Color LIGHTGREY;
 		static Color GREY;

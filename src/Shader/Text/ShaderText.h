@@ -24,6 +24,7 @@ namespace librender
 		ShaderText();
 		~ShaderText();
 		void draw(Mat4 &viewProj);
+		inline void setProgram(ShaderTextProgram program) {this->program = program;};
 		inline ShaderTextProgram &getProgram() {return (this->program);};
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};
