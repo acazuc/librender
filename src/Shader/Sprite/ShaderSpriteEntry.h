@@ -1,9 +1,9 @@
 #ifndef LIBRENDER_SHADER_SPRITE_ENTRY_H
 # define LIBRENDER_SHADER_SPRITE_ENTRY_H
 
+# include "../../Texture/Texture.h"
 # include "../../Vec/Vec4.h"
 # include "../../Vec/Vec2.h"
-# include "../../Texture.h"
 # include <cstdlib>
 
 namespace librender

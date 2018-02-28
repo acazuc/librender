@@ -4,7 +4,7 @@
 namespace librender
 {
 
-	Texture::Texture(char *data, uint32_t width, uint32_t height)
+	Texture::Texture(void *data, uint32_t width, uint32_t height)
 	{
 		glGenTextures(1, &this->id);
 		setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);

@@ -24,7 +24,6 @@ SRCS_PATH = src/
 
 SRCS_NAME = Color.cpp \
 		Draw.cpp \
-		Texture.cpp \
 		Text/Text.cpp \
 		Text/TextEntry.cpp \
 		Text/TextBatch.cpp \
@@ -61,6 +60,8 @@ SRCS_NAME = Color.cpp \
 		Sprite/SpriteBatch.cpp \
 		Sprite/SpriteBatchEntry.cpp \
 		Sprite/SpriteTessellator.cpp \
+		Texture/Texture.cpp \
+		Texture/TexturePacker.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
@@ -92,6 +93,7 @@ odir:
 	@mkdir -p $(OBJS_PATH)Sprite
 	@mkdir -p $(OBJS_PATH)Vec
 	@mkdir -p $(OBJS_PATH)Mat
+	@mkdir -p $(OBJS_PATH)Texture
 
 clean:
 	@echo " - Cleaning objs"

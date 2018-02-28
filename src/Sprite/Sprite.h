@@ -2,7 +2,6 @@
 # define LIBRENDER_SPRITE_H
 
 # include "./SpriteEntry.h"
-# include "../Texture.h"
 
 namespace librender
 {

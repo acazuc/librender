@@ -30,7 +30,7 @@ namespace librender
 		uint32_t id;
 
 	public:
-		Texture(char *data, uint32_t width, uint32_t height);
+		Texture(void *data, uint32_t width, uint32_t height);
 		Texture();
 		~Texture();
 		void bind();
