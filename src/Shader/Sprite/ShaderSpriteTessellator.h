@@ -1,8 +1,8 @@
 #ifndef SHADER_SPRITE_TESSELLATOR_H
 # define SHADER_SPRITE_TESSELLATOR_H
 
+# include "../../Texture/Texture.h"
 # include "../../Vec/Vec4.h"
-# include "../../Texture.h"
 # include "../Program.h"
 # include "../../GL.h"
 # include <vector>

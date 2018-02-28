@@ -2,7 +2,7 @@
 # define SPRITE_TESSELLATOR_H
 
 # include "../Vec/Vec4.h"
-# include "../Texture.h"
+# include "../Texture/Texture.h"
 # include "../GL.h"
 # include <vector>
 

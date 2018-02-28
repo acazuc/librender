@@ -1,7 +1,7 @@
 #ifndef LIBRENDER_DRAW_H
 # define LIBRENDER_DRAW_H
 
-# include "Texture.h"
+# include "Texture/Texture.h"
 # include "Color.h"
 
 namespace librender

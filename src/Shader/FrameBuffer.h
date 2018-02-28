@@ -1,7 +1,7 @@
 #ifndef LIBRENDER_FRAME_BUFFER_H
 # define LIBRENDER_FRAME_BUFFER_H
 
-# include "../Texture.h"
+# include "../Texture/Texture.h"
 # include "../GL.h"
 
 namespace librender

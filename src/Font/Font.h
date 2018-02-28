@@ -1,7 +1,7 @@
 #ifndef LIBRENDER_FONT_H
 # define LIBRENDER_FONT_H
 
-# include "../Texture.h"
+# include "../Texture/Texture.h"
 # include "FontModel.h"
 # include "FontGlyph.h"
 # include "../Color.h"
