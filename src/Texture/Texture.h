@@ -1,7 +1,7 @@
 #ifndef TEXTURE_H
 # define TEXTURE_H
 
-# include "Color.h"
+# include "../Color.h"
 # include <cstdint>
 
 namespace librender
