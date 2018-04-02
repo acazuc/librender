@@ -42,6 +42,7 @@ namespace librender
 		void clearEntries();
 		inline void setProgram(ShaderTextProgram program) {this->program = program;};
 		inline ShaderTextProgram &getProgram() {return (this->program);};
+		int32_t getLineHeight();
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};

@@ -1,32 +1,34 @@
 #include "Font.h"
 #include "../GL.h"
-#include "utf8.h"
 #include <cstdlib>
 #include <cstring>
+#include <utf8.h>
 #include <cmath>
+
+#define CLUSTER_SIZE 256
 
 namespace librender
 {
 
-	Font::Font(FontModel *parent, FT_Face ftFace, int size)
+	Font::Font(FontModel &parent, uint32_t size)
+	: parent(parent)
+	, textureHeight(0)
+	, textureWidth(0)
+	, revision(1)
+	, height(0)
+	, size(size)
 	{
-		this->parent = parent;
-		this->ftFace = ftFace;
-		if (FT_Set_Pixel_Sizes(this->ftFace, 0, size))
+		this->texture.bind();
+		this->texture.setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);
+		this->texture.setWrap(TEXTURE_WRAP_CLAMP_TO_BORDER, TEXTURE_WRAP_CLAMP_TO_BORDER);
+		if (FT_Set_Pixel_Sizes(this->parent.getFtFace(), 0, this->size))
 			throw std::exception();
-		this->glyphs = new FontGlyph*[LIBRENDER_FONT_MODEL_CHARS_NUMBER];
-		std::memset(this->glyphs, 0, LIBRENDER_FONT_MODEL_CHARS_NUMBER * sizeof(*this->glyphs));
-		this->glyphs_datas = new char*[LIBRENDER_FONT_MODEL_CHARS_NUMBER];
-		loadList(size);
-		createSet();
-		delete[] (this->glyphs_datas);
+		this->height = this->parent.getFtFace()->size->metrics.height >> 6;
 	}
 
 	Font::~Font()
 	{
-		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
-			delete (this->glyphs[i]);
-		delete[] (this->glyphs);
+		//Empty
 	}
 	
 	void Font::bind()
@@ -34,114 +36,137 @@ namespace librender
 		this->texture.bind();
 	}
 
-	void Font::loadList(int size)
+	FontGlyph *Font::loadGlyph(uint32_t character)
 	{
-		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
-		{
-			if (!this->parent->isAvailable(i))
-				continue;
-			if (FT_Load_Char(this->ftFace, i, FT_LOAD_RENDER))
-				continue;
-			this->glyphs[i] = new FontGlyph(this->ftFace->glyph->advance.x >> 6, this->ftFace->glyph->bitmap.width, this->ftFace->glyph->bitmap.rows
-				, this->ftFace->glyph->bitmap_left, size - this->ftFace->glyph->bitmap_top);
-			this->glyphs_datas[i] = new char[this->glyphs[i]->getWidth() * this->glyphs[i]->getHeight()];
-			std::memcpy(this->glyphs_datas[i], this->ftFace->glyph->bitmap.buffer, this->glyphs[i]->getWidth() * this->glyphs[i]->getHeight());
-		}
-	}
-
-	void Font::createSet()
-	{
-		uint32_t totalWidth = 0;
-		int32_t maxHeight = 0;
-		uint32_t maxWidth = 0;
-		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
-		{
-			FontGlyph *glyph = this->glyphs[i];
-			if (!glyph)
-				continue;
-			totalWidth += glyph->getWidth() + 1;
-			if (glyph->getHeight() + glyph->getOffsetY() > maxHeight)
-				maxHeight = glyph->getHeight() + glyph->getOffsetY();
-			if (glyph->getWidth() > maxWidth)
-				maxWidth = glyph->getWidth() + 1;
-		}
-		this->height = maxHeight;
-		uint32_t size = std::sqrt(totalWidth * (maxHeight + 2)) + maxWidth + maxHeight + 4;
-		char *data = new char[size * size * 4];
-		std::memset(data, 0, size * size * 4);
-		uint32_t x = 1;
-		uint32_t y = 1;
-		uint32_t lineHeight = 0;
-		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
-		{
-			FontGlyph *glyph = this->glyphs[i];
-			if (!glyph)
-				continue;
-			if (x + glyph->getWidth() + 2 >= size)
-			{
-				x = 1;
-				y += lineHeight + 1;
-				lineHeight = 0;
-			}
-			glyph->setTexX(x);
-			glyph->setTexY(y);
-			if (glyph->getHeight() > lineHeight)
-				lineHeight = glyph->getHeight();
-			copyChar(x, y, data, size, glyph, this->glyphs_datas[i]);
-			delete[] (this->glyphs_datas[i]);
-			x += glyph->getWidth() + 1;
-		}
-		if (x == 1)
-			y -= lineHeight + 1;
-		data = imageCrop(data, size, y + lineHeight + 1);
-		buildGLTexture(data, size, y + lineHeight + 1);
-		delete[] (data);
-	}
-
-	char *Font::imageCrop(char *data, int32_t size, int32_t height)
-	{
-		if (height < size)
-		{
-			this->textureWidth = size;
-			this->textureHeight = height;
-			char *tmp = new char[size * height * 4];
-			std::memcpy(tmp, data, size * height * 4);
-			delete[] (data);
-			return (tmp);
-		}
-		this->textureWidth = size;
-		this->textureHeight = size;
-		return (data);
-	}
-
-	void Font::copyChar(int32_t x, int32_t y, char *data, uint32_t size, FontGlyph *glyph, char *glyph_data)
-	{
-		for (uint32_t tY = 0; tY < glyph->getHeight(); ++tY)
-		{
-			for (uint32_t tX = 0; tX < glyph->getWidth(); ++tX)
-			{
-				reinterpret_cast<int*>(data)[((y + tY) * size + x + tX)] = 0xffffff | (glyph_data[tY * glyph->getWidth() + tX] << 24);
-			}
-		}
-	}
-
-	void Font::buildGLTexture(char *data, uint32_t width, uint32_t height)
-	{
+		if (FT_Set_Pixel_Sizes(this->parent.getFtFace(), 0, this->size))
+			return (NULL);
+		if (character < 0x1f)
+			return (NULL);
+		if (FT_Load_Char(this->parent.getFtFace(), character, FT_LOAD_RENDER))
+			return (NULL);
+		if (!this->parent.getFtFace()->glyph->advance.x)
+			return (NULL);
+		FontGlyph tmp(this->parent.getFtFace()->glyph->advance.x >> 6, \
+				this->parent.getFtFace()->glyph->bitmap.width, this->parent.getFtFace()->glyph->bitmap.rows, \
+				this->parent.getFtFace()->glyph->bitmap_left, this->size - this->parent.getFtFace()->glyph->bitmap_top);
+		if (tmp.getWidth() > CLUSTER_SIZE || tmp.getHeight() > CLUSTER_SIZE)
+			return (NULL);
+		FontGlyph &glyph = this->glyphs.emplace(character, tmp).first->second;
+		std::vector<char> glyphDatas(glyph.getWidth() * glyph.getHeight());
+		std::memcpy(glyphDatas.data(), this->parent.getFtFace()->glyph->bitmap.buffer, glyph.getWidth() * glyph.getHeight());
+		std::vector<char> textureDatas(this->textureWidth * this->textureHeight * 4);
 		this->texture.bind();
-		this->texture.setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);
-		this->texture.setWrap(TEXTURE_WRAP_CLAMP_TO_BORDER, TEXTURE_WRAP_CLAMP_TO_BORDER);
-		this->texture.setData(data, width, height);
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
+		uint32_t x;
+		uint32_t y;
+		if (findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
+		{
+			glyph.setTexX(x + 1);
+			glyph.setTexY(y + 1);
+			charCopy(textureDatas.data(), x + 1, y + 1, this->textureWidth, glyph, glyphDatas.data());
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, this->textureWidth, this->textureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
+			return (&glyph);
+		}
+		this->clusters.resize(this->clusters.size() + 1);
+		FontCluster &cluster = this->clusters.back();
+		cluster.width = CLUSTER_SIZE;
+		cluster.height = CLUSTER_SIZE;
+		cluster.x = this->textureWidth;
+		cluster.y = 0;
+		if (!cluster.findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
+			return (NULL);
+		glyph.setTexX(x + 1);
+		glyph.setTexY(y + 1);
+		uint32_t newHeight = this->textureHeight == 0 ? CLUSTER_SIZE : this->textureHeight;
+		std::vector<char> newDatas((this->textureWidth + CLUSTER_SIZE) * newHeight * 4);
+		for (uint32_t i = 0; i < this->textureHeight; ++i)
+			std::memcpy(newDatas.data() + (this->textureWidth + CLUSTER_SIZE) * 4 * i, textureDatas.data() + this->textureWidth * 4 * i, this->textureWidth * 4);
+		this->textureWidth += CLUSTER_SIZE;
+		this->textureHeight = newHeight;
+		charCopy(newDatas.data(), x + 1, y + 1, this->textureWidth, glyph, glyphDatas.data());
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, this->textureWidth, this->textureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, newDatas.data());
+		this->revision++;
+		return (&glyph);
+	}
+
+	void Font::charCopy(char *data, uint32_t x, uint32_t y, uint32_t width, FontGlyph &glyph, char *glyphData)
+	{
+		for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
+			std::memcpy(&data[(y + tY) * width + x], &glyphData[tY * glyph.getWidth()], glyph.getWidth());
+	}
+
+	bool Font::findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y)
+	{
+		for (uint32_t i = 0; i < this->clusters.size(); ++i)
+		{
+			if (this->clusters[i].findPlace(width, height, x, y))
+				return (true);
+		}
+	}
+
+	bool FontCluster::findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y)
+	{
+		if (width > this->width || height > this->height)
+			return (false);
+		for (uint32_t i = 0; i < this->lines.size(); ++i)
+		{
+			FontClusterLine &line = this->lines[i];
+			if (line.height >= height)
+			{
+				if (this->width - line.width >= width)
+				{
+					*x = this->x + line.width;
+					*y = this->y + line.y;
+					line.width += width;
+					if (height > line.height)
+						line.height = height;
+					return (true);
+				}
+				continue;
+			}
+			if (i != this->lines.size() - 1)
+				continue;
+			if (this->height - line.y < height)
+				continue;
+			line.height = height;
+			*x = this->x + line.width;
+			*y = this->y + line.y;
+			line.width += width;
+			if (height > line.height)
+				line.height = height;
+			return (true);
+		}
+		uint32_t newY = this->lines.size() ? this->lines.back().y + this->lines.back().height : 0;
+		if (height > this->height - newY)
+			return (false);
+		this->lines.resize(this->lines.size() + 1);
+		this->lines.back().y = newY;
+		this->lines.back().width = width;
+		this->lines.back().height = height;
+		*x = this->x;
+		*y = this->y + newY;
+		return (true);
 	}
 
 	FontGlyph *Font::getGlyph(uint32_t character)
 	{
-		if (character >= LIBRENDER_FONT_MODEL_CHARS_NUMBER || !this->glyphs[character])
+		std::unordered_map<uint32_t, FontGlyph>::iterator iter = this->glyphs.find(character);
+		if (iter == this->glyphs.end())
 		{
+			FontGlyph *glyph = loadGlyph(character);
+			if (glyph)
+				return (glyph);
 			if (character == '?')
+			{
+				FontGlyph glyph(0, 0, 0, 0, 0);
+				glyph.setTexX(0);
+				glyph.setTexY(0);
+				this->glyphs.emplace(character, glyph);
 				return (NULL);
+			}
 			return (getGlyph('?'));
 		}
-		return (this->glyphs[character]);
+		return (&iter->second);
 	}
 
 	int32_t Font::getWidth(std::string &text)

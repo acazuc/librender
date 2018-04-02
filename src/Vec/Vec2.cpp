@@ -213,6 +213,12 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec2<T> mix(TVec2<T> vec1, TVec2<T> vec2, T a)
+	{
+		return (vec1 * (1 - a) + vec2 * a);
+	}
+
+	template <typename T>
 	TVec2<T> clamp(TVec2<T> vec, T min, T max)
 	{
 		return (max(min, min(max)));

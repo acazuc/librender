@@ -15,6 +15,7 @@ namespace librender
 	, scale(1)
 	, pos(0)
 	, verticesNumber(0)
+	, fontRevision(0)
 	, charsNumber(0)
 	, updatesRequired(0)
 	, shadowSize(0)
@@ -36,6 +37,17 @@ namespace librender
 		delete[] (this->texCoords);
 		delete[] (this->vertexes);
 		delete[] (this->colors);
+	}
+
+	uint32_t TextEntry::getShadowLen()
+	{
+		if (this->shadowSize <= 0)
+			return (0);
+		if (this->shadowSize == 1)
+			return (1);
+		int16_t tmp = this->shadowSize - 1;
+		int16_t tmp2 = 1 + tmp * 2;
+		return (tmp2 * tmp2 - 1 - 4 * tmp);
 	}
 
 	void TextEntry::fillTexCoords(Vec2 *texCoords)
@@ -66,21 +78,7 @@ namespace librender
 
 	void TextEntry::fillVertexes(Vec2 *vertexes)
 	{
-		int32_t shadowLen;
-		if (this->shadowSize <= 0)
-		{
-			shadowLen = 0;
-		}
-		else if (this->shadowSize == 1)
-		{
-		 	shadowLen = 1;
-		}
-		else
-		{
-			int16_t tmp = this->shadowSize - 1;
-			int16_t tmp2 = 1 + tmp * 2;
-			shadowLen = tmp2 * tmp2 - 1 - 4 * tmp;
-		}
+		uint32_t shadowLen = getShadowLen();
 		float x = 0;
 		float y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
@@ -135,7 +133,7 @@ namespace librender
 			return;
 		uint32_t tmp = 1 + (this->shadowSize - 1) * 2;
 		uint8_t arrCount = 0;
-		int32_t tmp2 = shadowLen * this->charsNumber * 4;
+		uint32_t tmp2 = shadowLen * this->charsNumber * 4;
 		for (uint8_t i = 0; i < tmp * tmp; ++i)
 		{
 			int8_t sx = i % tmp - (this->shadowSize - 1);
@@ -152,21 +150,7 @@ namespace librender
 
 	void TextEntry::fillColors(Vec4 *colors)
 	{
-		int32_t shadowLen;
-		if (this->shadowSize <= 0)
-		{
-			shadowLen = 0;
-		}
-		else if (this->shadowSize == 1)
-		{
-		 	shadowLen = 1;
-		}
-		else
-		{
-			int16_t tmp = this->shadowSize - 1;
-			int16_t tmp2 = 1 + tmp * 2;
-			shadowLen = tmp2 * tmp2 - 1 - 4 * tmp;
-		}
+		uint32_t shadowLen = getShadowLen();
 		{
 			float tab[4] = {this->color.r, this->color.g, this->color.b, this->color.a * this->opacity};
 			int32_t tmp = shadowLen * this->charsNumber * 4;
@@ -183,14 +167,21 @@ namespace librender
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
 				std::memcpy(&colors[i], tab, sizeof(tab));
 		}
-		for (uint16_t i = 1; i < shadowLen; ++i)
+		for (uint32_t i = 1; i < shadowLen; ++i)
 			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * sizeof(*colors));
 	}
 
 	void TextEntry::update()
 	{
-		if (!getFont())
+		Font *font = getFont();
+		if (!font)
 			return;
+		if (font->getRevision() != this->fontRevision)
+		{
+			this->fontRevision = font->getRevision();
+			this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+			this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+		}
 		if (this->updatesRequired & TEXT_UPDATE_TEX_COORDS)
 			updateTexCoords();
 		if (this->updatesRequired & TEXT_UPDATE_VERTEXES)
@@ -339,36 +330,34 @@ namespace librender
 
 	int32_t TextEntry::getHeight()
 	{
-		if (this->mustCalcHeight)
+		if (!this->mustCalcHeight)
+			return (this->height * this->scale.y);
+		this->mustCalcHeight = false;
+		this->height = 0;
+		if (!getFont())
+			return (this->height * this->scale.y);
+		this->height = getLineHeight();
+		char *iter = const_cast<char*>(this->text.c_str());
+		char *end = iter + this->text.length();
+		float x = 0;
+		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
-			this->height = 0;
-			if (getFont())
+			uint32_t character = utf8::next(iter, end);
+			if (character == '\n')
 			{
-				this->height = getLineHeight();
-				char *iter = const_cast<char*>(this->text.c_str());
-				char *end = iter + this->text.length();
-				float x = 0;
-				for (uint32_t i = 0; i < this->charsNumber; ++i)
-				{
-					uint32_t character = utf8::next(iter, end);
-					if (character == '\n')
-					{
-						x = 0;
-						this->height += getLineHeight();
-						continue;
-					}
-					FontGlyph *glyph = getFont()->getGlyph(character);
-					if (!glyph)
-						continue;
-					x += glyph->getAdvance();
-					if (this->maxWidth > 0 && x >= this->maxWidth)
-					{
-						this->height += getLineHeight();
-						x = 0;
-					}
-				}
+				x = 0;
+				this->height += getLineHeight();
+				continue;
 			}
-			this->mustCalcHeight = false;
+			FontGlyph *glyph = getFont()->getGlyph(character);
+			if (!glyph)
+				continue;
+			x += glyph->getAdvance();
+			if (this->maxWidth > 0 && x >= this->maxWidth)
+			{
+				this->height += getLineHeight();
+				x = 0;
+			}
 		}
 		return (this->height * this->scale.y);
 	}

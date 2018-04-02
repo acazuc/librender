@@ -128,10 +128,10 @@ namespace librender
 	
 	void Texture::bind()
 	{
-		GLuint currentTexture;
+		/*GLuint currentTexture;
 		glGetIntegerv(GL_TEXTURE_BINDING_2D, reinterpret_cast<GLint*>(&currentTexture));
 		if (this->id == currentTexture)
-			return;
+			return;*/
 		glBindTexture(GL_TEXTURE_2D, this->id);
 	}
 

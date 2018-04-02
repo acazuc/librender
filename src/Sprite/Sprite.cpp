@@ -19,10 +19,11 @@ namespace librender
 
 	void Sprite::draw()
 	{
-		if (!this->texture)
-			return;
+		if (this->texture)
+			this->texture->bind();
+		else
+			glBindTexture(GL_TEXTURE_2D, 0);
 		update();
-		this->texture->bind();
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);

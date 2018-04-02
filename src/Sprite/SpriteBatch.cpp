@@ -95,8 +95,6 @@ namespace librender
 
 	void SpriteBatch::draw()
 	{
-		if (!this->texture)
-			return;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->update();
 		if (this->mustResize)
@@ -114,7 +112,10 @@ namespace librender
 		if (this->mustResize)
 			this->mustResize = false;
 		this->changes = 0;
-		this->texture->bind();
+		if (this->texture)
+			this->texture->bind();
+		else
+			glBindTexture(GL_TEXTURE_2D, 0);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);

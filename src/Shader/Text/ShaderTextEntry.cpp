@@ -15,6 +15,7 @@ namespace librender
 	, scale(1)
 	, pos(0)
 	, verticesNumber(0)
+	, fontRevision(0)
 	, charsNumber(0)
 	, updatesRequired(0)
 	, shadowSize(0)
@@ -190,8 +191,15 @@ namespace librender
 
 	void ShaderTextEntry::update()
 	{
-		if (!getFont())
+		Font *font = getFont();
+		if (!font)
 			return;
+		if (font->getRevision() != this->fontRevision)
+		{
+			this->fontRevision = font->getRevision();
+			this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
+			this->updatesRequired |= SHADER_TEXT_UPDATE_TEX_COORDS;
+		}
 		if (this->updatesRequired & SHADER_TEXT_UPDATE_TEX_COORDS)
 			updateTexCoords();
 		if (this->updatesRequired & SHADER_TEXT_UPDATE_VERTEXES)

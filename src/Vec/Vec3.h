@@ -6,7 +6,7 @@
 namespace librender
 {
 
-	template <typename T = float> class TVec3
+	template <typename T> class TVec3
 	{
 
 	public:
@@ -77,6 +77,8 @@ namespace librender
 	template <typename T>
 	TVec3<T> max(T val, TVec3<T> vec);
 
+	template <typename T>
+	TVec3<T> mix(TVec3<T> vec1, TVec3<T> vec2, T per);
 	template <typename T>
 	TVec3<T> clamp(TVec3<T> vec, T min, T max);
 	template <typename T>

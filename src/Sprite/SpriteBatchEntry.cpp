@@ -56,6 +56,13 @@ namespace librender
 		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
 	}
 
+	float SpriteBatchEntry::getX()
+	{
+		if (!this->parent)
+			return (0);
+		return (this->parent->getX() + this->pos.x);
+	}
+
 	void SpriteBatchEntry::setY(float y)
 	{
 		if (this->pos.y == y)
@@ -65,6 +72,13 @@ namespace librender
 			this->vertexes[i].y += delta;
 		this->pos.y = y;
 		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
+	}
+
+	float SpriteBatchEntry::getY()
+	{
+		if (!this->parent)
+			return (0);
+		return (this->parent->getY() + this->pos.y);
 	}
 	
 	void SpriteBatchEntry::setWidth(float width)

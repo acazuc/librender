@@ -53,7 +53,9 @@ namespace librender
 		void setTexHeight(float texHeight);
 		void setTexSize(float texWidth, float texHeight);
 		virtual void setWidth(float width);
+		float getWidth();
 		virtual void setHeight(float height);
+		float getHeight();
 		void setSize(float width, float height);
 		inline virtual void setX(float x) {this->pos.x = x;};
 		inline float getX() {return (this->pos.x);};

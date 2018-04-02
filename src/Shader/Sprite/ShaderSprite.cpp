@@ -19,7 +19,7 @@ namespace librender
 
 	void ShaderSprite::draw(Mat4 &viewProj)
 	{
-		if (!this->texture || !this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
+		if (!this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
 			return;
 		uint8_t changes = this->updatesRequired;
 		update();
@@ -29,7 +29,10 @@ namespace librender
 			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, sizeof(*this->vertexes) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_SPRITE_UPDATE_COLORS)
 			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber, GL_FLOAT, 4, GL_DYNAMIC_DRAW);
-		this->texture->bind();
+		if (this->texture)
+			this->texture->bind();
+		else
+			glBindTexture(GL_TEXTURE_2D, 0);
 		this->program.program->use();
 		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
 		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);

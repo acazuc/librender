@@ -43,25 +43,11 @@ namespace librender
 	{
 		if (FT_Select_Charmap(this->ftFace, ft_encoding_unicode))
 			throw std::exception();
-		if (FT_Set_Pixel_Sizes(this->ftFace, 0, 100))
-			throw std::exception();
-		for (uint32_t i = 0; i < LIBRENDER_FONT_MODEL_CHARS_NUMBER; ++i)
-		{
-			FT_UInt glyph;
-			if (i <= 0x1F || i == 0x7F || (i >= 0x80 && i <= 0x9F) || !(glyph = FT_Get_Char_Index(this->ftFace, i)))
-				this->availableChars[i] = false;
-			else if (FT_Load_Glyph(this->ftFace, glyph, FT_LOAD_RENDER))
-					this->availableChars[i] = false;
-			else if (this->ftFace->glyph->advance.x == 0)
-				this->availableChars[i] = false;
-			else
-				this->availableChars[i] = true;
-		}
 	}
 
-	Font *FontModel::derive(int size)
+	Font *FontModel::derive(uint32_t size)
 	{
-		return (new Font(this, this->ftFace, size));
+		return (new Font(*this, size));
 	}
 
 }

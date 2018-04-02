@@ -5,8 +5,6 @@
 # include FT_FREETYPE_H
 # include <string>
 
-# define LIBRENDER_FONT_MODEL_CHARS_NUMBER 1300
-
 namespace librender
 {
 
@@ -18,15 +16,14 @@ namespace librender
 	private:
 		static FT_Library ftLib;
 		FT_Face ftFace;
-		bool availableChars[LIBRENDER_FONT_MODEL_CHARS_NUMBER];
 		void _load();
 
 	public:
 		FontModel(std::string filename);
 		FontModel(char *ttfData, size_t ttfLen);
 		~FontModel();
-		Font *derive(int size);
-		bool isAvailable(unsigned int c) {return (this->availableChars[c]);};
+		Font *derive(uint32_t size);
+		inline FT_Face &getFtFace() {return (this->ftFace);};
 
 	};
 

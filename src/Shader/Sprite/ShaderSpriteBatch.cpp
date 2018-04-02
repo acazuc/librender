@@ -117,7 +117,7 @@ namespace librender
 
 	void ShaderSpriteBatch::draw(Mat4 &viewProj)
 	{
-		if (!this->texture || !this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
+		if (!this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
 			return;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->update();
@@ -139,7 +139,10 @@ namespace librender
 		if (this->mustResize)
 			this->mustResize = false;
 		this->changes = 0;
-		this->texture->bind();
+		if (this->texture)
+			this->texture->bind();
+		else
+			glBindTexture(GL_TEXTURE_2D, 0);
 		this->program.program->use();
 		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
 		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);

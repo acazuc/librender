@@ -33,6 +33,7 @@ namespace librender
 		void addEntry(TextBatchEntry *entry);
 		void removeEntry(TextBatchEntry *entry);
 		void clearEntries();
+		int32_t getLineHeight();
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};

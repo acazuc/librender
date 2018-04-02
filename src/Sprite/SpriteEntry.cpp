@@ -184,6 +184,11 @@ namespace librender
 		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
 	}
 
+	float SpriteEntry::getWidth()
+	{
+		return (this->vertexes[1].x - this->vertexes[0].x);
+	}
+
 	void SpriteEntry::setHeight(float height)
 	{
 		float delta = height - (this->vertexes[3].y - this->vertexes[0].y);
@@ -192,6 +197,11 @@ namespace librender
 		this->vertexes[2].y = height;
 		this->vertexes[3].y = height;
 		this->updatesRequired |= SPRITE_UPDATE_VERTEXES;
+	}
+
+	float SpriteEntry::getHeight()
+	{
+		return (this->vertexes[2].y - this->vertexes[1].y);
 	}
 
 	void SpriteEntry::setSize(float width, float height)

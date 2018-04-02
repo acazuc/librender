@@ -7,7 +7,7 @@
 namespace librender
 {
 
-	template <typename T = float> class TVec4
+	template <typename T> class TVec4
 	{
 
 	public:
@@ -70,6 +70,8 @@ namespace librender
 	template <typename T>
 	TVec4<T> operator / (T val, TVec4<T> vec);
 
+	template <typename T>
+	TVec4<T> mix(TVec4<T> vec1, TVec4<T> vec2, T per);
 	template <typename T>
 	TVec4<T> min(TVec4<T> vec1, TVec4<T> vec2);
 	template <typename T>

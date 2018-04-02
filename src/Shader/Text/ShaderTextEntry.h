@@ -24,6 +24,7 @@ namespace librender
 		Vec2 scale;
 		Vec2 pos;
 		uint32_t verticesNumber;
+		uint32_t fontRevision;
 		uint32_t charsNumber;
 		uint8_t updatesRequired;
 		int16_t shadowSize;

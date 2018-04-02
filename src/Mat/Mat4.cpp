@@ -9,21 +9,30 @@ namespace librender
 {
 
 	template <typename T>
+	TMat4<T>::TMat4(TMat3<T> mat)
+	{
+		this->data[0] = TVec4<T>(mat[0], T(0));
+		this->data[1] = TVec4<T>(mat[1], T(0));
+		this->data[2] = TVec4<T>(mat[2], T(0));
+		this->data[3] = TVec4<T>(T(0), T(0), T(0), T(1));
+	}
+
+	template <typename T>
 	TMat4<T>::TMat4(TVec4<T> vec)
 	{
-		this->data[0] = TVec4<T>(vec.x, 0, 0, 0);
-		this->data[1] = TVec4<T>(0, vec.y, 0, 0);
-		this->data[2] = TVec4<T>(0, 0, vec.z, 0);
-		this->data[3] = TVec4<T>(0, 0, 0, vec.w);
+		this->data[0] = TVec4<T>(T(vec.x), T(0), T(0), T(0));
+		this->data[1] = TVec4<T>(T(0), T(vec.y), T(0), T(0));
+		this->data[2] = TVec4<T>(T(0), T(0), T(vec.z), T(0));
+		this->data[3] = TVec4<T>(T(0), T(0), T(0), T(vec.w));
 	}
 
 	template <typename T>
 	TMat4<T>::TMat4(T value)
 	{
-		this->data[0] = TVec4<T>(value, 0, 0, 0);
-		this->data[1] = TVec4<T>(0, value, 0, 0);
-		this->data[2] = TVec4<T>(0, 0, value, 0);
-		this->data[3] = TVec4<T>(0, 0, 0, value);
+		this->data[0] = TVec4<T>(T(value), T(0), T(0), T(0));
+		this->data[1] = TVec4<T>(T(0), T(value), T(0), T(0));
+		this->data[2] = TVec4<T>(T(0), T(0), T(value), T(0));
+		this->data[3] = TVec4<T>(T(0), T(0), T(0), T(value));
 	}
 
 	template <typename T>
@@ -35,25 +44,25 @@ namespace librender
 	template <typename T>
 	TMat4<T> TMat4<T>::rotate(TMat4<T> mat, T angle, TVec3<T> axis)
 	{
-		T c = cos(angle);
-		T s = sin(angle);
-		TVec3<T> t(axis * (1 - c));
+		T c(cos(angle));
+		T s(sin(angle));
+		TVec3<T> t(axis * (T(1) - c));
 		TVec3<T> vx(t * axis.x);
 		TVec3<T> u(axis * s);
-		T yy = axis.y * t.y;
-		T yz = axis.y * t.z;
-		T zz = axis.z * t.z;
+		T yy(axis.y * t.y);
+		T yz(axis.y * t.z);
+		T zz(axis.z * t.z);
 		axis.normalize();
 		TMat3<T> rotate;
-		rotate[0][0] = vx.x + c;
-		rotate[0][1] = vx.y + u.z;
-		rotate[0][2] = vx.z - u.y;
-		rotate[1][0] = vx.y - u.x;
-		rotate[1][1] = yy + c;
-		rotate[1][2] = yz + u.z;
-		rotate[2][0] = vx.z + u.y;
-		rotate[2][1] = yz - u.x;
-		rotate[2][2] = zz + c;
+		rotate[0][0] = T(vx.x + c);
+		rotate[0][1] = T(vx.y + u.z);
+		rotate[0][2] = T(vx.z - u.y);
+		rotate[1][0] = T(vx.y - u.x);
+		rotate[1][1] = T(yy + c);
+		rotate[1][2] = T(yz + u.z);
+		rotate[2][0] = T(vx.z + u.y);
+		rotate[2][1] = T(yz - u.x);
+		rotate[2][2] = T(zz + c);
 		TMat4<T> result;
 		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
 		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
@@ -65,40 +74,55 @@ namespace librender
 	template <typename T>
 	TMat4<T> TMat4<T>::rotateX(TMat4<T> mat, T angle)
 	{
-		T c = cos(angle);
-		T s = sin(angle);
+		T c(cos(angle));
+		T s(sin(angle));
 		TMat4<T> rotate;
-		rotate[0] = TVec4<T>(1,  0, 0, 0);
-		rotate[1] = TVec4<T>(0,  c, s, 0);
-		rotate[2] = TVec4<T>(0, -s, c, 0);
-		rotate[3] = TVec4<T>(0,  0, 0, 1);
-		return (mat * rotate);
+		rotate[0] = TVec4<T>(T(1), T( 0), T(0), T(0));
+		rotate[1] = TVec4<T>(T(0), T( c), T(s), T(0));
+		rotate[2] = TVec4<T>(T(0), T(-s), T(c), T(0));
+		rotate[3] = TVec4<T>(T(0), T( 0), T(0), T(1));
+		TMat4<T> result;
+		result[0] = mat[0];
+		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
+		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
+		result[3] = mat[3];
+		return (result);
 	}
 
 	template <typename T>
 	TMat4<T> TMat4<T>::rotateY(TMat4<T> mat, T angle)
 	{
-		T c = cos(angle);
-		T s = sin(angle);
+		T c(cos(angle));
+		T s(sin(angle));
 		TMat4<T> rotate;
-		rotate[0] = TVec4<T>(c, 0, -s, 0);
-		rotate[1] = TVec4<T>(0, 1,  0, 0);
-		rotate[2] = TVec4<T>(s, 0,  c, 0);
-		rotate[3] = TVec4<T>(0, 0,  0, 1);
-		return (mat * rotate);
+		rotate[0] = TVec4<T>(T(c), T(0), T(-s), T(0));
+		rotate[1] = TVec4<T>(T(0), T(1), T( 0), T(0));
+		rotate[2] = TVec4<T>(T(s), T(0), T( c), T(0));
+		rotate[3] = TVec4<T>(T(0), T(0), T( 0), T(1));
+		TMat4<T> result;
+		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
+		result[1] = mat[1];
+		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
+		result[3] = mat[3];
+		return (result);
 	}
 
 	template <typename T>
 	TMat4<T> TMat4<T>::rotateZ(TMat4<T> mat, T angle)
 	{
-		T c = cos(angle);
-		T s = sin(angle);
+		T c(cos(angle));
+		T s(sin(angle));
 		TMat4<T> rotate;
-		rotate[0] = TVec4<T>( c, s, 0, 0);
-		rotate[1] = TVec4<T>(-s, c, 0, 0);
-		rotate[2] = TVec4<T>( 0, 0, 1, 0);
-		rotate[3] = TVec4<T>( 0, 0, 0, 1);
-		return (mat * rotate);
+		rotate[0] = TVec4<T>(T( c), T(s), T(0), T(0));
+		rotate[1] = TVec4<T>(T(-s), T(c), T(0), T(0));
+		rotate[2] = TVec4<T>(T( 0), T(0), T(1), T(0));
+		rotate[3] = TVec4<T>(T( 0), T(0), T(0), T(1));
+		TMat4<T> result;
+		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
+		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
+		result[2] = mat[2] * rotate[2][2];
+		result[3] = mat[3];
+		return (result);
 	}
 
 	template <typename T>
@@ -123,10 +147,10 @@ namespace librender
 	template <typename T>
 	TMat4<T> TMat4<T>::perspective(T fov, T aspect, T znear, T zfar)
 	{
-		T f = 1 / tan(fov / 2);
-		TMat4<T> mat(TVec4<T>(f / aspect, f, (zfar + znear) / (znear - zfar), 0));
-		mat[2][3] = -1;
-		mat[3][2] = (2 * zfar * znear) / (znear - zfar);
+		T f(T(1) / tan(fov / T(2)));
+		TMat4<T> mat(TVec4<T>(f / aspect, f, (zfar + znear) / (znear - zfar), T(0)));
+		mat[2][3] = T(-1);
+		mat[3][2] = (T(2) * zfar * znear) / (znear - zfar);
 		return (mat);
 	}
 
@@ -142,17 +166,17 @@ namespace librender
 		TVec3<T> u(ss.cross(f));
 		f = -f;
 		TMat4<T> mat;
-		mat[0] = TVec4<T>(s[0], u[0], f[0], 0);
-		mat[1] = TVec4<T>(s[1], u[1], f[1], 0);
-		mat[2] = TVec4<T>(s[2], u[2], f[2], 0);
-		mat[3] = TVec4<T>(0   , 0   , 0   , 1);
+		mat[0] = TVec4<T>(T(s[0]), T(u[0]), T(f[0]), T(0));
+		mat[1] = TVec4<T>(T(s[1]), T(u[1]), T(f[1]), T(0));
+		mat[2] = TVec4<T>(T(s[2]), T(u[2]), T(f[2]), T(0));
+		mat[3] = TVec4<T>(T(0)   , T(0)   , T(0)   , T(1));
 		return (translate(mat, TVec3<T>(-eye)));
 	}
 
 	template <typename T>
 	TMat4<T> TMat4<T>::ortho(T left, T right, T bottom, T top, T near, T far)
 	{
-		TMat4<T> mat(TVec4<T>(2 / (right - left), 2 / (top - bottom), -2 / (far - near), 1));
+		TMat4<T> mat(TVec4<T>(T(2) / (right - left), T(2) / (top - bottom), T(-2) / (far - near), T(1)));
 		mat[3][0] = -(right + left) / (right - left);
 		mat[3][1] = -(top + bottom) / (top - bottom);
 		mat[3][2] = -(far + near) / (far - near);

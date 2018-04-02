@@ -195,4 +195,11 @@ namespace librender
 		}
 	}
 
+	int32_t ShaderTextBatch::getLineHeight()
+	{
+		if (!this->font)
+			return (0);
+		return (this->font->getLineHeight());
+	}
+
 }

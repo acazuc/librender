@@ -23,6 +23,7 @@ namespace librender
 		Vec2 scale;
 		Vec2 pos;
 		uint32_t verticesNumber;
+		uint32_t fontRevision;
 		uint32_t charsNumber;
 		uint8_t updatesRequired;
 		int16_t shadowSize;
@@ -42,6 +43,7 @@ namespace librender
 		void fillVertexes(Vec2 *vertexes);
 		void fillColors(Vec4 *colors);
 		virtual void resize(uint32_t len);
+		uint32_t getShadowLen();
 
 	public:
 		TextEntry();

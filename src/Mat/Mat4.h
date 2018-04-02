@@ -3,6 +3,7 @@
 
 # include "../Vec/Vec4.h"
 # include "../Vec/Vec3.h"
+# include "./Mat3.h"
 
 namespace librender
 {
@@ -12,6 +13,7 @@ namespace librender
 	
 	public:
 		TVec4<T> data[4];
+		TMat4(TMat3<T> vec);
 		TMat4(TVec4<T> vec);
 		TMat4(T val);
 		TMat4() {};
