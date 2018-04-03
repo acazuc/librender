@@ -22,7 +22,7 @@ namespace librender
 		FontGlyph(uint16_t advance, uint16_t width, uint16_t height, int16_t offsetX, int16_t offsetY);
 		inline void setAdvance(uint16_t advance) {this->advance = advance;};
 		inline uint16_t getAdvance() {return (this->advance);};
-		inline void getHeight(uint16_t height) {this->height = height;};
+		inline void setHeight(uint16_t height) {this->height = height;};
 		inline uint16_t getHeight() {return (this->height);};
 		inline void setWidth(uint16_t width) {this->width = width;};
 		inline uint16_t getWidth() {return (this->width);};

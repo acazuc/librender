@@ -19,6 +19,7 @@ namespace librender
 	public:
 		TextBatchEntry();
 		~TextBatchEntry();
+		void requireUpdates(uint8_t updates);
 		void update();
 		Font *getFont();
 		void setParent(TextBatch *textBatch);

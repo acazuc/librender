@@ -48,6 +48,7 @@ namespace librender
 	public:
 		ShaderTextEntry();
 		~ShaderTextEntry();
+		virtual void requireUpdates(uint8_t updates);
 		virtual void update();
 		void setText(std::string &text);
 		inline std::string &getText() {return (this->text);};

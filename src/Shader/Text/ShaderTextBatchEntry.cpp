@@ -26,11 +26,17 @@ namespace librender
 		ShaderTextEntry::resize(len);
 	}
 
+	void ShaderTextBatchEntry::requireUpdates(uint8_t updates)
+	{
+		ShaderTextEntry::requireUpdates(updates);
+		addChanges(updates);
+		if (this->parent)
+			this->parent->addChanges(updates);
+	}
+
 	void ShaderTextBatchEntry::update()
 	{
-		uint8_t oldUpdates = this->updatesRequired;
 		ShaderTextEntry::update();
-		this->changes = this->updatesRequired | oldUpdates;
 		if (this->changes & SHADER_TEXT_UPDATE_VERTEXES && (this->pos.x || this->pos.y || this->scale.x || this->scale.y))
 		{
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
@@ -39,18 +45,12 @@ namespace librender
 				this->vertexes[i] += this->pos;
 			}
 		}
-		if (this->changes)
-			this->parent->addChanges(this->changes);
 	}
 
 	void ShaderTextBatchEntry::setParent(ShaderTextBatch *textBatch)
 	{
 		if (this->parent && (!textBatch || this->parent->getFont() != textBatch->getFont()))
-		{
-			this->updatesRequired |= SHADER_TEXT_UPDATE_VERTEXES;
-			this->updatesRequired |= SHADER_TEXT_UPDATE_TEX_COORDS;
-			this->updatesRequired |= SHADER_TEXT_UPDATE_COLORS;
-		}
+			requireUpdates(SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_COLORS);
 		this->parent = textBatch;
 	}
 

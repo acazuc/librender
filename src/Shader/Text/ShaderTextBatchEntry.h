@@ -19,6 +19,7 @@ namespace librender
 	public:
 		ShaderTextBatchEntry();
 		~ShaderTextBatchEntry();
+		void requireUpdates(uint8_t updates);
 		void update();
 		Font *getFont();
 		void setParent(ShaderTextBatch *textBatch);

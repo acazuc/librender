@@ -49,43 +49,14 @@ namespace librender
 		FontGlyph tmp(this->parent.getFtFace()->glyph->advance.x >> 6, \
 				this->parent.getFtFace()->glyph->bitmap.width, this->parent.getFtFace()->glyph->bitmap.rows, \
 				this->parent.getFtFace()->glyph->bitmap_left, this->size - this->parent.getFtFace()->glyph->bitmap_top);
-		if (tmp.getWidth() > CLUSTER_SIZE || tmp.getHeight() > CLUSTER_SIZE)
+		if (tmp.getWidth() + 2 > CLUSTER_SIZE || tmp.getHeight() + 2 > CLUSTER_SIZE)
 			return (NULL);
 		FontGlyph &glyph = this->glyphs.emplace(character, tmp).first->second;
-		std::vector<char> glyphDatas(glyph.getWidth() * glyph.getHeight());
-		std::memcpy(glyphDatas.data(), this->parent.getFtFace()->glyph->bitmap.buffer, glyph.getWidth() * glyph.getHeight());
-		std::vector<char> textureDatas(this->textureWidth * this->textureHeight * 4);
-		this->texture.bind();
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
-		uint32_t x;
-		uint32_t y;
-		if (findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
-		{
-			glyph.setTexX(x + 1);
-			glyph.setTexY(y + 1);
-			charCopy(textureDatas.data(), x + 1, y + 1, this->textureWidth, glyph, glyphDatas.data());
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, this->textureWidth, this->textureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
-			return (&glyph);
-		}
-		this->clusters.resize(this->clusters.size() + 1);
-		FontCluster &cluster = this->clusters.back();
-		cluster.width = CLUSTER_SIZE;
-		cluster.height = CLUSTER_SIZE;
-		cluster.x = this->textureWidth;
-		cluster.y = 0;
-		if (!cluster.findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
-			return (NULL);
-		glyph.setTexX(x + 1);
-		glyph.setTexY(y + 1);
-		uint32_t newHeight = this->textureHeight == 0 ? CLUSTER_SIZE : this->textureHeight;
-		std::vector<char> newDatas((this->textureWidth + CLUSTER_SIZE) * newHeight * 4);
-		for (uint32_t i = 0; i < this->textureHeight; ++i)
-			std::memcpy(newDatas.data() + (this->textureWidth + CLUSTER_SIZE) * 4 * i, textureDatas.data() + this->textureWidth * 4 * i, this->textureWidth * 4);
-		this->textureWidth += CLUSTER_SIZE;
-		this->textureHeight = newHeight;
-		charCopy(newDatas.data(), x + 1, y + 1, this->textureWidth, glyph, glyphDatas.data());
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, this->textureWidth, this->textureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, newDatas.data());
-		this->revision++;
+		this->tmpGlyphs.resize(this->tmpGlyphs.size() + 1);
+		FontTmpGlyph &tmpGlyph = this->tmpGlyphs.back();
+		tmpGlyph.datas.resize(glyph.getWidth() * glyph.getHeight());
+		std::memcpy(tmpGlyph.datas.data(), this->parent.getFtFace()->glyph->bitmap.buffer, glyph.getWidth() * glyph.getHeight());
+		tmpGlyph.character = character;
 		return (&glyph);
 	}
 
@@ -206,6 +177,62 @@ namespace librender
 			++nlNb;
 		}
 		return (this->height * nlNb);
+	}
+
+	void Font::glUpdate()
+	{
+		if (!this->tmpGlyphs.size())
+			return;
+		bool needUpdate = false;
+		std::vector<char> textureDatas(this->textureWidth * this->textureHeight * 4);
+		this->texture.bind();
+		glGetTexImage(GL_TEXTURE_2D, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
+		for (uint32_t i = 0; i < this->tmpGlyphs.size(); ++i)
+		{
+			FontTmpGlyph &tmpGlyph = this->tmpGlyphs[i];
+			std::unordered_map<uint32_t, FontGlyph>::iterator iter = this->glyphs.find(tmpGlyph.character);
+			if (iter == this->glyphs.end())
+				continue;
+			FontGlyph &glyph = iter->second;
+			uint32_t x;
+			uint32_t y;
+			if (findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
+			{
+				glyph.setTexX(x + 1);
+				glyph.setTexY(y + 1);
+				charCopy(textureDatas.data(), x + 1, y + 1, this->textureWidth, glyph, tmpGlyph.datas.data());
+				needUpdate = true;
+				continue;
+			}
+			this->clusters.resize(this->clusters.size() + 1);
+			FontCluster &cluster = this->clusters.back();
+			cluster.width = CLUSTER_SIZE;
+			cluster.height = CLUSTER_SIZE;
+			cluster.x = 0;
+			cluster.y = this->textureHeight;
+			if (!cluster.findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
+			{
+				glyph.setWidth(0);
+				glyph.setHeight(0);
+				glyph.setTexX(0);
+				glyph.setTexY(0);
+				continue;
+			}
+			glyph.setTexX(x + 1);
+			glyph.setTexY(y + 1);
+			if (this->textureWidth == 0)
+				this->textureWidth = CLUSTER_SIZE;
+			this->textureHeight += CLUSTER_SIZE;
+			textureDatas.resize(this->textureWidth * this->textureHeight, 0);
+			charCopy(textureDatas.data(), x + 1, y + 1, this->textureWidth, glyph, tmpGlyph.datas.data());
+			needUpdate = true;
+		}
+		this->tmpGlyphs.clear();
+		if (needUpdate)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, this->textureWidth, this->textureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
+			++this->revision;
+		}
 	}
 
 	void Font::glArrayQuad(int32_t texX, int32_t texY, int32_t texWidth, int32_t texHeight, float *texCoords)

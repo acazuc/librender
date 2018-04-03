@@ -171,16 +171,21 @@ namespace librender
 			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * sizeof(*colors));
 	}
 
+	void TextEntry::requireUpdates(uint8_t update)
+	{
+		this->updatesRequired |= update;
+	}
+
 	void TextEntry::update()
 	{
 		Font *font = getFont();
 		if (!font)
 			return;
+		font->glUpdate();
 		if (font->getRevision() != this->fontRevision)
 		{
 			this->fontRevision = font->getRevision();
-			this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-			this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+			requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS);
 		}
 		if (this->updatesRequired & TEXT_UPDATE_TEX_COORDS)
 			updateTexCoords();
@@ -193,9 +198,7 @@ namespace librender
 
 	void TextEntry::resize(uint32_t len)
 	{
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_COLORS);
 		this->charsNumber = len;
 		this->verticesNumber = this->charsNumber * 4;
 		if (this->shadowSize > 0)
@@ -234,8 +237,7 @@ namespace librender
 		if (this->charsNumber != newLen)
 			resize(newLen);
 		this->text = text;
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
+		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS);
 	}
 
 	void TextEntry::setShadowColor(Color &color)
@@ -243,7 +245,7 @@ namespace librender
 		if (!color.compare(this->shadowColor))
 			return;
 		this->shadowColor = color;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		requireUpdates(TEXT_UPDATE_COLORS);
 	}
 
 	void TextEntry::setColor(Color &color)
@@ -251,7 +253,7 @@ namespace librender
 		if (!color.compare(this->color))
 			return;
 		this->color = color;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		requireUpdates(TEXT_UPDATE_COLORS);
 	}
 
 	void TextEntry::setShadowSize(int16_t shadowSize)
@@ -260,9 +262,7 @@ namespace librender
 			return;
 		this->shadowSize = shadowSize;
 		resize(this->charsNumber);
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-		this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_COLORS);
 	}
 
 	void TextEntry::setShadowX(int32_t shadowX)
@@ -270,7 +270,7 @@ namespace librender
 		if (this->shadowX == shadowX)
 			return;
 		this->shadowX = shadowX;
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		requireUpdates(TEXT_UPDATE_VERTEXES);
 	}
 
 	void TextEntry::setShadowY(int32_t shadowY)
@@ -278,7 +278,7 @@ namespace librender
 		if (this->shadowY == shadowY)
 			return;
 		this->shadowY = shadowY;
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		requireUpdates(TEXT_UPDATE_VERTEXES);
 	}
 
 	void TextEntry::setOpacity(float opacity)
@@ -286,7 +286,7 @@ namespace librender
 		if (this->opacity == opacity)
 			return;
 		this->opacity = opacity;
-		this->updatesRequired |= TEXT_UPDATE_COLORS;
+		requireUpdates(TEXT_UPDATE_COLORS);
 	}
 
 	void TextEntry::setScaleX(float scaleX)
@@ -308,7 +308,7 @@ namespace librender
 		if (this->maxWidth == maxWidth)
 			return;
 		this->maxWidth = maxWidth;
-		this->updatesRequired |= TEXT_UPDATE_VERTEXES;
+		requireUpdates(TEXT_UPDATE_VERTEXES);
 		recalcWidth();
 		recalcHeight();
 	}

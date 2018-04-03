@@ -26,11 +26,17 @@ namespace librender
 		TextEntry::resize(len);
 	}
 
+	void TextBatchEntry::requireUpdates(uint8_t updates)
+	{
+		TextEntry::requireUpdates(updates);
+		addChanges(updates);
+		if (this->parent)
+			this->parent->addChanges(updates);
+	}
+
 	void TextBatchEntry::update()
 	{
-		uint8_t oldUpdates = this->updatesRequired;
 		TextEntry::update();
-		this->changes = this->updatesRequired | oldUpdates;
 		if (this->changes & TEXT_UPDATE_VERTEXES && (this->pos.x || this->pos.y || this->scale.x || this->scale.y))
 		{
 			for (uint32_t i = 0; i < this->verticesNumber; ++i)
@@ -39,18 +45,12 @@ namespace librender
 				this->vertexes[i] += this->pos;
 			}
 		}
-		if (this->changes)
-			this->parent->addChanges(this->changes);
 	}
 
 	void TextBatchEntry::setParent(TextBatch *textBatch)
 	{
 		if (this->parent && (!textBatch || this->parent->getFont() != textBatch->getFont()))
-		{
-			this->updatesRequired |= TEXT_UPDATE_VERTEXES;
-			this->updatesRequired |= TEXT_UPDATE_TEX_COORDS;
-			this->updatesRequired |= TEXT_UPDATE_COLORS;
-		}
+			requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_COLORS);
 		this->parent = textBatch;
 	}
 

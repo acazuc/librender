@@ -32,12 +32,19 @@ namespace librender
 		bool findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y);
 	};
 
+	struct FontTmpGlyph
+	{
+		uint32_t character;
+		std::vector<char> datas;
+	};
+
 	class Font
 	{
 
 	private:
 		FontModel &parent;
 		std::unordered_map<uint32_t, FontGlyph> glyphs;
+		std::vector<FontTmpGlyph> tmpGlyphs;
 		std::vector<FontCluster> clusters;
 		Texture texture;
 		uint32_t textureHeight;
@@ -58,6 +65,7 @@ namespace librender
 		int32_t getWidth(std::string &text);
 		int32_t getHeight(std::string &text);
 		void bind();
+		void glUpdate();
 		void glChar(uint32_t character, float *texCoords);
 		void glGlyph(FontGlyph *glyph, float *texCoords);
 		inline Texture &getTexture() {return (this->texture);};
