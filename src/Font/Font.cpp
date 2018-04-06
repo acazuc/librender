@@ -1,5 +1,6 @@
 #include "Font.h"
 #include "../GL.h"
+#include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <utf8.h>
@@ -21,7 +22,7 @@ namespace librender
 		this->texture.bind();
 		this->texture.setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);
 		this->texture.setWrap(TEXTURE_WRAP_CLAMP_TO_BORDER, TEXTURE_WRAP_CLAMP_TO_BORDER);
-		if (FT_Set_Pixel_Sizes(this->parent.getFtFace(), 0, this->size))
+		if (!this->parent.setSize(this->size))
 			throw std::exception();
 		this->height = this->parent.getFtFace()->size->metrics.height >> 6;
 	}
@@ -38,7 +39,7 @@ namespace librender
 
 	FontGlyph *Font::loadGlyph(uint32_t character)
 	{
-		if (FT_Set_Pixel_Sizes(this->parent.getFtFace(), 0, this->size))
+		if (!this->parent.setSize(this->size))
 			return (NULL);
 		if (character < 0x1f)
 			return (NULL);
@@ -122,22 +123,18 @@ namespace librender
 	FontGlyph *Font::getGlyph(uint32_t character)
 	{
 		std::unordered_map<uint32_t, FontGlyph>::iterator iter = this->glyphs.find(character);
-		if (iter == this->glyphs.end())
-		{
-			FontGlyph *glyph = loadGlyph(character);
-			if (glyph)
-				return (glyph);
-			if (character == '?')
-			{
-				FontGlyph glyph(0, 0, 0, 0, 0);
-				glyph.setTexX(0);
-				glyph.setTexY(0);
-				this->glyphs.emplace(character, glyph);
-				return (NULL);
-			}
+		if (iter != this->glyphs.end())
+			return (&iter->second);
+		FontGlyph *glyph = loadGlyph(character);
+		if (glyph)
+			return (glyph);
+		if (character != '?')
 			return (getGlyph('?'));
-		}
-		return (&iter->second);
+		FontGlyph tmp(0, 0, 0, 0, 0);
+		tmp.setTexX(0);
+		tmp.setTexY(0);
+		this->glyphs.emplace(character, tmp);
+		return (NULL);
 	}
 
 	int32_t Font::getWidth(std::string &text)

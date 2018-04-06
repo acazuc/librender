@@ -50,4 +50,13 @@ namespace librender
 		return (new Font(*this, size));
 	}
 
+	bool FontModel::setSize(uint32_t size)
+	{
+		if (size == this->ftFace->size->metrics.x_ppem)
+			return (true);
+		if (FT_Set_Pixel_Sizes(this->ftFace, 0, size))
+			return (false);
+		return (true);
+	}
+
 }

@@ -23,6 +23,7 @@ namespace librender
 		FontModel(char *ttfData, size_t ttfLen);
 		~FontModel();
 		Font *derive(uint32_t size);
+		bool setSize(uint32_t size);
 		inline FT_Face &getFtFace() {return (this->ftFace);};
 
 	};
