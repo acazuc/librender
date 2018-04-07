@@ -43,9 +43,14 @@ namespace librender
 			return (NULL);
 		if (character < 0x1f)
 			return (NULL);
-		if (FT_Load_Char(this->parent.getFtFace(), character, FT_LOAD_RENDER))
+		uint32_t codepoint = FT_Get_Char_Index(this->parent.getFtFace(), character);
+		if (!codepoint)
+			return (NULL);
+		if (FT_Load_Glyph(this->parent.getFtFace(), codepoint, FT_LOAD_DEFAULT))
 			return (NULL);
 		if (!this->parent.getFtFace()->glyph->advance.x)
+			return (NULL);
+		if (FT_Render_Glyph(this->parent.getFtFace()->glyph, FT_RENDER_MODE_NORMAL))
 			return (NULL);
 		FontGlyph tmp(this->parent.getFtFace()->glyph->advance.x >> 6, \
 				this->parent.getFtFace()->glyph->bitmap.width, this->parent.getFtFace()->glyph->bitmap.rows, \
