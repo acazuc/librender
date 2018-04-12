@@ -1,8 +1,8 @@
 NAME = librender.a
 
-CC = g++ -std=c++14
+CC = g++
 
-ARCH = -m64
+ARCH =
 
 AR = gcc-ar
 
@@ -12,7 +12,7 @@ RANLIB = gcc-ranlib
 
 RANLIBFLAGS =
 
-CLFAGS = -g -Wall -Wextra -O3 -pipe -fuse-linker-plugin -flto -mtune=generic
+CLFAGS = -std=c++14 -g -Wall -Wextra -O3 -pipe
 
 INCLUDES_PATH = -I src
 INCLUDES_PATH+= -I lib
@@ -23,45 +23,45 @@ INCLUDES_PATH+= -I lib/glad/include
 SRCS_PATH = src/
 
 SRCS_NAME = Color.cpp \
-		Draw.cpp \
-		Text/Text.cpp \
-		Text/TextEntry.cpp \
-		Text/TextBatch.cpp \
-		Text/TextBatchEntry.cpp \
-		Text/TextTessellator.cpp \
-		Font/FontGlyph.cpp \
-		Font/FontModel.cpp \
-		Font/Font.cpp \
-		Shader/FragmentShader.cpp \
-		Shader/VertexShader.cpp \
-		Shader/Program.cpp \
-		Shader/VertexBuffer.cpp \
-		Shader/ProgramLocation.cpp \
-		Shader/GeometryShader.cpp \
-		Shader/Shader.cpp \
-		Shader/FrameBuffer.cpp \
-		Shader/RenderBuffer.cpp \
-		Shader/VertexArray.cpp \
-		Shader/Sprite/ShaderSprite.cpp \
-		Shader/Sprite/ShaderSpriteEntry.cpp \
-		Shader/Sprite/ShaderSpriteBatch.cpp \
-		Shader/Sprite/ShaderSpriteBatchEntry.cpp \
-		Shader/Sprite/ShaderSpriteTessellator.cpp \
-		Shader/Text/ShaderText.cpp \
-		Shader/Text/ShaderTextEntry.cpp \
-		Shader/Text/ShaderTextBatch.cpp \
-		Shader/Text/ShaderTextBatchEntry.cpp \
-		Window/EventsManager.cpp \
-		Window/Window.cpp \
-		Window/Monitor.cpp \
-		Window/VideoMode.cpp \
-		Sprite/Sprite.cpp \
-		Sprite/SpriteEntry.cpp \
-		Sprite/SpriteBatch.cpp \
-		Sprite/SpriteBatchEntry.cpp \
-		Sprite/SpriteTessellator.cpp \
-		Texture/Texture.cpp \
-		Texture/TexturePacker.cpp \
+	    Draw.cpp \
+	    Text/Text.cpp \
+	    Text/TextEntry.cpp \
+	    Text/TextBatch.cpp \
+	    Text/TextBatchEntry.cpp \
+	    Text/TextTessellator.cpp \
+	    Font/FontGlyph.cpp \
+	    Font/FontModel.cpp \
+	    Font/Font.cpp \
+	    Shader/FragmentShader.cpp \
+	    Shader/VertexShader.cpp \
+	    Shader/Program.cpp \
+	    Shader/VertexBuffer.cpp \
+	    Shader/ProgramLocation.cpp \
+	    Shader/GeometryShader.cpp \
+	    Shader/Shader.cpp \
+	    Shader/FrameBuffer.cpp \
+	    Shader/RenderBuffer.cpp \
+	    Shader/VertexArray.cpp \
+	    Shader/Sprite/ShaderSprite.cpp \
+	    Shader/Sprite/ShaderSpriteEntry.cpp \
+	    Shader/Sprite/ShaderSpriteBatch.cpp \
+	    Shader/Sprite/ShaderSpriteBatchEntry.cpp \
+	    Shader/Sprite/ShaderSpriteTessellator.cpp \
+	    Shader/Text/ShaderText.cpp \
+	    Shader/Text/ShaderTextEntry.cpp \
+	    Shader/Text/ShaderTextBatch.cpp \
+	    Shader/Text/ShaderTextBatchEntry.cpp \
+	    Window/EventsManager.cpp \
+	    Window/Window.cpp \
+	    Window/Monitor.cpp \
+	    Window/VideoMode.cpp \
+	    Sprite/Sprite.cpp \
+	    Sprite/SpriteEntry.cpp \
+	    Sprite/SpriteBatch.cpp \
+	    Sprite/SpriteBatchEntry.cpp \
+	    Sprite/SpriteTessellator.cpp \
+	    Texture/Texture.cpp \
+	    Texture/TexturePacker.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
