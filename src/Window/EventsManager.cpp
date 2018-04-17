@@ -9,16 +9,17 @@ namespace librender
 {
 
 	EventsManager::EventsManager()
+	: windowResizedCallback(NULL)
+	, scrollCallback(NULL)
+	, mouseMoveCallback(NULL)
+	, mouseDownCallback(NULL)
+	, mouseUpCallback(NULL)
+	, keyDownCallback(NULL)
+	, keyPressCallback(NULL)
+	, keyUpCallback(NULL)
+	, charCallback(NULL)
 	{
-		windowResizedCallback = NULL;
-		scrollCallback = NULL;
-		mouseMoveCallback = NULL;
-		mouseDownCallback = NULL;
-		mouseUpCallback = NULL;
-		keyDownCallback = NULL;
-		keyPressCallback = NULL;
-		keyUpCallback = NULL;
-		charCallback = NULL;
+		//Emtpy
 	}
 
 	void EventsManager::charListener(GLFWwindow *glfwWindow, unsigned int codepoint)

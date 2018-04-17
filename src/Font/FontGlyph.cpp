@@ -9,6 +9,8 @@ namespace librender
 	, width(width)
 	, offsetX(offsetX)
 	, offsetY(offsetY)
+	, texX(0)
+	, texY(0)
 	{
 		//Empty
 	}

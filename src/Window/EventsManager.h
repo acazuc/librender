@@ -1,7 +1,7 @@
 #ifndef LIBRENDER_EVENTS_LISTENER_H
 # define LIBRENDER_EVENTS_LISTENER_H
 
-# include "Events.h"
+# include "./Events.h"
 
 class GLFWwindow;
 

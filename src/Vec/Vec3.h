@@ -1,7 +1,7 @@
 #ifndef VEC3_H
 # define VEC3_H
 
-# include "Vec2.h"
+# include "./Vec2.h"
 
 namespace librender
 {

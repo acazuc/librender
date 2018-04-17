@@ -1,6 +1,5 @@
 #include "Font.h"
 #include "../GL.h"
-#include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <utf8.h>
@@ -25,6 +24,8 @@ namespace librender
 		if (!this->parent.setSize(this->size))
 			throw std::exception();
 		this->height = this->parent.getFtFace()->size->metrics.height >> 6;
+		if (this->height > 2)
+			this->height -= 2;
 	}
 
 	Font::~Font()
@@ -57,13 +58,12 @@ namespace librender
 				this->parent.getFtFace()->glyph->bitmap_left, this->size - this->parent.getFtFace()->glyph->bitmap_top);
 		if (tmp.getWidth() + 2 > CLUSTER_SIZE || tmp.getHeight() + 2 > CLUSTER_SIZE)
 			return (NULL);
-		FontGlyph &glyph = this->glyphs.emplace(character, tmp).first->second;
 		this->tmpGlyphs.resize(this->tmpGlyphs.size() + 1);
 		FontTmpGlyph &tmpGlyph = this->tmpGlyphs.back();
-		tmpGlyph.datas.resize(glyph.getWidth() * glyph.getHeight());
-		std::memcpy(tmpGlyph.datas.data(), this->parent.getFtFace()->glyph->bitmap.buffer, glyph.getWidth() * glyph.getHeight());
+		tmpGlyph.datas.resize(tmp.getWidth() * tmp.getHeight());
+		std::memcpy(tmpGlyph.datas.data(), this->parent.getFtFace()->glyph->bitmap.buffer, tmp.getWidth() * tmp.getHeight());
 		tmpGlyph.character = character;
-		return (&glyph);
+		return (&this->glyphs.emplace(character, tmp).first->second);
 	}
 
 	void Font::charCopy(char *data, uint32_t x, uint32_t y, uint32_t width, FontGlyph &glyph, char *glyphData)
@@ -79,6 +79,7 @@ namespace librender
 			if (this->clusters[i].findPlace(width, height, x, y))
 				return (true);
 		}
+		return (false);
 	}
 
 	bool FontCluster::findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y)
@@ -146,8 +147,8 @@ namespace librender
 	{
 		uint32_t maxWidth = 0;
 		uint32_t currentWidth = 0;
-		char *iter = const_cast<char*>(text.c_str());
-		char *end = iter + text.length();
+		const char *iter = text.c_str();
+		const char *end = iter + text.length();
 		while (iter != end)
 		{
 			uint32_t currentChar = utf8::next(iter, end);
@@ -186,7 +187,7 @@ namespace librender
 		if (!this->tmpGlyphs.size())
 			return;
 		bool needUpdate = false;
-		std::vector<char> textureDatas(this->textureWidth * this->textureHeight * 4);
+		std::vector<char> textureDatas(this->textureWidth * this->textureHeight);
 		this->texture.bind();
 		glGetTexImage(GL_TEXTURE_2D, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
 		for (uint32_t i = 0; i < this->tmpGlyphs.size(); ++i)

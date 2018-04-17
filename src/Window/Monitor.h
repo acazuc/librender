@@ -1,9 +1,10 @@
 #ifndef LIBRENDER_MONITOR_H
 # define LIBRENDER_MONITOR_H
 
-# include "VideoMode.h"
+# include "./VideoMode.h"
 # include <cstdint>
 # include <string>
+# include <vector>
 
 class GLFWmonitor;
 
@@ -14,18 +15,18 @@ namespace librender
 	{
 
 	private:
+		std::vector<VideoMode> videoModes;
 		GLFWmonitor *handle;
-		VideoMode **videoModes;
 		std::string name;
 		int32_t width;
 		int32_t height;
 
 	public:
 		Monitor(GLFWmonitor *handle);
-		VideoMode **getVideoModes();
-		std::string getName();
-		int32_t getWidth();
-		int32_t getHeight();
+		std::vector<VideoMode> &getVideoModes() {return (this->videoModes);};
+		std::string &getName() {return (this->name);};
+		inline int32_t getWidth() {return (this->width);};
+		inline int32_t getHeight() {return (this->height);};
 
 	};
 

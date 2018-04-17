@@ -1,7 +1,7 @@
 #ifndef LIBRENDER_WINDOW_H
 # define LIBRENDER_WINDOW_H
 
-# include "EventsManager.h"
+# include "./EventsManager.h"
 # include <string>
 
 class GLFWcursor;
