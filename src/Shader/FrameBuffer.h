@@ -18,6 +18,7 @@ namespace librender
 		~FrameBuffer();
 		void attachTexture(GLenum attachment, Texture &texture, GLint level);
 		void draw(GLenum buf);
+		void read(GLenum buf);
 		void bind();
 
 	};

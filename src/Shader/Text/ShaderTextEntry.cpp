@@ -9,9 +9,9 @@ namespace librender
 	ShaderTextEntry::ShaderTextEntry()
 	: shadowColor(Color::BLACK)
 	, color(Color::WHITE)
-	, texCoords(NULL)
-	, vertexes(NULL)
-	, colors(NULL)
+	, texCoords(nullptr)
+	, vertexes(nullptr)
+	, colors(nullptr)
 	, scale(1)
 	, pos(0)
 	, verticesNumber(0)
@@ -89,8 +89,8 @@ namespace librender
 		int32_t index = (shadowLen * this->charsNumber) * 4;
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
-			uint32_t currentChar = utf8::next(iter, end);
-			if (currentChar == '\n')
+			uint32_t character = utf8::next(iter, end);
+			if (character == '\n')
 			{
 				y += getLineHeight();
 				x = 0;
@@ -98,7 +98,7 @@ namespace librender
 				index += 4;
 				continue;
 			}
-			FontGlyph *glyph = getFont()->getGlyph(currentChar);
+			Glyph *glyph = getFont()->getGlyph(character);
 			if (!glyph)
 			{
 				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes));
@@ -367,7 +367,7 @@ namespace librender
 				this->height += getLineHeight();
 				continue;
 			}
-			FontGlyph *glyph = getFont()->getGlyph(character);
+			Glyph *glyph = getFont()->getGlyph(character);
 			if (!glyph)
 				continue;
 			x += glyph->getAdvance();

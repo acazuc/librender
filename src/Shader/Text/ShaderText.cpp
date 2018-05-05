@@ -6,7 +6,7 @@ namespace librender
 {
 
 	ShaderText::ShaderText()
-	: font(NULL)
+	: font(nullptr)
 	, oldVerticesNumber(0)
 	{
 		//Empty
@@ -60,7 +60,7 @@ namespace librender
 		model = Mat4::scale(model, Vec3(this->scale, 1));
 		Mat4 mvp(viewProj * model);
 		this->program.mvpLocation->setMat4f(mvp);
-		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, nullptr);
 	}
 
 	void ShaderText::setFont(Font *font)

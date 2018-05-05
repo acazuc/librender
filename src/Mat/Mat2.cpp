@@ -27,11 +27,11 @@ namespace librender
 	}
 
 	template <typename T>
-	TMat2<T> TMat2<T>::operator * (TMat2<T> mat)
+	TMat2<T> operator * (TMat2<T> mat1, TMat2<T> mat2)
 	{
 		TMat2<T> result;
 		for (int i = 0; i < 2; ++i)
-			result[i] = (*this)[0] * mat[i][0] + (*this)[1] * mat[i][1];
+			result[i] = mat1[0] * mat2[i][0] + mat1[1] * mat2[i][1];
 		return (result);
 	}
 

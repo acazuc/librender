@@ -7,10 +7,7 @@ namespace librender
 {
 
 	SpriteBatch::SpriteBatch()
-	: texture(NULL)
-	, texCoords(NULL)
-	, vertexes(NULL)
-	, colors(NULL)
+	: texture(nullptr)
 	, pos(0)
 	, verticesNumber(0)
 	, changes(0)
@@ -22,10 +19,7 @@ namespace librender
 	SpriteBatch::~SpriteBatch()
 	{
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
-			this->entries[i]->setParent(NULL);
-		delete[] (this->texCoords);
-		delete[] (this->vertexes);
-		delete[] (this->colors);
+			this->entries[i]->setParent(nullptr);
 	}
 
 	void SpriteBatch::updateVerticesNumber()
@@ -43,14 +37,14 @@ namespace librender
 			SpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SPRITE_UPDATE_TEX_COORDS)
 			{
-				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * sizeof(*this->texCoords));
+				std::memcpy(&this->texCoords[count], entry->getTexCoords().data(), entry->getVerticesNumber() * sizeof(*this->texCoords.data()));
 				entry->removeChange(SPRITE_UPDATE_TEX_COORDS);
 			}
 			count += entry->getVerticesNumber();
 		}
 	}
 
-	void SpriteBatch::updateVertex()
+	void SpriteBatch::updateVertexes()
 	{
 		uint32_t count = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
@@ -58,10 +52,26 @@ namespace librender
 			SpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SPRITE_UPDATE_VERTEXES)
 			{
-				std::memcpy(&this->vertexes[count], entry->getVertexes(), entry->getVerticesNumber() * sizeof(*this->vertexes));
+				std::memcpy(&this->vertexes[count], entry->getVertexes().data(), entry->getVerticesNumber() * sizeof(*this->vertexes.data()));
 				entry->removeChange(SPRITE_UPDATE_VERTEXES);
 			}
 			count += entry->getVerticesNumber();
+		}
+	}
+
+	void SpriteBatch::updateIndices()
+	{
+		uint32_t count = 0;
+		GLuint currentIndice = 0;
+		for (uint32_t i = 0; i < this->verticesNumber / 4; ++i)
+		{
+			indices[count++] = currentIndice + 0;
+			indices[count++] = currentIndice + 3;
+			indices[count++] = currentIndice + 1;
+			indices[count++] = currentIndice + 2;
+			indices[count++] = currentIndice + 1;
+			indices[count++] = currentIndice + 3;
+			currentIndice += 4;
 		}
 	}
 
@@ -73,7 +83,7 @@ namespace librender
 			SpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SPRITE_UPDATE_COLORS)
 			{
-				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * sizeof(*this->colors));
+				std::memcpy(&this->colors[count], entry->getColors().data(), entry->getVerticesNumber() * sizeof(*this->colors.data()));
 				entry->removeChange(SPRITE_UPDATE_COLORS);
 			}
 			count += entry->getVerticesNumber();
@@ -83,14 +93,10 @@ namespace librender
 	void SpriteBatch::resize()
 	{
 		updateVerticesNumber();
-		if (!this->verticesNumber)
-			return;
-		delete[] (this->texCoords);
-		this->texCoords = new Vec2[std::max(1u, this->verticesNumber)];
-		delete[] (this->vertexes);
-		this->vertexes = new Vec2[std::max(1u, this->verticesNumber)];
-		delete[] (this->colors);
-		this->colors = new Vec4[std::max(1u, this->verticesNumber)];
+		this->texCoords.resize(this->verticesNumber);
+		this->vertexes.resize(this->verticesNumber);
+		this->indices.resize(this->verticesNumber / 4 * 6);
+		this->colors.resize(this->verticesNumber);
 	}
 
 	void SpriteBatch::draw()
@@ -102,11 +108,14 @@ namespace librender
 		if (!this->verticesNumber)
 			return;
 		if (this->mustResize)
+		{
 			this->changes = SPRITE_UPDATE_TEX_COORDS | SPRITE_UPDATE_VERTEXES | SPRITE_UPDATE_COLORS;
+			updateIndices();
+		}
 		if (this->changes & SPRITE_UPDATE_TEX_COORDS)
 			updateTexCoords();
 		if (this->changes & SPRITE_UPDATE_VERTEXES)
-			updateVertex();
+			updateVertexes();
 		if (this->changes & SPRITE_UPDATE_COLORS)
 			updateColors();
 		if (this->mustResize)
@@ -119,12 +128,12 @@ namespace librender
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glColorPointer(4, GL_FLOAT, 0, this->colors);
-		glVertexPointer(2, GL_FLOAT, 0, this->vertexes);
-		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
+		glColorPointer(4, GL_FLOAT, 0, this->colors.data());
+		glVertexPointer(2, GL_FLOAT, 0, this->vertexes.data());
+		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords.data());
 		glPushMatrix();
 		glTranslatef(this->pos.x, this->pos.y, 0);
-		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
+		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, this->indices.data());
 		glPopMatrix();
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);
@@ -141,16 +150,15 @@ namespace librender
 
 	void SpriteBatch::removeEntry(SpriteBatchEntry *entry)
 	{
-		entry->setParent(NULL);
+		entry->setParent(nullptr);
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
-			if (this->entries[i] == entry)
-			{
-				this->entries.erase(this->entries.begin() + i);
-				this->mustResize = true;
-				this->changes = SPRITE_UPDATE_TEX_COORDS | SPRITE_UPDATE_VERTEXES | SPRITE_UPDATE_COLORS;
-				return;
-			}
+			if (this->entries[i] != entry)
+				continue;
+			this->entries.erase(this->entries.begin() + i);
+			this->mustResize = true;
+			this->changes = SPRITE_UPDATE_TEX_COORDS | SPRITE_UPDATE_VERTEXES | SPRITE_UPDATE_COLORS;
+			return;
 		}
 	}
 

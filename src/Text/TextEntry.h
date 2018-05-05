@@ -14,12 +14,12 @@ namespace librender
 	{
 
 	protected:
+		std::vector<Vec2> texCoords;
+		std::vector<Vec2> vertexes;
+		std::vector<Vec4> colors;
 		std::string text;
 		Color shadowColor;
 		Color color;
-		Vec2 *texCoords;
-		Vec2 *vertexes;
-		Vec4 *colors;
 		Vec2 scale;
 		Vec2 pos;
 		uint32_t verticesNumber;
@@ -36,9 +36,9 @@ namespace librender
 		float opacity;
 		bool mustCalcHeight;
 		bool mustCalcWidth;
-		inline void updateTexCoords() {fillTexCoords(this->texCoords);};
-		inline void updateVertexes() {fillVertexes(this->vertexes);};
-		inline void updateColors() {fillColors(this->colors);};
+		inline void updateTexCoords() {fillTexCoords(this->texCoords.data());};
+		inline void updateVertexes() {fillVertexes(this->vertexes.data());};
+		inline void updateColors() {fillColors(this->colors.data());};
 		void fillTexCoords(Vec2 *texCoords);
 		void fillVertexes(Vec2 *vertexes);
 		void fillColors(Vec4 *colors);
@@ -50,16 +50,16 @@ namespace librender
 		~TextEntry();
 		virtual void update();
 		virtual void requireUpdates(uint8_t updates);
+		inline std::vector<Vec2> &getTexCoords() {return (this->texCoords);};
+		inline std::vector<Vec2> &getVertexes() {return (this->vertexes);};
+		inline std::vector<Vec4> &getColors() {return (this->colors);};
 		void setText(std::string &text);
 		inline std::string &getText() {return (this->text);};
-		inline Vec2 *getTexCoords() {return (this->texCoords);};
-		inline Vec2 *getVertexes() {return (this->vertexes);};
-		inline Vec4 *getColors() {return (this->colors);};
 		void setShadowColor(Color &color);
 		inline Color &getShadowColor() {return (this->shadowColor);};
 		void setColor(Color &color);
 		inline Color &getColor() {return (this->color);};
-		inline virtual Font *getFont() {return (NULL);};
+		inline virtual Font *getFont() {return (nullptr);};
 		inline uint32_t getVerticesNumber() {return (this->verticesNumber);};
 		inline void setLineHeight(uint32_t lineHeight) {this->lineHeight = lineHeight;};
 		int32_t getLineHeight();

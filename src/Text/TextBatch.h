@@ -12,9 +12,10 @@ namespace librender
 
 	private:
 		std::vector<TextBatchEntry*> entries;
-		Vec2 *texCoords;
-		Vec2 *vertexes;
-		Vec4 *colors;
+		std::vector<uint32_t> indices;
+		std::vector<Vec2> texCoords;
+		std::vector<Vec2> vertexes;
+		std::vector<Vec4> colors;
 		Font *font;
 		Vec2 pos;
 		uint32_t verticesNumber;
@@ -23,6 +24,7 @@ namespace librender
 		void updateVerticesNumber();
 		void updateTexCoords();
 		void updateVertexes();
+		void updateIndices();
 		void updateColors();
 		void resize();
 

@@ -15,10 +15,11 @@ namespace librender
 		TMat2(T val);
 		TMat2() {};
 		TVec2<T> &operator [] (int i);
-		TMat2<T> operator * (TMat2<T> mat);
 
 	};
 
+	template <typename T>
+	TMat2<T> operator * (TMat2<T> mat1, TMat2<T> mat2);
 	template <typename T>
 	TVec2<T> operator * (TMat2<T> mat, TVec2<T> vec);
 	template <typename T>

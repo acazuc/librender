@@ -27,10 +27,11 @@ namespace librender
 		static TMat4<T> lookAt(TVec3<T> eye, TVec3<T> center, TVec3<T> up);
 		static TMat4<T> ortho(T left, T right, T bottom, T top, T near, T far);
 		TVec4<T> &operator [] (int i);
-		TMat4<T> operator * (TMat4<T> mat);
 	
 	};
 
+	template <typename T>
+	TMat4<T> operator * (TMat4<T> mat1, TMat4<T> mat2);
 	template <typename T>
 	TVec4<T> operator * (TMat4<T> mat, TVec4<T> vec);
 	template <typename T>

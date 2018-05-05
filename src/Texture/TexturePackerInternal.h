@@ -28,7 +28,7 @@ namespace librender
 		{
 			Node *node;
 			bool fill;
-			PNode() : fill(false), node(NULL) {}
+			PNode() : fill(false), node(nullptr) {}
 			~PNode() {delete (this->node);};
 			void set(XYWHRect rect)
 			{
@@ -73,7 +73,7 @@ namespace librender
 				return (this);
 			}
 			if (img.width > this->rect.width || img.height > this->rect.height)
-				return (NULL);
+				return (nullptr);
 			if (this->rect.width - img.width > this->rect.height - img.height)
 			{
 				this->childs[0].set(XYWHRect(this->rect.x, this->rect.y, img.width, this->rect.height));

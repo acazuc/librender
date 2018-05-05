@@ -19,10 +19,11 @@ namespace librender
 		static TMat3<T> rotateY(TMat3<T> mat, T angle);
 		static TMat3<T> rotateZ(TMat3<T> mat, T angle);
 		TVec3<T> &operator [] (int i);
-		TMat3<T> operator * (TMat3<T> mat);
 
 	};
 
+	template <typename T>
+	TMat3<T> operator * (TMat3<T> mat1, TMat3<T> mat2);
 	template <typename T>
 	TVec3<T> operator * (TMat3<T> mat, TVec3<T> vec);
 	template <typename T>

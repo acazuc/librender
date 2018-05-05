@@ -6,7 +6,7 @@ namespace librender
 {
 
 	TextTessellator::TextTessellator()
-	: font(NULL)
+	: font(nullptr)
 	{
 		//Empty
 	}
@@ -45,7 +45,7 @@ namespace librender
 		this->colors.push_back(color);
 	}
 
-	void TextTessellator::addGlyph(FontGlyph *glyph, Vec2 pos, Vec4 color)
+	void TextTessellator::addGlyph(Glyph *glyph, Vec2 pos, Vec4 color)
 	{
 		if (!this->font)
 			return;

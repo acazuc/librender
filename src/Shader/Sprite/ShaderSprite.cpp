@@ -6,7 +6,7 @@ namespace librender
 {
 
 	ShaderSprite::ShaderSprite()
-	: texture(NULL)
+	: texture(nullptr)
 	{
 		GLuint indices[] = {0, 3, 1, 2, 1, 3};
 		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, sizeof(indices), GL_UNSIGNED_INT, 1, GL_STATIC_DRAW);
@@ -19,29 +19,33 @@ namespace librender
 
 	void ShaderSprite::draw(Mat4 &viewProj)
 	{
-		if (!this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
-			return;
 		uint8_t changes = this->updatesRequired;
 		update();
 		if (changes & SHADER_SPRITE_UPDATE_TEX_COORDS)
-			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, sizeof(*this->texCoords) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords.data(), sizeof(*this->texCoords.data()) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_SPRITE_UPDATE_VERTEXES)
-			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, sizeof(*this->vertexes) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes.data(), sizeof(*this->vertexes.data()) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_SPRITE_UPDATE_COLORS)
-			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber, GL_FLOAT, 4, GL_DYNAMIC_DRAW);
+			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors.data(), sizeof(*this->colors.data()) * this->verticesNumber, GL_FLOAT, 4, GL_DYNAMIC_DRAW);
 		if (this->texture)
 			this->texture->bind();
 		else
 			glBindTexture(GL_TEXTURE_2D, 0);
 		this->program.program->use();
-		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
-		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);
-		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer);
+		if (this->program.texCoordsLocation)
+			this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
+		if (this->program.vertexesLocation)
+			this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);
+		if (this->program.colorsLocation)
+			this->program.colorsLocation->setVertexBuffer(this->colorsBuffer);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
-		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
-		Mat4 mvp(viewProj * model);
-		this->program.mvpLocation->setMat4f(mvp);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+		if (this->program.mvpLocation)
+		{
+			Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
+			Mat4 mvp(viewProj * model);
+			this->program.mvpLocation->setMat4f(mvp);
+		}
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}
 
 	void ShaderSprite::setTexture(Texture *texture)

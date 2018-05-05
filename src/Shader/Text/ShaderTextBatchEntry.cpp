@@ -7,7 +7,7 @@ namespace librender
 
 	ShaderTextBatchEntry::ShaderTextBatchEntry()
 	: ShaderTextEntry()
-	, parent(NULL)
+	, parent(nullptr)
 	, changes(0)
 	{
 		//Empty
@@ -58,7 +58,7 @@ namespace librender
 	{
 		if (this->parent)
 			return (this->parent->getFont());
-		return (NULL);
+		return (nullptr);
 	}
 
 	void ShaderTextBatchEntry::setX(float x)

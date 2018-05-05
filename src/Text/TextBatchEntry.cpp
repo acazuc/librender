@@ -6,8 +6,7 @@ namespace librender
 {
 
 	TextBatchEntry::TextBatchEntry()
-	: TextEntry()
-	, parent(NULL)
+	: parent(nullptr)
 	, changes(0)
 	{
 		//Empty
@@ -58,7 +57,7 @@ namespace librender
 	{
 		if (this->parent)
 			return (this->parent->getFont());
-		return (NULL);
+		return (nullptr);
 	}
 
 	void TextBatchEntry::setX(float x)

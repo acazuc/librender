@@ -9,15 +9,15 @@ namespace librender
 {
 
 	EventsManager::EventsManager()
-	: windowResizedCallback(NULL)
-	, scrollCallback(NULL)
-	, mouseMoveCallback(NULL)
-	, mouseDownCallback(NULL)
-	, mouseUpCallback(NULL)
-	, keyDownCallback(NULL)
-	, keyPressCallback(NULL)
-	, keyUpCallback(NULL)
-	, charCallback(NULL)
+	: windowResizedCallback(nullptr)
+	, scrollCallback(nullptr)
+	, mouseMoveCallback(nullptr)
+	, mouseDownCallback(nullptr)
+	, mouseUpCallback(nullptr)
+	, keyDownCallback(nullptr)
+	, keyPressCallback(nullptr)
+	, keyUpCallback(nullptr)
+	, charCallback(nullptr)
 	{
 		//Emtpy
 	}

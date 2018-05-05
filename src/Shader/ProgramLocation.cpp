@@ -77,7 +77,7 @@ namespace librender
 	void ProgramLocation::setVertexBuffer(VertexBuffer &buffer)
 	{
 		buffer.bind(GL_ARRAY_BUFFER);
-		glVertexAttribPointer(this->location, buffer.getStride(), buffer.getType(), GL_FALSE, 0, NULL);
+		glVertexAttribPointer(this->location, buffer.getStride(), buffer.getType(), GL_FALSE, 0, nullptr);
 	}
 
 	void ProgramLocation::setVertexAttribArray(bool asArray)

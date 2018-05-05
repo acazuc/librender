@@ -24,6 +24,11 @@ namespace librender
 		glDrawBuffer(buf);
 	}
 
+	void FrameBuffer::read(GLenum buf)
+	{
+		glReadBuffer(buf);
+	}
+
 	void FrameBuffer::bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, this->id);

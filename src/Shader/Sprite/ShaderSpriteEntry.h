@@ -4,7 +4,7 @@
 # include "../../Texture/Texture.h"
 # include "../../Vec/Vec4.h"
 # include "../../Vec/Vec2.h"
-# include <cstdlib>
+# include <vector>
 
 namespace librender
 {
@@ -13,24 +13,21 @@ namespace librender
 	{
 
 	protected:
-		Vec2 texCoords[4];
-		Vec2 vertexes[4];
-		Vec4 colors[4];
+		std::vector<Vec2> texCoords;
+		std::vector<Vec2> vertexes;
+		std::vector<Vec4> colors;
 		Vec2 scale;
 		Vec2 pos;
 		uint32_t verticesNumber;
 		uint8_t updatesRequired;
-		void fillTexCoords(Vec2 *texCoords);
-		void fillVertexes(Vec2 *vertexes);
-		void fillColors(Vec4 *colors);
 
 	public:
 		ShaderSpriteEntry();
 		virtual ~ShaderSpriteEntry();
 		virtual void update();
-		inline Vec2 *getTexCoords() {return (this->texCoords);};
-		inline Vec2 *getVertexes() {return (this->vertexes);};
-		inline Vec4 *getColors() {return (this->colors);};
+		inline std::vector<Vec2> &getTexCoords() {return (this->texCoords);};
+		inline std::vector<Vec2> &getVertexes() {return (this->vertexes);};
+		inline std::vector<Vec4> &getColors() {return (this->colors);};
 		void setColor(Color &color);
 		void setTopColor(Color &color);
 		void setBotColor(Color &color);
@@ -40,7 +37,7 @@ namespace librender
 		void setTopRightColor(Color &color);
 		void setBotLeftColor(Color &color);
 		void setBotRightColor(Color &color);
-		virtual Texture *getTexture() {return (NULL);};
+		virtual Texture *getTexture() {return (nullptr);};
 		inline uint32_t getVerticesNumber() {return (this->verticesNumber);};
 		void setScaleX(float scaleX);
 		inline float getScaleX() {return (this->scale.x);};

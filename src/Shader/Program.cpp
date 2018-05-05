@@ -54,12 +54,9 @@ namespace librender
 		glGetProgramiv(this->id, GL_INFO_LOG_LENGTH, &infoLogLength);
 		if (!result)
 		{
-			char *error = new char[infoLogLength + 1];
-			std::memset(error, 0, infoLogLength + 1);
-			glGetProgramInfoLog(this->id, infoLogLength, NULL, error);
-			std::string err(error);
-			delete[] (error);
-			throw ProgramException(err);
+			std::string error(infoLogLength, 0);
+			glGetProgramInfoLog(this->id, infoLogLength, nullptr, const_cast<char*>(error.c_str()));
+			throw ProgramException(error);
 		}
 	}
 

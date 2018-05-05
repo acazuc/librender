@@ -20,7 +20,7 @@ namespace librender
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		this->semiDiag = std::sqrt(this->width * this->width + this->height * this->height);
 		this->isFullscreen = false;
-		if (!(this->window = glfwCreateWindow(this->width, this->height, title.c_str(), NULL, NULL)))
+		if (!(this->window = glfwCreateWindow(this->width, this->height, title.c_str(), nullptr, nullptr)))
 			throw std::exception();
 		glfwMakeContextCurrent(this->window);
 		glfwSetWindowUserPointer(this->window, this);
@@ -105,7 +105,7 @@ namespace librender
 		if (this->isFullscreen)
 		{
 			setBorders(true);
-			glfwSetWindowMonitor(window, NULL, 0, 0, this->prevWidth, this->prevHeight, GLFW_DONT_CARE);
+			glfwSetWindowMonitor(window, nullptr, 0, 0, this->prevWidth, this->prevHeight, GLFW_DONT_CARE);
 			this->isFullscreen = false;
 		}
 	}
@@ -298,7 +298,7 @@ namespace librender
 		this->eventsManager.setScrollCallback(callback);
 		if (!callback)
 		{
-			glfwSetScrollCallback(this->window, NULL);
+			glfwSetScrollCallback(this->window, nullptr);
 			return;
 		}
 		glfwSetScrollCallback(this->window, EventsManager::scrollListener);
@@ -315,7 +315,7 @@ namespace librender
 		this->eventsManager.setMouseDownCallback(callback);
 		if (!callback && !this->eventsManager.getMouseUpCallback())
 		{
-			glfwSetMouseButtonCallback(this->window, NULL);
+			glfwSetMouseButtonCallback(this->window, nullptr);
 			return;
 		}
 		glfwSetMouseButtonCallback(this->window, EventsManager::mouseListener);
@@ -326,7 +326,7 @@ namespace librender
 		this->eventsManager.setMouseUpCallback(callback);
 		if (!callback && !this->eventsManager.getMouseDownCallback())
 		{
-			glfwSetMouseButtonCallback(this->window, NULL);
+			glfwSetMouseButtonCallback(this->window, nullptr);
 			return;
 		}
 		glfwSetMouseButtonCallback(this->window, EventsManager::mouseListener);
@@ -337,7 +337,7 @@ namespace librender
 		this->eventsManager.setKeyDownCallback(callback);
 		if (!callback && !this->eventsManager.getKeyPressCallback() && !this->eventsManager.getKeyUpCallback())
 		{
-			glfwSetKeyCallback(this->window, NULL);
+			glfwSetKeyCallback(this->window, nullptr);
 			return;
 		}
 		glfwSetKeyCallback(this->window, EventsManager::keyListener);
@@ -348,7 +348,7 @@ namespace librender
 		this->eventsManager.setKeyPressCallback(callback);
 		if (!callback && !this->eventsManager.getKeyDownCallback() && !this->eventsManager.getKeyUpCallback())
 		{
-			glfwSetKeyCallback(this->window, NULL);
+			glfwSetKeyCallback(this->window, nullptr);
 			return;
 		}
 		glfwSetKeyCallback(this->window, EventsManager::keyListener);
@@ -359,7 +359,7 @@ namespace librender
 		this->eventsManager.setKeyUpCallback(callback);
 		if (!callback && !this->eventsManager.getKeyDownCallback() && !this->eventsManager.getKeyPressCallback())
 		{
-			glfwSetKeyCallback(this->window, NULL);
+			glfwSetKeyCallback(this->window, nullptr);
 			return;
 		}
 		glfwSetKeyCallback(this->window, EventsManager::keyListener);
@@ -370,7 +370,7 @@ namespace librender
 		this->eventsManager.setCharCallback(callback);
 		if (!callback)
 		{
-			glfwSetCharCallback(this->window, NULL);
+			glfwSetCharCallback(this->window, nullptr);
 			return;
 		}
 		glfwSetCharCallback(this->window, EventsManager::charListener);
@@ -382,7 +382,7 @@ namespace librender
 		{
 			glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 			glfwWindowHint(GLFW_SAMPLES, 128);
-			GLFWwindow *testWindow = glfwCreateWindow(1, 1, "", NULL, NULL);
+			GLFWwindow *testWindow = glfwCreateWindow(1, 1, "", nullptr, nullptr);
 			glfwMakeContextCurrent(testWindow);
 			glGetIntegerv(GL_SAMPLES, &maxMSAA);
 			glfwDestroyWindow(testWindow);

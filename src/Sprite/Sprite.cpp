@@ -2,17 +2,14 @@
 #include "./SpriteUpdate.h"
 #include "../GL.h"
 
+static uint32_t indices[6] = {0, 1, 2, 2, 3, 0};
+
 namespace librender
 {
 
 	Sprite::Sprite()
 	: SpriteEntry()
-	, texture(NULL)
-	{
-		//Empty
-	}
-
-	Sprite::~Sprite()
+	, texture(nullptr)
 	{
 		//Empty
 	}
@@ -27,12 +24,12 @@ namespace librender
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glColorPointer(4, GL_FLOAT, 0, this->colors);
-		glVertexPointer(2, GL_FLOAT, 0, this->vertexes);
-		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords);
+		glColorPointer(4, GL_FLOAT, 0, this->colors.data());
+		glVertexPointer(2, GL_FLOAT, 0, this->vertexes.data());
+		glTexCoordPointer(2, GL_FLOAT, 0, this->texCoords.data());
 		glPushMatrix();
 		glTranslatef(this->pos.x, this->pos.y, 0);
-		glDrawArrays(GL_QUADS, 0, this->verticesNumber);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
 		glPopMatrix();
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);

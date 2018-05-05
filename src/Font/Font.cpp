@@ -1,11 +1,10 @@
 #include "Font.h"
 #include "../GL.h"
-#include <cstdlib>
 #include <cstring>
 #include <utf8.h>
 #include <cmath>
 
-#define CLUSTER_SIZE 256
+#define CLUSTER_SIZE 512
 
 namespace librender
 {
@@ -38,26 +37,26 @@ namespace librender
 		this->texture.bind();
 	}
 
-	FontGlyph *Font::loadGlyph(uint32_t character)
+	Glyph *Font::loadGlyph(uint32_t character)
 	{
 		if (!this->parent.setSize(this->size))
-			return (NULL);
+			return (nullptr);
 		if (character < 0x1f)
-			return (NULL);
+			return (nullptr);
 		uint32_t codepoint = FT_Get_Char_Index(this->parent.getFtFace(), character);
 		if (!codepoint)
-			return (NULL);
+			return (nullptr);
 		if (FT_Load_Glyph(this->parent.getFtFace(), codepoint, FT_LOAD_DEFAULT))
-			return (NULL);
+			return (nullptr);
 		if (!this->parent.getFtFace()->glyph->advance.x)
-			return (NULL);
+			return (nullptr);
 		if (FT_Render_Glyph(this->parent.getFtFace()->glyph, FT_RENDER_MODE_NORMAL))
-			return (NULL);
-		FontGlyph tmp(this->parent.getFtFace()->glyph->advance.x >> 6, \
+			return (nullptr);
+		Glyph tmp(this->parent.getFtFace()->glyph->advance.x >> 6, \
 				this->parent.getFtFace()->glyph->bitmap.width, this->parent.getFtFace()->glyph->bitmap.rows, \
 				this->parent.getFtFace()->glyph->bitmap_left, this->size - this->parent.getFtFace()->glyph->bitmap_top);
 		if (tmp.getWidth() + 2 > CLUSTER_SIZE || tmp.getHeight() + 2 > CLUSTER_SIZE)
-			return (NULL);
+			return (nullptr);
 		this->tmpGlyphs.resize(this->tmpGlyphs.size() + 1);
 		FontTmpGlyph &tmpGlyph = this->tmpGlyphs.back();
 		tmpGlyph.datas.resize(tmp.getWidth() * tmp.getHeight());
@@ -66,7 +65,7 @@ namespace librender
 		return (&this->glyphs.emplace(character, tmp).first->second);
 	}
 
-	void Font::charCopy(char *data, uint32_t x, uint32_t y, uint32_t width, FontGlyph &glyph, char *glyphData)
+	void Font::charCopy(char *data, uint32_t x, uint32_t y, uint32_t width, Glyph &glyph, char *glyphData)
 	{
 		for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
 			std::memcpy(&data[(y + tY) * width + x], &glyphData[tY * glyph.getWidth()], glyph.getWidth());
@@ -126,21 +125,21 @@ namespace librender
 		return (true);
 	}
 
-	FontGlyph *Font::getGlyph(uint32_t character)
+	Glyph *Font::getGlyph(uint32_t character)
 	{
-		std::unordered_map<uint32_t, FontGlyph>::iterator iter = this->glyphs.find(character);
+		std::unordered_map<uint32_t, Glyph>::iterator iter = this->glyphs.find(character);
 		if (iter != this->glyphs.end())
 			return (&iter->second);
-		FontGlyph *glyph = loadGlyph(character);
+		Glyph *glyph = loadGlyph(character);
 		if (glyph)
 			return (glyph);
 		if (character != '?')
 			return (getGlyph('?'));
-		FontGlyph tmp(0, 0, 0, 0, 0);
+		Glyph tmp(0, 0, 0, 0, 0);
 		tmp.setTexX(0);
 		tmp.setTexY(0);
 		this->glyphs.emplace(character, tmp);
-		return (NULL);
+		return (nullptr);
 	}
 
 	int32_t Font::getWidth(std::string &text)
@@ -160,7 +159,7 @@ namespace librender
 			}
 			else
 			{
-				FontGlyph *glyph = getGlyph(currentChar);
+				Glyph *glyph = getGlyph(currentChar);
 				if (glyph)
 					currentWidth += glyph->getAdvance();
 			}
@@ -193,10 +192,10 @@ namespace librender
 		for (uint32_t i = 0; i < this->tmpGlyphs.size(); ++i)
 		{
 			FontTmpGlyph &tmpGlyph = this->tmpGlyphs[i];
-			std::unordered_map<uint32_t, FontGlyph>::iterator iter = this->glyphs.find(tmpGlyph.character);
+			std::unordered_map<uint32_t, Glyph>::iterator iter = this->glyphs.find(tmpGlyph.character);
 			if (iter == this->glyphs.end())
 				continue;
-			FontGlyph &glyph = iter->second;
+			Glyph &glyph = iter->second;
 			uint32_t x;
 			uint32_t y;
 			if (findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
@@ -259,7 +258,7 @@ namespace librender
 		glGlyph(getGlyph(character), texCoords);
 	}
 
-	void Font::glGlyph(FontGlyph *glyph, float *texCoords)
+	void Font::glGlyph(Glyph *glyph, float *texCoords)
 	{
 		if (!glyph)
 		{

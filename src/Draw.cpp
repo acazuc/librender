@@ -135,9 +135,7 @@ namespace librender
 	void drawQuadBegin(Texture *texture)
 	{
 		if (texture)
-		{
 			texture->bind();
-		}
 		glBegin(GL_QUADS);
 	}
 
@@ -274,9 +272,7 @@ namespace librender
 	{
 		double step = angle / nbSeg;
 		for (int32_t i = 0; i < nbSeg + 1; ++i)
-		{
-			glVertex2d(rayon * cos(step * i + startAngle) + x + .5, rayon * sin(step * i + startAngle) + y + .5);
-		}
+			glVertex2f(rayon * cos(step * i + startAngle) + x + .5, rayon * sin(step * i + startAngle) + y + .5);
 	}
 
 	void drawCirclePart(int32_t x, int32_t y, int32_t rayon, int32_t nbSeg)

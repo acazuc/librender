@@ -15,7 +15,7 @@ namespace librender
 		ProgramLocation *colorsLocation;
 		ProgramLocation *mvpLocation;
 		Program *program;
-		ShaderTextProgram() : texCoordsLocation(NULL), vertexesLocation(NULL), colorsLocation(NULL), mvpLocation(NULL), program(NULL) {};
+		ShaderTextProgram() : texCoordsLocation(nullptr), vertexesLocation(nullptr), colorsLocation(nullptr), mvpLocation(nullptr), program(nullptr) {};
 
 	};
 

@@ -9,6 +9,12 @@ namespace librender
 {
 
 	template <typename T>
+	TVec4<T> TVec4<T>::reflect(TVec4<T> vec)
+	{
+		return (*this - vec * 2 * this->dot(vec));
+	}
+
+	template <typename T>
 	T TVec4<T>::dot(TVec4<T> vec)
 	{
 		return (this->x * vec.x + this->y * vec.y + this->z * vec.z + this->w * vec.w);
@@ -237,21 +243,27 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec4<T> mix(TVec4<T> vec1, TVec4<T> vec2, T a)
-	{
-		return (vec1 * (1 - a) + vec2 * a);
-	}
-
-	template <typename T>
 	TVec4<T> clamp(TVec4<T> vec, T min, T max)
 	{
 		return (max(min, min(max)));
 	}
 
 	template <typename T>
-	TVec4<T> mod(TVec4<T> vec, T val)
+	TVec4<T> clamp(TVec4<T> vec, TVec4<T> min, TVec4<T> max)
 	{
-		return (TVec4<T>(std::fmod(vec.x, val), std::fmod(vec.y, val), std::fmod(vec.z, val), std::fmod(vec.w, val)));
+		return (max(min, min(max)));
+	}
+
+	template <typename T>
+	TVec4<T> mix(TVec4<T> vec1, TVec4<T> vec2, T a)
+	{
+		return (vec1 * (1 - a) + vec2 * a);
+	}
+
+	template <typename T>
+	TVec4<T> mod(TVec4<T> vec)
+	{
+		return (TVec4<T>(std::fmod(vec.x), std::fmod(vec.y), std::fmod(vec.z), std::fmod(vec.w)));
 	}
 
 	template <typename T>

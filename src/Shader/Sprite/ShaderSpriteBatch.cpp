@@ -7,10 +7,7 @@ namespace librender
 {
 
 	ShaderSpriteBatch::ShaderSpriteBatch()
-	: texture(NULL)
-	, texCoords(NULL)
-	, vertexes(NULL)
-	, colors(NULL)
+	: texture(nullptr)
 	, pos(0)
 	, verticesNumber(0)
 	, changes(0)
@@ -22,10 +19,7 @@ namespace librender
 	ShaderSpriteBatch::~ShaderSpriteBatch()
 	{
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
-			this->entries[i]->setParent(NULL);
-		delete[] (this->texCoords);
-		delete[] (this->vertexes);
-		delete[] (this->colors);
+			this->entries[i]->setParent(nullptr);
 	}
 
 	void ShaderSpriteBatch::updateVerticesNumber()
@@ -43,12 +37,12 @@ namespace librender
 			ShaderSpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SHADER_SPRITE_UPDATE_TEX_COORDS)
 			{
-				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * sizeof(*this->texCoords));
+				std::memcpy(&this->texCoords[count], entry->getTexCoords().data(), entry->getVerticesNumber() * sizeof(*this->texCoords.data()));
 				entry->removeChange(SHADER_SPRITE_UPDATE_TEX_COORDS);
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, count * sizeof(*this->texCoords), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords.data(), count * sizeof(*this->texCoords.data()), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderSpriteBatch::updateVertexes()
@@ -59,17 +53,17 @@ namespace librender
 			ShaderSpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SHADER_SPRITE_UPDATE_VERTEXES)
 			{
-				std::memcpy(&this->vertexes[count], entry->getVertexes(), entry->getVerticesNumber() * sizeof(*this->vertexes));
+				std::memcpy(&this->vertexes[count], entry->getVertexes().data(), entry->getVerticesNumber() * sizeof(*this->vertexes.data()));
 				entry->removeChange(SHADER_SPRITE_UPDATE_VERTEXES);
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, count * sizeof(*this->vertexes), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes.data(), count * sizeof(*this->vertexes.data()), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderSpriteBatch::updateIndices()
 	{
-		GLuint *indices = new GLuint[this->verticesNumber / 4 * 6];
+		std::vector<GLuint> indices(this->verticesNumber / 4 * 6);
 		uint32_t count = 0;
 		GLuint currentIndice = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
@@ -82,8 +76,7 @@ namespace librender
 			indices[count++] = currentIndice + 3;
 			currentIndice += this->entries[i]->getVerticesNumber();
 		}
-		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, count * sizeof(*indices), GL_UNSIGNED_INT, 1, GL_DYNAMIC_DRAW);
-		delete[] (indices);
+		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices.data(), count * sizeof(*indices.data()), GL_UNSIGNED_INT, 1, GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderSpriteBatch::updateColors()
@@ -94,12 +87,12 @@ namespace librender
 			ShaderSpriteBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SHADER_SPRITE_UPDATE_COLORS)
 			{
-				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * sizeof(*this->colors));
+				std::memcpy(&this->colors[count], entry->getColors().data(), entry->getVerticesNumber() * sizeof(*this->colors.data()));
 				entry->removeChange(SHADER_SPRITE_UPDATE_COLORS);
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, count * sizeof(*this->colors), GL_FLOAT, 4, GL_DYNAMIC_DRAW);
+		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors.data(), count * sizeof(*this->colors.data()), GL_FLOAT, 4, GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderSpriteBatch::resize()
@@ -107,12 +100,9 @@ namespace librender
 		updateVerticesNumber();
 		if (!this->verticesNumber)
 			return;
-		delete[] (this->texCoords);
-		this->texCoords = new Vec2[this->verticesNumber];
-		delete[] (this->vertexes);
-		this->vertexes = new Vec2[this->verticesNumber];
-		delete[] (this->colors);
-		this->colors = new Vec4[this->verticesNumber];
+		this->texCoords.resize(this->verticesNumber);
+		this->vertexes.resize(this->verticesNumber);
+		this->colors.resize(this->verticesNumber);
 	}
 
 	void ShaderSpriteBatch::draw(Mat4 &viewProj)
@@ -151,7 +141,7 @@ namespace librender
 		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
 		Mat4 mvp(viewProj * model);
 		this->program.mvpLocation->setMat4f(mvp);
-		glDrawElements(GL_TRIANGLES, this->verticesNumber * 6 / 4, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, this->verticesNumber * 6 / 4, GL_UNSIGNED_INT, nullptr);
 	}
 
 	void ShaderSpriteBatch::addEntry(ShaderSpriteBatchEntry *entry)
@@ -162,7 +152,7 @@ namespace librender
 
 	void ShaderSpriteBatch::removeEntry(ShaderSpriteBatchEntry *entry)
 	{
-		entry->setParent(NULL);
+		entry->setParent(nullptr);
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 		{
 			if (this->entries[i] == entry)

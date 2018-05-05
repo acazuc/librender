@@ -7,7 +7,7 @@ namespace librender
 
 	ShaderSpriteBatchEntry::ShaderSpriteBatchEntry()
 	: ShaderSpriteEntry()
-	, parent(NULL)
+	, parent(nullptr)
 	, changes(0)
 	{
 		//Empty
@@ -42,7 +42,7 @@ namespace librender
 	{
 		if (this->parent)
 			return (this->parent->getTexture());
-		return (NULL);
+		return (nullptr);
 	}
 
 	void ShaderSpriteBatchEntry::setX(float x)

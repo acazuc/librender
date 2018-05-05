@@ -14,7 +14,6 @@ namespace librender
 
 	public:
 		Sprite();
-		~Sprite();
 		void draw();
 		void setTexture(Texture *texture);
 		inline Texture *getTexture() {return (this->texture);};

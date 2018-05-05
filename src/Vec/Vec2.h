@@ -13,6 +13,7 @@ namespace librender
 		TVec2<T>(T x, T y) : x(x), y(y) {};
 		TVec2<T>(T xy) : x(xy), y(xy) {};
 		TVec2<T>() : x(0), y(0) {};
+		TVec2<T> reflect(TVec2<T> vec);
 		T dot(TVec2<T> vec);
 		T angle(TVec2<T> vec);
 		T length();
@@ -72,9 +73,12 @@ namespace librender
 	TVec2<T> max(T val, TVec2<T> vec);
 
 	template <typename T>
-	TVec2<T> mix(TVec2<T> vec1, TVec2<T> vec2, T per);
-	template <typename T>
 	TVec2<T> clamp(TVec2<T> vec, T min, T max);
+	template <typename T>
+	TVec2<T> clamp(TVec2<T> vec, TVec2<T> min, TVec2<T> max);
+
+	template <typename T>
+	TVec2<T> mix(TVec2<T> vec1, TVec2<T> vec2, T per);
 	template <typename T>
 	TVec2<T> mod(TVec2<T> vec, T val);
 	template <typename T>

@@ -4,11 +4,11 @@
 namespace librender
 {
 
-	FT_Library FontModel::ftLib = NULL;
+	FT_Library FontModel::ftLib = nullptr;
 
 	FontModel::FontModel(std::string filename)
 	{
-		if (FontModel::ftLib == NULL)
+		if (!FontModel::ftLib)
 		{
 			if (FT_Init_FreeType(&FontModel::ftLib))
 				throw std::exception();
@@ -20,7 +20,7 @@ namespace librender
 
 	FontModel::FontModel(char *ttfData, size_t ttfLen)
 	{
-		if (FontModel::ftLib == NULL)
+		if (!FontModel::ftLib)
 		{
 			if (FT_Init_FreeType(&FontModel::ftLib))
 				throw std::exception();
@@ -35,7 +35,7 @@ namespace librender
 		if (FontModel::ftLib)
 		{
 			FT_Done_FreeType(FontModel::ftLib);
-			FontModel::ftLib = NULL;
+			FontModel::ftLib = nullptr;
 		}
 	}
 

@@ -78,9 +78,12 @@ namespace librender
 	TVec3<T> max(T val, TVec3<T> vec);
 
 	template <typename T>
-	TVec3<T> mix(TVec3<T> vec1, TVec3<T> vec2, T per);
-	template <typename T>
 	TVec3<T> clamp(TVec3<T> vec, T min, T max);
+	template <typename T>
+	TVec3<T> clamp(TVec3<T> vec, TVec3<T> min, TVec3<T> max);
+
+	template <typename T>
+	TVec3<T> mix(TVec3<T> vec1, TVec3<T> vec2, T per);
 	template <typename T>
 	TVec3<T> mod(TVec3<T> vec, T val);
 	template <typename T>

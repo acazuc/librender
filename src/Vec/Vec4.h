@@ -22,6 +22,7 @@ namespace librender
 		TVec4(T xyz, T w) : x(xyz), y(xyz), z(xyz), w(w) {};
 		TVec4(T xyzw) : x(xyzw), y(xyzw), z(xyzw), w(xyzw) {};
 		TVec4() : x(0), y(0), z(0), w(0) {};
+		TVec4<T> reflect(TVec4<T> vec);
 		T dot(TVec4 vec);
 		T angle(TVec4 vec);
 		T length();
@@ -71,8 +72,6 @@ namespace librender
 	TVec4<T> operator / (T val, TVec4<T> vec);
 
 	template <typename T>
-	TVec4<T> mix(TVec4<T> vec1, TVec4<T> vec2, T per);
-	template <typename T>
 	TVec4<T> min(TVec4<T> vec1, TVec4<T> vec2);
 	template <typename T>
 	TVec4<T> min(TVec4<T> vec, T val);
@@ -88,6 +87,11 @@ namespace librender
 
 	template <typename T>
 	TVec4<T> clamp(TVec4<T> vec, T min, T max);
+	template <typename T>
+	TVec4<T> clamp(TVec4<T> vec, TVec4<T> min, TVec4<T> max);
+
+	template <typename T>
+	TVec4<T> mix(TVec4<T> vec1, TVec4<T> vec2, T per);
 	template <typename T>
 	TVec4<T> mod(TVec4<T> vec, T val);
 	template <typename T>

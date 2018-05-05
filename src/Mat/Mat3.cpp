@@ -24,12 +24,6 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec3<T> &TMat3<T>::operator [] (int i)
-	{
-		return (this->data[i]);
-	}
-
-	template <typename T>
 	TMat3<T> TMat3<T>::rotate(TMat3<T> mat, T angle, TVec3<T> axis)
 	{
 		T c(cos(angle));
@@ -107,11 +101,17 @@ namespace librender
 	}
 
 	template <typename T>
-	TMat3<T> TMat3<T>::operator * (TMat3<T> mat)
+	TVec3<T> &TMat3<T>::operator [] (int i)
+	{
+		return (this->data[i]);
+	}
+
+	template <typename T>
+	TMat3<T> operator * (TMat3<T> mat1, TMat3<T> mat2)
 	{
 		TMat3<T> result;
 		for (int i = 0; i < 3; ++i)
-			result[i] = (*this)[0] * mat[i][0] + (*this)[1] * mat[i][1] + (*this)[2] * mat[i][2];
+			result[i] = mat1[0] * mat2[i][0] + mat1[1] * mat2[i][1] + mat1[2] * mat2[i][2];
 		return (result);
 	}
 

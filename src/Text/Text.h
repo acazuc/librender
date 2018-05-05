@@ -3,6 +3,7 @@
 
 # include "../Font/Font.h"
 # include "./TextEntry.h"
+# include <vector>
 
 namespace librender
 {
@@ -11,11 +12,14 @@ namespace librender
 	{
 
 	protected:
+		std::vector<uint32_t> indices;
 		Font *font;
+		bool mustResize;
+		void updateIndices();
+		void resize(uint32_t len);
 
 	public:
 		Text();
-		virtual ~Text();
 		void draw();
 		void setFont(Font *font);
 		inline Font *getFont() {return (this->font);};

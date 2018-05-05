@@ -6,7 +6,10 @@ namespace librender
 {
 
 	SpriteEntry::SpriteEntry()
-	: scale(1)
+	: texCoords(4)
+	, vertexes(4)
+	, colors(4)
+	, scale(1)
 	, pos(0)
 	, verticesNumber(4)
 	, updatesRequired(0)
@@ -24,21 +27,6 @@ namespace librender
 	SpriteEntry::~SpriteEntry()
 	{
 		//Empty
-	}
-
-	void SpriteEntry::fillTexCoords(Vec2 *texCoords)
-	{
-		std::memcpy(texCoords, this->texCoords, sizeof(this->texCoords));
-	}
-
-	void SpriteEntry::fillVertexes(Vec2 *vertexes)
-	{
-		std::memcpy(vertexes, this->vertexes, sizeof(this->vertexes));
-	}
-
-	void SpriteEntry::fillColors(Vec4 *colors)
-	{
-		std::memcpy(colors, this->colors, sizeof(this->colors));
 	}
 
 	void SpriteEntry::update()
@@ -80,25 +68,25 @@ namespace librender
 
 	void SpriteEntry::setTopLeftColor(Color &color)
 	{
-		std::memcpy(&this->colors[0], &color, sizeof(*this->colors));
+		std::memcpy(&this->colors[0], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SPRITE_UPDATE_COLORS;
 	}
 
 	void SpriteEntry::setTopRightColor(Color &color)
 	{
-		std::memcpy(&this->colors[1], &color, sizeof(*this->colors));
+		std::memcpy(&this->colors[1], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SPRITE_UPDATE_COLORS;
 	}
 
 	void SpriteEntry::setBotLeftColor(Color &color)
 	{
-		std::memcpy(&this->colors[3], &color, sizeof(*this->colors));
+		std::memcpy(&this->colors[3], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SPRITE_UPDATE_COLORS;
 	}
 
 	void SpriteEntry::setBotRightColor(Color &color)
 	{
-		std::memcpy(&this->colors[2], &color, sizeof(*this->colors));
+		std::memcpy(&this->colors[2], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SPRITE_UPDATE_COLORS;
 	}
 

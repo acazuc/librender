@@ -2,7 +2,6 @@
 # define LIBRENDER_SHADER_H
 
 # include "../GL.h"
-# include <cstdlib>
 
 namespace librender
 {

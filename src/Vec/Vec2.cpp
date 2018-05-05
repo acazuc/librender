@@ -9,6 +9,12 @@ namespace librender
 {
 
 	template <typename T>
+	TVec2<T> TVec2<T>::reflect(TVec2<T> vec)
+	{
+		return (*this - vec * 2 * this->dot(vec));
+	}
+
+	template <typename T>
 	T TVec2<T>::dot(TVec2<T> uv)
 	{
 		return (this->x * uv.x + this->y * uv.y);
@@ -213,15 +219,21 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec2<T> mix(TVec2<T> vec1, TVec2<T> vec2, T a)
-	{
-		return (vec1 * (1 - a) + vec2 * a);
-	}
-
-	template <typename T>
 	TVec2<T> clamp(TVec2<T> vec, T min, T max)
 	{
 		return (max(min, min(max)));
+	}
+
+	template <typename T>
+	TVec2<T> clamp(TVec2<T> vec, TVec2<T> min, TVec2<T> max)
+	{
+		return (max(min, min(max)));
+	}
+
+	template <typename T>
+	TVec2<T> mix(TVec2<T> vec1, TVec2<T> vec2, T a)
+	{
+		return (vec1 * (1 - a) + vec2 * a);
 	}
 
 	template <typename T>

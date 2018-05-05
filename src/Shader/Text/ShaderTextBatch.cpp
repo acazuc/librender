@@ -7,10 +7,10 @@ namespace librender
 {
 
 	ShaderTextBatch::ShaderTextBatch()
-	: texCoords(NULL)
-	, vertexes(NULL)
-	, colors(NULL)
-	, font(NULL)
+	: texCoords(nullptr)
+	, vertexes(nullptr)
+	, colors(nullptr)
+	, font(nullptr)
 	, pos(0)
 	, verticesNumber(0)
 	, changes(0)
@@ -22,7 +22,7 @@ namespace librender
 	ShaderTextBatch::~ShaderTextBatch()
 	{
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
-			this->entries[i]->setParent(NULL);
+			this->entries[i]->setParent(nullptr);
 		delete[] (this->texCoords);
 		delete[] (this->vertexes);
 		delete[] (this->colors);
@@ -147,7 +147,7 @@ namespace librender
 		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
 		Mat4 mvp(viewProj * model);
 		this->program.mvpLocation->setMat4f(mvp);
-		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, NULL);
+		glDrawElements(GL_TRIANGLES, this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, nullptr);
 	}
 
 	void ShaderTextBatch::addEntry(ShaderTextBatchEntry *entry)
@@ -165,7 +165,7 @@ namespace librender
 			if (this->entries[i] == entry)
 			{
 				this->entries.erase(this->entries.begin() + i);
-				entry->setParent(NULL);
+				entry->setParent(nullptr);
 				this->mustResize = true;
 				this->changes = SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_COLORS;
 				return;
@@ -176,7 +176,7 @@ namespace librender
 	void ShaderTextBatch::clearEntries()
 	{
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
-			this->entries[i]->setParent(NULL);
+			this->entries[i]->setParent(nullptr);
 		this->entries.clear();
 		this->mustResize = true;
 		this->changes = SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_COLORS;

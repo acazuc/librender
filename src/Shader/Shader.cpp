@@ -1,6 +1,5 @@
 #include "Shader.h"
-#include "ShaderException.h"
-#include <cstring>
+#include "./ShaderException.h"
 
 namespace librender
 {
@@ -8,7 +7,7 @@ namespace librender
 	Shader::Shader(GLenum type, const char *data)
 	{
 		this->id = glCreateShader(type);
-		glShaderSource(this->id, 1, &data , NULL);
+		glShaderSource(this->id, 1, &data , nullptr);
 		glCompileShader(this->id);
 		GLint result = GL_FALSE;
 		int infoLogLength;
@@ -16,13 +15,10 @@ namespace librender
 		glGetShaderiv(this->id, GL_INFO_LOG_LENGTH, &infoLogLength);
 		if (!result)
 		{
-			char *error = new char[infoLogLength + 1];
-			std::memset(error, 0, infoLogLength + 1);
-			glGetShaderInfoLog(this->id, infoLogLength, NULL, error);
+			std::string error(infoLogLength, 0);
+			glGetShaderInfoLog(this->id, infoLogLength, nullptr, const_cast<char*>(error.c_str()));
 			glDeleteShader(this->id);
-			std::string err(error);
-			delete[] (error);
-			throw ShaderException(err);
+			throw ShaderException(error);
 		}
 	}
 

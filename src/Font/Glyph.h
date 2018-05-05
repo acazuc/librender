@@ -6,7 +6,7 @@
 namespace librender
 {
 
-	class FontGlyph
+	class Glyph
 	{
 
 	private:
@@ -19,7 +19,7 @@ namespace librender
 		int16_t offsetY;
 
 	public:
-		FontGlyph(uint16_t advance, uint16_t width, uint16_t height, int16_t offsetX, int16_t offsetY);
+		Glyph(uint16_t advance, uint16_t width, uint16_t height, int16_t offsetX, int16_t offsetY);
 		inline void setAdvance(uint16_t advance) {this->advance = advance;};
 		inline uint16_t getAdvance() {return (this->advance);};
 		inline void setHeight(uint16_t height) {this->height = height;};

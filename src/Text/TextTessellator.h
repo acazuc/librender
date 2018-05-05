@@ -23,7 +23,7 @@ namespace librender
 		void clear();
 		void draw();
 		void add(Vec2 vertex, Vec2 texCoords, Vec4 color);
-		void addGlyph(FontGlyph *glyph, Vec2 pos, Vec4 color);
+		void addGlyph(Glyph *glyph, Vec2 pos, Vec4 color);
 		void addChar(uint32_t character, Vec2 pos, Vec4 color);
 		inline void setFont(Font *font) {this->font = font;};
 		inline Font *getFont() {return (this->font);};

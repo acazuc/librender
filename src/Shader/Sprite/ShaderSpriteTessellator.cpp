@@ -4,7 +4,7 @@ namespace librender
 {
 
 	ShaderSpriteTessellator::ShaderSpriteTessellator()
-	: texture(NULL)
+	: texture(nullptr)
 	, changed(false)
 	{
 		//Empty

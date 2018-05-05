@@ -9,9 +9,6 @@ namespace librender
 	TextEntry::TextEntry()
 	: shadowColor(Color::BLACK)
 	, color(Color::WHITE)
-	, texCoords(NULL)
-	, vertexes(NULL)
-	, colors(NULL)
 	, scale(1)
 	, pos(0)
 	, verticesNumber(0)
@@ -34,9 +31,7 @@ namespace librender
 
 	TextEntry::~TextEntry()
 	{
-		delete[] (this->texCoords);
-		delete[] (this->vertexes);
-		delete[] (this->colors);
+		//Empty
 	}
 
 	uint32_t TextEntry::getShadowLen()
@@ -59,20 +54,8 @@ namespace librender
 			uint32_t character = utf8::next(iter, end);
 			getFont()->glChar(character, reinterpret_cast<float*>(&texCoords[i * 4]));
 		}
-		if (this->shadowSize <= 0)
-			return;
-		uint16_t max;
-		if (this->shadowSize == 1)
-		{
-			max = 1;
-		}
-		else
-		{
-			int16_t tmp = this->shadowSize - 1;
-			int16_t tmp2 = 1 + tmp * 2;
-			max = tmp2 * tmp2 - 1 - 4 * tmp;
-		}
-		for (uint32_t i = 0; i < max; ++i)
+		uint16_t shadowLen = getShadowLen();
+		for (uint32_t i = 0; i < shadowLen; ++i)
 			std::memcpy(&texCoords[this->charsNumber * 4 * (i + 1)], &texCoords[0], this->charsNumber * 4 * sizeof(*texCoords));
 	}
 
@@ -91,14 +74,14 @@ namespace librender
 			{
 				y += getLineHeight();
 				x = 0;
-				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes));
+				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
 				index += 4;
 				continue;
 			}
-			FontGlyph *glyph = getFont()->getGlyph(character);
+			Glyph *glyph = getFont()->getGlyph(character);
 			if (!glyph)
 			{
-				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes));
+				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
 				index += 4;
 				continue;
 			}
@@ -201,32 +184,10 @@ namespace librender
 		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_COLORS);
 		this->charsNumber = len;
 		this->verticesNumber = this->charsNumber * 4;
-		if (this->shadowSize > 0)
-		{
-			int16_t fac = 1;
-			if (this->shadowSize > 0)
-			{
-				if (this->shadowSize == 1)
-				{
-					fac += 1;
-				}
-				else
-				{
-					int16_t tmp = this->shadowSize - 1;
-					int16_t tmp2 = 1 + tmp * 2;
-					fac += tmp2 * tmp2 - 1 - 4 * tmp;
-				}
-				if (fac < 1)
-					fac = 1;
-			}
-			this->verticesNumber *= fac;
-		}
-		delete[] (this->texCoords);
-		this->texCoords = new Vec2[std::max(1u, this->verticesNumber)];
-		delete[] (this->vertexes);
-		this->vertexes = new Vec2[std::max(1u, this->verticesNumber)];
-		delete[] (this->colors);
-		this->colors = new Vec4[std::max(1u, this->verticesNumber)];
+		this->verticesNumber *= (1 + getShadowLen());
+		this->texCoords.resize(this->verticesNumber);
+		this->vertexes.resize(this->verticesNumber);
+		this->colors.resize(this->verticesNumber);
 	}
 
 	void TextEntry::setText(std::string &text)
@@ -349,7 +310,7 @@ namespace librender
 				this->height += getLineHeight();
 				continue;
 			}
-			FontGlyph *glyph = getFont()->getGlyph(character);
+			Glyph *glyph = getFont()->getGlyph(character);
 			if (!glyph)
 				continue;
 			x += glyph->getAdvance();

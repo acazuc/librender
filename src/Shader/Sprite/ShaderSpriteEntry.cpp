@@ -1,13 +1,15 @@
 #include "ShaderSpriteEntry.h"
 #include "./ShaderSpriteUpdate.h"
-#include "../../GL.h"
 #include <cstring>
 
 namespace librender
 {
 
 	ShaderSpriteEntry::ShaderSpriteEntry()
-	: scale(1)
+	: texCoords(4)
+	, vertexes(4)
+	, colors(4)
+	, scale(1)
 	, pos(0)
 	, verticesNumber(4)
 	, updatesRequired(0)
@@ -26,21 +28,6 @@ namespace librender
 	ShaderSpriteEntry::~ShaderSpriteEntry()
 	{
 		//Empty
-	}
-
-	void ShaderSpriteEntry::fillTexCoords(Vec2 *texCoords)
-	{
-		std::memcpy(texCoords, this->texCoords, sizeof(this->texCoords));
-	}
-
-	void ShaderSpriteEntry::fillVertexes(Vec2 *vertexes)
-	{
-		std::memcpy(vertexes, this->vertexes, sizeof(this->vertexes));
-	}
-
-	void ShaderSpriteEntry::fillColors(Vec4 *colors)
-	{
-		std::memcpy(colors, this->colors, sizeof(this->colors));
 	}
 
 	void ShaderSpriteEntry::update()
@@ -82,25 +69,25 @@ namespace librender
 
 	void ShaderSpriteEntry::setTopLeftColor(Color &color)
 	{
-		std::memcpy(&this->colors[0], &color, sizeof(*this->colors));
+		std::memcpy(&this->colors[0], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
 	void ShaderSpriteEntry::setTopRightColor(Color &color)
 	{
-		std::memcpy(&this->colors[1], &color, sizeof(*this->colors));
+		std::memcpy(&this->colors[1], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
 	void ShaderSpriteEntry::setBotLeftColor(Color &color)
 	{
-		std::memcpy(&this->colors[2], &color, sizeof(*this->colors));
+		std::memcpy(&this->colors[2], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
 	void ShaderSpriteEntry::setBotRightColor(Color &color)
 	{
-		std::memcpy(&this->colors[3], &color, sizeof(*this->colors));
+		std::memcpy(&this->colors[3], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 

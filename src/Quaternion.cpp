@@ -7,7 +7,7 @@ namespace librender
 {
 
 	template <typename T>
-	TMat3<T> TQuaternion<T>::to_mat3()
+	TQuaternion<T>::operator TMat3<T> ()
 	{
 		TMat3<T> result;
 		T xx(this->x * this->x);
@@ -33,10 +33,11 @@ namespace librender
 	};
 
 	template <typename T>
-	TMat4<T> TQuaternion<T>::to_mat4()
+	TQuaternion<T>::operator TMat4<T> ()
 	{
-		return (TMat4<T>(to_mat3()));
+		return (TMat4<T>(static_cast<TMat3<T>>(*this)));
 	};
+
 }
 
 #endif
