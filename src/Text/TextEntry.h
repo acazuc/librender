@@ -47,7 +47,7 @@ namespace librender
 
 	public:
 		TextEntry();
-		~TextEntry();
+		virtual ~TextEntry();
 		virtual void update();
 		virtual void requireUpdates(uint8_t updates);
 		inline std::vector<Vec2> &getTexCoords() {return (this->texCoords);};

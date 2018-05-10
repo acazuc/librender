@@ -101,6 +101,8 @@ namespace librender
 				}
 				continue;
 			}
+			if (this->width - line.width < width)
+				continue;
 			if (i != this->lines.size() - 1)
 				continue;
 			if (this->height - line.y < height)

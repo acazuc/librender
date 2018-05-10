@@ -12,6 +12,11 @@ namespace librender
 		//Empty
 	}
 
+	Text::~Text()
+	{
+		//Empty
+	}
+
 	void Text::updateIndices()
 	{
 		uint32_t count = 0;
