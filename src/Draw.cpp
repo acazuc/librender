@@ -11,7 +11,7 @@ namespace librender
 
 	double getTime()
 	{
-		return (glfwGetTime());
+		return glfwGetTime();
 	}
 
 	void scissorBegin(int32_t x, int32_t y, int32_t width, int32_t height)

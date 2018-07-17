@@ -41,8 +41,8 @@ namespace librender
 	Texture *SpriteBatchEntry::getTexture()
 	{
 		if (this->parent)
-			return (this->parent->getTexture());
-		return (nullptr);
+			return this->parent->getTexture();
+		return nullptr;
 	}
 
 	void SpriteBatchEntry::setX(float x)
@@ -59,8 +59,8 @@ namespace librender
 	float SpriteBatchEntry::getX()
 	{
 		if (!this->parent)
-			return (0);
-		return (this->parent->getX() + this->pos.x);
+			return 0;
+		return this->parent->getX() + this->pos.x;
 	}
 
 	void SpriteBatchEntry::setY(float y)
@@ -77,8 +77,8 @@ namespace librender
 	float SpriteBatchEntry::getY()
 	{
 		if (!this->parent)
-			return (0);
-		return (this->parent->getY() + this->pos.y);
+			return 0;
+		return this->parent->getY() + this->pos.y;
 	}
 	
 	void SpriteBatchEntry::setWidth(float width)

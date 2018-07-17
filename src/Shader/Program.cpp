@@ -62,12 +62,12 @@ namespace librender
 
 	ProgramLocation *Program::getUniformLocation(const char *name)
 	{
-		return (new ProgramLocation(glGetUniformLocation(this->id, name)));
+		return new ProgramLocation(glGetUniformLocation(this->id, name));
 	}
 
 	ProgramLocation *Program::getAttribLocation(const char *name)
 	{
-		return (new ProgramLocation(glGetAttribLocation(this->id, name)));
+		return new ProgramLocation(glGetAttribLocation(this->id, name));
 	}
 
 	void Program::use()

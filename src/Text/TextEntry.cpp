@@ -37,12 +37,12 @@ namespace librender
 	uint32_t TextEntry::getShadowLen()
 	{
 		if (this->shadowSize <= 0)
-			return (0);
+			return 0;
 		if (this->shadowSize == 1)
-			return (1);
+			return 1;
 		int16_t tmp = this->shadowSize - 1;
 		int16_t tmp2 = 1 + tmp * 2;
-		return (tmp2 * tmp2 - 1 - 4 * tmp);
+		return tmp2 * tmp2 - 1 - 4 * tmp;
 	}
 
 	void TextEntry::fillTexCoords(Vec2 *texCoords)
@@ -286,17 +286,17 @@ namespace librender
 				this->width = this->maxWidth;
 			this->mustCalcWidth = false;
 		}
-		return (this->width * this->scale.x);
+		return this->width * this->scale.x;
 	}
 
 	int32_t TextEntry::getHeight()
 	{
 		if (!this->mustCalcHeight)
-			return (this->height * this->scale.y);
+			return this->height * this->scale.y;
 		this->mustCalcHeight = false;
 		this->height = 0;
 		if (!getFont())
-			return (this->height * this->scale.y);
+			return this->height * this->scale.y;
 		this->height = getLineHeight();
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = iter + this->text.length();
@@ -320,7 +320,7 @@ namespace librender
 				x = 0;
 			}
 		}
-		return (this->height * this->scale.y);
+		return this->height * this->scale.y;
 	}
 
 	int32_t TextEntry::getLineHeight()
@@ -328,10 +328,10 @@ namespace librender
 		if (this->lineHeight == -1)
 		{
 			if (!getFont())
-				return (0);
-			return (getFont()->getLineHeight() * this->scale.y);
+				return 0;
+			return getFont()->getLineHeight() * this->scale.y;
 		}
-		return (this->lineHeight * this->scale.y);
+		return this->lineHeight * this->scale.y;
 	}
 
 }

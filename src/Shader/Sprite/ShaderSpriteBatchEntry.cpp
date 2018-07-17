@@ -41,8 +41,8 @@ namespace librender
 	Texture *ShaderSpriteBatchEntry::getTexture()
 	{
 		if (this->parent)
-			return (this->parent->getTexture());
-		return (nullptr);
+			return this->parent->getTexture();
+		return nullptr;
 	}
 
 	void ShaderSpriteBatchEntry::setX(float x)

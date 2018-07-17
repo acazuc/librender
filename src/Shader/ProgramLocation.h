@@ -35,7 +35,7 @@ namespace librender
 		void setMat4f(Mat4 &mat);
 		void setVertexBuffer(VertexBuffer &buffer);
 		void setVertexAttribArray(bool asArray);
-		inline GLint getLocation() {return (this->location);};
+		inline GLint getLocation() {return this->location;};
 
 	};
 

@@ -143,12 +143,12 @@ namespace librender
 
 	bool Window::isButtonDown(int button)
 	{
-		return (glfwGetMouseButton(this->window, button) == GLFW_PRESS);
+		return glfwGetMouseButton(this->window, button) == GLFW_PRESS;
 	}
 
 	bool Window::isKeyDown(int key)
 	{
-		return (glfwGetKey(this->window, key) == GLFW_PRESS);
+		return glfwGetKey(this->window, key) == GLFW_PRESS;
 	}
 
 	std::string Window::getClipboard()
@@ -160,7 +160,7 @@ namespace librender
 			utf8::replace_invalid(str.begin(), str.end(), back_inserter(tmp));
 			str = tmp;
 		}
-		return (str);
+		return str;
 	}
 
 	void Window::setClipboard(std::string str)
@@ -170,7 +170,7 @@ namespace librender
 
 	bool Window::closeRequested()
 	{
-		return (glfwWindowShouldClose(this->window));
+		return glfwWindowShouldClose(this->window);
 	}
 
 	void Window::setBorders(bool borders)
@@ -388,8 +388,8 @@ namespace librender
 			glfwDestroyWindow(testWindow);
 		}
 		if (maxMSAA == -1)
-			return (0);
-		return ((uint8_t)maxMSAA);
+			return 0;
+		return (uint8_t)maxMSAA;
 	}
 
 }

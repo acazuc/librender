@@ -23,7 +23,7 @@ namespace librender
 		~Text();
 		void draw();
 		void setFont(Font *font);
-		inline Font *getFont() {return (this->font);};
+		inline Font *getFont() {return this->font;};
 
 	};
 

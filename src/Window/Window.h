@@ -86,17 +86,17 @@ namespace librender
 		void setKeyUpCallback(KeyUpCallback callback);
 		void setCharCallback(CharCallback callback);
 		static uint8_t getMaxMSAA();
-		inline EventsManager &getEventsManager() {return (this->eventsManager);};
-		inline GLFWwindow *getWindow() {return (this->window);};
+		inline EventsManager &getEventsManager() {return this->eventsManager;};
+		inline GLFWwindow *getWindow() {return this->window;};
 		inline void setMouseX(int mouseX) {this->mouseX = mouseX;};
 		inline void setMouseY(int mouseY) {this->mouseY = mouseY;};
-		inline bool isFocused() {return (this->focused);};
-		inline int getCurrentCursor() {return (this->currentCursor);};
-		inline int getSemiDiag() {return (this->semiDiag);};
-		inline int getMouseX() {return (this->mouseX);};
-		inline int getMouseY() {return (this->mouseY);};
-		inline int getHeight() {return (this->height);};
-		inline int getWidth() {return (this->width);};
+		inline bool isFocused() {return this->focused;};
+		inline int getCurrentCursor() {return this->currentCursor;};
+		inline int getSemiDiag() {return this->semiDiag;};
+		inline int getMouseX() {return this->mouseX;};
+		inline int getMouseY() {return this->mouseY;};
+		inline int getHeight() {return this->height;};
+		inline int getWidth() {return this->width;};
 
 	};
 

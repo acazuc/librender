@@ -29,7 +29,7 @@ namespace librender
 		ProgramLocation *getUniformLocation(const char *name);
 		ProgramLocation *getAttribLocation(const char *name);
 		void use();
-		inline GLuint getId() {return (this->id);};
+		inline GLuint getId() {return this->id;};
 
 	};
 

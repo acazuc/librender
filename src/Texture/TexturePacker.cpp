@@ -9,27 +9,27 @@ namespace librender
 
 	static bool heuristicArea(TexturePackerEntry &a, TexturePackerEntry &b)
 	{
-		return (a.width * a.height > b.width * b.height);
+		return a.width * a.height > b.width * b.height;
 	}
 
 	static bool heuristicPerimeter(TexturePackerEntry &a, TexturePackerEntry &b)
 	{
-		return ((a.width + a.height) * 2 > (b.width + b.height) * 2);
+		return (a.width + a.height) * 2 > (b.width + b.height) * 2;
 	}
 
 	static bool heuristicMaxSide(TexturePackerEntry &a, TexturePackerEntry &b)
 	{
-		return (std::max(a.width, a.height) > std::max(b.width, b.height));
+		return std::max(a.width, a.height) > std::max(b.width, b.height);
 	}
 
 	static bool heuristicMaxWidth(TexturePackerEntry &a, TexturePackerEntry &b)
 	{
-		return (a.width > b.width);
+		return a.width > b.width;
 	}
 
 	static bool heuristicMaxHeight(TexturePackerEntry &a, TexturePackerEntry &b)
 	{
-		return (a.height > b.height);
+		return a.height > b.height;
 	}
 
 	static bool (*heuristics[])(TexturePackerEntry &a, TexturePackerEntry &b) =
@@ -136,7 +136,7 @@ namespace librender
 		}
 		texture->setData(data, maxWidth, maxHeight);
 		delete[] (data);
-		return (texture);
+		return texture;
 	}
 
 
@@ -152,11 +152,11 @@ namespace librender
 			textures.push_back(packTexture(vec[0], maxSize, vec[1]));
 			++i;
 			if (!vec[1].size())
-				return (textures);
+				return textures;
 			vec[0].clear();
 			std::swap(vec[0], vec[1]);
 		}
-		return (textures);
+		return textures;
 	}
 
 }

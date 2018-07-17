@@ -15,7 +15,7 @@ namespace librender
 	public:
 		Shader(GLenum type, const char *data);
 		~Shader();
-		inline GLuint getId() {return (this->id);};
+		inline GLuint getId() {return this->id;};
 	
 	};
 

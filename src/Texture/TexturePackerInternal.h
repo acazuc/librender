@@ -62,18 +62,18 @@ namespace librender
 			if (this->childs[0].node && this->childs[0].fill)
 			{
 				if (Node *node = this->childs[0].node->insert(img))
-					return (node);
-				return (this->childs[1].node->insert(img));
+					return node;
+				return this->childs[1].node->insert(img);
 			}
 			if (this->full)
-				return (0);
+				return 0;
 			if (img.width == this->rect.width && img.height == this->rect.height)
 			{
 				this->full = true;
-				return (this);
+				return this;
 			}
 			if (img.width > this->rect.width || img.height > this->rect.height)
-				return (nullptr);
+				return nullptr;
 			if (this->rect.width - img.width > this->rect.height - img.height)
 			{
 				this->childs[0].set(XYWHRect(this->rect.x, this->rect.y, img.width, this->rect.height));
@@ -84,7 +84,7 @@ namespace librender
 				this->childs[0].set(XYWHRect(this->rect.x, this->rect.y, this->rect.width, img.height));
 				this->childs[1].set(XYWHRect(this->rect.x, this->rect.y + img.height, this->rect.width, this->rect.height - img.height));
 			}
-			return (this->childs[0].node->insert(img));
+			return this->childs[0].node->insert(img);
 		}
 		void clear()
 		{

@@ -37,7 +37,7 @@ namespace librender
 		void clearEntries();
 		int32_t getLineHeight();
 		void setFont(Font *font);
-		inline Font *getFont() {return (this->font);};
+		inline Font *getFont() {return this->font;};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 		inline void setX(float x) {this->pos.x = x;};

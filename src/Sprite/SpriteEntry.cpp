@@ -118,6 +118,11 @@ namespace librender
 		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
 	}
 
+	float SpriteEntry::getTexX()
+	{
+		return this->texCoords[0].x;
+	}
+
 	void SpriteEntry::setTexY(float texY)
 	{
 		float delta = texY - this->texCoords[0].y;
@@ -128,6 +133,11 @@ namespace librender
 		this->texCoords[2].y += delta;
 		this->texCoords[3].y += delta;
 		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
+	}
+
+	float SpriteEntry::getTexY()
+	{
+		return this->texCoords[0].y;
 	}
 
 	void SpriteEntry::setTexPos(float texX, float texY)
@@ -146,6 +156,11 @@ namespace librender
 		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
 	}
 
+	float SpriteEntry::getTexWidth()
+	{
+		return this->texCoords[1].x - this->texCoords[0].x;
+	}
+
 	void SpriteEntry::setTexHeight(float texHeight)
 	{
 		float delta = texHeight - (this->texCoords[3].y - this->texCoords[0].y);
@@ -154,6 +169,11 @@ namespace librender
 		this->texCoords[2].y = texHeight + this->texCoords[0].y;
 		this->texCoords[3].y = texHeight + this->texCoords[0].y;
 		this->updatesRequired |= SPRITE_UPDATE_TEX_COORDS;
+	}
+
+	float SpriteEntry::getTexHeight()
+	{
+		return this->texCoords[2].y - this->texCoords[0].y;
 	}
 
 	void SpriteEntry::setTexSize(float texWidth, float texHeight)
@@ -174,7 +194,7 @@ namespace librender
 
 	float SpriteEntry::getWidth()
 	{
-		return (this->vertexes[1].x - this->vertexes[0].x);
+		return this->vertexes[1].x - this->vertexes[0].x;
 	}
 
 	void SpriteEntry::setHeight(float height)
@@ -189,7 +209,7 @@ namespace librender
 
 	float SpriteEntry::getHeight()
 	{
-		return (this->vertexes[2].y - this->vertexes[1].y);
+		return this->vertexes[2].y - this->vertexes[1].y;
 	}
 
 	void SpriteEntry::setSize(float width, float height)
@@ -201,15 +221,15 @@ namespace librender
 	int32_t SpriteEntry::getTextureWidth()
 	{
 		if (!getTexture())
-			return (0);
-		return (getTexture()->getWidth());
+			return 0;
+		return getTexture()->getWidth();
 	}
 
 	int32_t SpriteEntry::getTextureHeight()
 	{
 		if (!getTexture())
-			return (0);
-		return (getTexture()->getHeight());
+			return 0;
+		return getTexture()->getHeight();
 	}
 
 }

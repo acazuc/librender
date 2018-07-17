@@ -53,12 +53,12 @@ namespace librender
 
 	bool Color::compare(Color &color)
 	{
-		return (this->r != color.r || this->g != color.g || this->b != color.b || this->a != color.a);
+		return this->r != color.r || this->g != color.g || this->b != color.b || this->a != color.a;
 	}
 
 	bool Color::compare(Color *color)
 	{
-		return (compare(*color));
+		return compare(*color);
 	}
 
 	Color &Color::operator += (float val)
@@ -66,7 +66,7 @@ namespace librender
 		this->r += val;
 		this->g += val;
 		this->b += val;
-		return (*this);
+		return *this;
 	}
 
 	Color &Color::operator -= (float val)
@@ -74,7 +74,7 @@ namespace librender
 		this->r -= val;
 		this->g -= val;
 		this->b -= val;
-		return (*this);
+		return *this;
 	}
 
 }

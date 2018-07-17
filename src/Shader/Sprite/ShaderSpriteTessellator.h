@@ -42,7 +42,7 @@ namespace librender
 		inline void setMvpLocation(ProgramLocation *location) {this->mvpLocation = location;};
 		inline void setProgram(Program *program) {this->program = program;};
 		inline void setTexture(Texture *texture) {this->texture = texture;};
-		inline Texture *getTexture() {return (this->texture);};
+		inline Texture *getTexture() {return this->texture;};
 
 	};
 

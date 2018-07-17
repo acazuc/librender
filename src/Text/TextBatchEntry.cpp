@@ -56,8 +56,8 @@ namespace librender
 	Font *TextBatchEntry::getFont()
 	{
 		if (this->parent)
-			return (this->parent->getFont());
-		return (nullptr);
+			return this->parent->getFont();
+		return nullptr;
 	}
 
 	void TextBatchEntry::setX(float x)

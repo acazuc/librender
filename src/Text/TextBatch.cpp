@@ -187,8 +187,8 @@ namespace librender
 	int32_t TextBatch::getLineHeight()
 	{
 		if (!this->font)
-			return (0);
-		return (this->font->getLineHeight());
+			return 0;
+		return this->font->getLineHeight();
 	}
 
 }

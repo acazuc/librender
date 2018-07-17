@@ -28,14 +28,14 @@ namespace librender
 		result[2][0] = T(2) * (xz + wy);
 		result[2][1] = T(2) * (yz - wx);
 		result[2][2] = T(1) - T(2) * (xx +  yy);
-		return (result);
+		return result;
 
 	};
 
 	template <typename T>
 	TQuaternion<T>::operator TMat4<T> ()
 	{
-		return (TMat4<T>(static_cast<TMat3<T>>(*this)));
+		return TMat4<T>(static_cast<TMat3<T>>(*this));
 	};
 
 }

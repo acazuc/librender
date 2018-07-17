@@ -20,9 +20,9 @@ namespace librender
 		~VertexBuffer();
 		void setData(GLenum bufType, const void *data, GLsizei size, GLenum type, GLsizei stride, GLenum usage);
 		void bind(GLenum type);
-		inline GLsizei getStride() {return (this->stride);};
-		inline GLenum getType() {return (this->type);};
-		inline GLint getSize() {return (this->size);};
+		inline GLsizei getStride() {return this->stride;};
+		inline GLenum getType() {return this->type;};
+		inline GLint getSize() {return this->size;};
 
 	};
 

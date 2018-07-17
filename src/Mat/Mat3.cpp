@@ -49,7 +49,7 @@ namespace librender
 		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
 		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
 		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -65,7 +65,7 @@ namespace librender
 		result[0] = mat[0];
 		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
 		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -81,7 +81,7 @@ namespace librender
 		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
 		result[1] = mat[1];
 		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -97,13 +97,13 @@ namespace librender
 		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
 		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
 		result[2] = mat[2];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
 	TVec3<T> &TMat3<T>::operator [] (int i)
 	{
-		return (this->data[i]);
+		return this->data[i];
 	}
 
 	template <typename T>
@@ -112,7 +112,7 @@ namespace librender
 		TMat3<T> result;
 		for (int i = 0; i < 3; ++i)
 			result[i] = mat1[0] * mat2[i][0] + mat1[1] * mat2[i][1] + mat1[2] * mat2[i][2];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -121,7 +121,7 @@ namespace librender
 		TVec3<T> result;
 		for (int i = 0; i < 3; ++i)
 			result[i] = vec.x * mat[0][i] + vec.y * mat[1][i] + vec.z * mat[2][i];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -130,7 +130,7 @@ namespace librender
 		TVec3<T> result;
 		for (int i = 0; i < 3; ++i)
 			result[i] = vec.x * mat[i].x + vec.y * mat[i].y + vec.z * mat[i].z;
-		return (result);
+		return result;
 	}
 
 }

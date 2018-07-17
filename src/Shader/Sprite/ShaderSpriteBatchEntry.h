@@ -25,7 +25,7 @@ namespace librender
 		void setY(float y);
 		void setWidth(float width);
 		void setHeight(float height);
-		inline uint8_t getChanges() {return (this->changes);};
+		inline uint8_t getChanges() {return this->changes;};
 		inline void removeChange(uint8_t change) {this->changes &= ~change;};
 
 	};

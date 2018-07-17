@@ -57,8 +57,8 @@ namespace librender
 	Font *ShaderTextBatchEntry::getFont()
 	{
 		if (this->parent)
-			return (this->parent->getFont());
-		return (nullptr);
+			return this->parent->getFont();
+		return nullptr;
 	}
 
 	void ShaderTextBatchEntry::setX(float x)

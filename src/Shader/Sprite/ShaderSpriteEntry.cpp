@@ -192,15 +192,15 @@ namespace librender
 	int32_t ShaderSpriteEntry::getTextureWidth()
 	{
 		if (!getTexture())
-			return (0);
-		return (getTexture()->getWidth());
+			return 0;
+		return getTexture()->getWidth();
 	}
 
 	int32_t ShaderSpriteEntry::getTextureHeight()
 	{
 		if (!getTexture())
-			return (0);
-		return (getTexture()->getHeight());
+			return 0;
+		return getTexture()->getHeight();
 	}
 
 }

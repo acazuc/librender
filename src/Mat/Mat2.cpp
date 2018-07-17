@@ -23,7 +23,7 @@ namespace librender
 	template <typename T>
 	TVec2<T> &TMat2<T>::operator [] (int i)
 	{
-		return (this->data[i]);
+		return this->data[i];
 	}
 
 	template <typename T>
@@ -32,7 +32,7 @@ namespace librender
 		TMat2<T> result;
 		for (int i = 0; i < 2; ++i)
 			result[i] = mat1[0] * mat2[i][0] + mat1[1] * mat2[i][1];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -41,7 +41,7 @@ namespace librender
 		TVec2<T> result;
 		for (int i = 0; i < 2; ++i)
 			result[i] = vec.x * mat[0][i] + vec.y * mat[1][i];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -50,7 +50,7 @@ namespace librender
 		TVec2<T> result;
 		for (int i = 0; i < 2; ++i)
 			result[i] = vec.x * mat[i].x + vec.y * mat[i].y;
-		return (result);
+		return result;
 	}
 
 }

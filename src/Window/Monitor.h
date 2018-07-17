@@ -23,10 +23,10 @@ namespace librender
 
 	public:
 		Monitor(GLFWmonitor *handle);
-		std::vector<VideoMode> &getVideoModes() {return (this->videoModes);};
-		std::string &getName() {return (this->name);};
-		inline int32_t getWidth() {return (this->width);};
-		inline int32_t getHeight() {return (this->height);};
+		std::vector<VideoMode> &getVideoModes() {return this->videoModes;};
+		std::string &getName() {return this->name;};
+		inline int32_t getWidth() {return this->width;};
+		inline int32_t getHeight() {return this->height;};
 
 	};
 

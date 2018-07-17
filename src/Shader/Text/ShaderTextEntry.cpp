@@ -343,17 +343,17 @@ namespace librender
 				this->width = this->maxWidth;
 			this->mustCalcWidth = false;
 		}
-		return (this->width * this->scale.x);
+		return this->width * this->scale.x;
 	}
 
 	int32_t ShaderTextEntry::getHeight()
 	{
 		if (!this->mustCalcWidth)
-			return (this->height * this->scale.y);
+			return this->height * this->scale.y;
 		this->mustCalcHeight = false;
 		this->height = 0;
 		if (!getFont())
-			return (this->height * this->scale.y);
+			return this->height * this->scale.y;
 		this->height = getLineHeight();
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = iter + this->text.length();
@@ -377,7 +377,7 @@ namespace librender
 				x = 0;
 			}
 		}
-		return (this->height * this->scale.y);
+		return this->height * this->scale.y;
 	}
 
 	int32_t ShaderTextEntry::getLineHeight()
@@ -385,10 +385,10 @@ namespace librender
 		if (this->lineHeight == -1)
 		{
 			if (!getFont())
-				return (0);
-			return (getFont()->getLineHeight() * this->scale.y);
+				return 0;
+			return getFont()->getLineHeight() * this->scale.y;
 		}
-		return (this->lineHeight * this->scale.y);
+		return this->lineHeight * this->scale.y;
 	}
 
 }

@@ -25,7 +25,7 @@ namespace librender
 		void add(Vec2 vertex, Vec2 texCoords, Vec4 color);
 		void addQuad(Vec2 pos, Vec2 size, Vec2 texOrg, Vec2 texSize, Vec4 color);
 		inline void setTexture(Texture *texture) {this->texture = texture;};
-		inline Texture *getTexture() {return (this->texture);};
+		inline Texture *getTexture() {return this->texture;};
 
 	};
 

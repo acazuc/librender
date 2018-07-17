@@ -40,10 +40,10 @@ namespace librender
 		void addEntry(ShaderSpriteBatchEntry *entry);
 		void removeEntry(ShaderSpriteBatchEntry *entry);
 		inline void setProgram(ShaderSpriteProgram program) {this->program = program;};
-		inline ShaderSpriteProgram &getProgram() {return (this->program);};
-		inline std::vector<ShaderSpriteBatchEntry*> &getEntries() {return (this->entries);};
+		inline ShaderSpriteProgram &getProgram() {return this->program;};
+		inline std::vector<ShaderSpriteBatchEntry*> &getEntries() {return this->entries;};
 		void setTexture(Texture *texture);
-		inline Texture *getTexture() {return (this->texture);};
+		inline Texture *getTexture() {return this->texture;};
 		inline void addChanges(uint8_t changes) {this->changes |= changes;};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 		inline void setX(float x) {this->pos.x = x;};

@@ -62,7 +62,7 @@ namespace librender
 		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
 		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
 		result[3] = mat[3];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -80,7 +80,7 @@ namespace librender
 		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
 		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
 		result[3] = mat[3];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -98,7 +98,7 @@ namespace librender
 		result[1] = mat[1];
 		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
 		result[3] = mat[3];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -116,7 +116,7 @@ namespace librender
 		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
 		result[2] = mat[2] * rotate[2][2];
 		result[3] = mat[3];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -124,7 +124,7 @@ namespace librender
 	{
 		TMat4<T> result(mat);
 		result[3] = mat[0] * vec[0] + mat[1] * vec[1] + mat[2] * vec[2] + mat[3];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -135,7 +135,7 @@ namespace librender
 		result[1] = mat[1] * vec[1];
 		result[2] = mat[2] * vec[2];
 		result[3] = mat[3];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -145,7 +145,7 @@ namespace librender
 		TMat4<T> mat(TVec4<T>(f / aspect, f, (zfar + znear) / (znear - zfar), T(0)));
 		mat[2][3] = T(-1);
 		mat[3][2] = (T(2) * zfar * znear) / (znear - zfar);
-		return (mat);
+		return mat;
 	}
 
 	template <typename T>
@@ -164,7 +164,7 @@ namespace librender
 		mat[1] = TVec4<T>(T(s[1]), T(u[1]), T(f[1]), T(0));
 		mat[2] = TVec4<T>(T(s[2]), T(u[2]), T(f[2]), T(0));
 		mat[3] = TVec4<T>(T(0)   , T(0)   , T(0)   , T(1));
-		return (translate(mat, TVec3<T>(-eye)));
+		return translate(mat, TVec3<T>(-eye));
 	}
 
 	template <typename T>
@@ -174,13 +174,13 @@ namespace librender
 		mat[3][0] = -(right + left) / (right - left);
 		mat[3][1] = -(top + bottom) / (top - bottom);
 		mat[3][2] = -(far + near) / (far - near);
-		return (mat);
+		return mat;
 	}
 
 	template <typename T>
 	TVec4<T> &TMat4<T>::operator [] (int i)
 	{
-		return (this->data[i]);
+		return this->data[i];
 	}
 
 	template <typename T>
@@ -189,7 +189,7 @@ namespace librender
 		TMat4<T> result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = mat1[0] * mat2[i][0] + mat1[1] * mat2[i][1] + mat1[2] * mat2[i][2] + mat1[3] * mat2[i][3];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -198,7 +198,7 @@ namespace librender
 		TVec4<T> result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = vec.x * mat[0][i] + vec.y * mat[1][i] + vec.z * mat[2][i] + vec.w * mat[3][i];
-		return (result);
+		return result;
 	}
 
 	template <typename T>
@@ -207,7 +207,7 @@ namespace librender
 		TVec4<T> result;
 		for (int i = 0; i < 4; ++i)
 			result[i] = vec.x * mat[i].x + vec.y * mat[i].y + vec.z * mat[i].z + vec.w * mat[i].w;
-		return (result);
+		return result;
 	}
 
 }

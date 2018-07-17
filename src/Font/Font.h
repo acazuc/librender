@@ -68,9 +68,9 @@ namespace librender
 		void glUpdate();
 		void glChar(uint32_t character, float *texCoords);
 		void glGlyph(Glyph *glyph, float *texCoords);
-		inline Texture &getTexture() {return (this->texture);};
-		inline int32_t getLineHeight() {return (this->height);};
-		inline uint32_t getRevision() {return (this->revision);};
+		inline Texture &getTexture() {return this->texture;};
+		inline int32_t getLineHeight() {return this->height;};
+		inline uint32_t getRevision() {return this->revision;};
 
 	};
 
