@@ -42,7 +42,7 @@ namespace librender
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords.data(), count * sizeof(*this->texCoords.data()), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords.data(), count * sizeof(*this->texCoords.data()), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderSpriteBatch::updateVertexes()
@@ -58,7 +58,7 @@ namespace librender
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes.data(), count * sizeof(*this->vertexes.data()), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes.data(), count * sizeof(*this->vertexes.data()), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderSpriteBatch::updateIndices()
@@ -76,7 +76,7 @@ namespace librender
 			indices[count++] = currentIndice + 3;
 			currentIndice += this->entries[i]->getVerticesNumber();
 		}
-		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices.data(), count * sizeof(*indices.data()), GL_UNSIGNED_INT, 1, GL_DYNAMIC_DRAW);
+		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices.data(), count * sizeof(*indices.data()), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderSpriteBatch::updateColors()
@@ -92,7 +92,7 @@ namespace librender
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors.data(), count * sizeof(*this->colors.data()), GL_FLOAT, 4, GL_DYNAMIC_DRAW);
+		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors.data(), count * sizeof(*this->colors.data()), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderSpriteBatch::resize()
@@ -134,9 +134,9 @@ namespace librender
 		else
 			glBindTexture(GL_TEXTURE_2D, 0);
 		this->program.program->use();
-		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
-		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);
-		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer);
+		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer, 2, GL_FLOAT);
+		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer, 2, GL_FLOAT);
+		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer, 4, GL_FLOAT);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
 		Mat4 mvp(viewProj * model);

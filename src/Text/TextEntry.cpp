@@ -88,6 +88,11 @@ namespace librender
 			else
 			{
 				float charWidth = glyph->getAdvance();
+				if (this->maxWidth > 0 && x && x + charWidth >= this->maxWidth)
+				{
+					y += getLineHeight();
+					x = 0;
+				}
 				float charRenderWidth = glyph->getWidth();
 				float charRenderHeight = glyph->getHeight();
 				float charRenderX = x + glyph->getOffsetX();
@@ -105,11 +110,6 @@ namespace librender
 				vertexes[index].y = charRenderY + charRenderHeight;
 				++index;
 				x += charWidth;
-			}
-			if (this->maxWidth > 0 && x >= this->maxWidth)
-			{
-				y += getLineHeight();
-				x = 0;
 			}
 		}
 		if (this->shadowSize <= 0)

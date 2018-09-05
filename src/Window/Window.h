@@ -34,7 +34,7 @@ namespace librender
 		GLFWcursor *crossCursor;
 		GLFWcursor *ibeamCursor;
 		GLFWcursor *handCursor;
-		bool isFullscreen;
+		bool fullscreen;
 		bool focused;
 		int currentCursor;
 		int prevWidth;
@@ -57,11 +57,9 @@ namespace librender
 		void setBorders(bool borders);
 		void setResizable(bool resizable);
 		void setVSync(bool vsync);
-		void clearScreen();
 		void update();
 		void pollEvents();
 		void resized(int width, int height);
-		void updateGLContext();
 		bool isButtonDown(int button);
 		bool isKeyDown(int key);
 		std::string getClipboard();
@@ -90,6 +88,7 @@ namespace librender
 		inline GLFWwindow *getWindow() {return this->window;};
 		inline void setMouseX(int mouseX) {this->mouseX = mouseX;};
 		inline void setMouseY(int mouseY) {this->mouseY = mouseY;};
+		inline bool isfullscreen() {return this->fullscreen;};
 		inline bool isFocused() {return this->focused;};
 		inline int getCurrentCursor() {return this->currentCursor;};
 		inline int getSemiDiag() {return this->semiDiag;};

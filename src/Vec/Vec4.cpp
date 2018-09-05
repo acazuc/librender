@@ -9,36 +9,6 @@ namespace librender
 {
 
 	template <typename T>
-	TVec4<T> TVec4<T>::reflect(TVec4<T> vec)
-	{
-		return *this - vec * 2 * this->dot(vec);
-	}
-
-	template <typename T>
-	T TVec4<T>::dot(TVec4<T> vec)
-	{
-		return this->x * vec.x + this->y * vec.y + this->z * vec.z + this->w * vec.w;
-	}
-
-	template <typename T>
-	T TVec4<T>::angle(TVec4<T> vec)
-	{
-		return acos(dot(vec) / (length() * vec.length()));
-	}
-
-	template <typename T>
-	T TVec4<T>::length()
-	{
-		return sqrt(dot(*this));
-	}
-
-	template <typename T>
-	void TVec4<T>::normalize()
-	{
-		*this /= this->length();
-	}
-
-	template <typename T>
 	TVec3<T> TVec4<T>::xyz()
 	{
 		return TVec3<T>(this->x, this->y, this->z);
@@ -288,6 +258,36 @@ namespace librender
 	TVec4<T> fract(TVec4<T> vec)
 	{
 		return vec - floor(vec);
+	}
+
+	template<typename T>
+	TVec4<T> normalize(TVec4<T> vec)
+	{
+		return vec / length(vec);
+	}
+
+	template<typename T>
+	TVec4<T> reflect(TVec4<T> vec1, TVec4<T> vec2)
+	{
+		return vec1 - vec2 * 2 * dot(vec1, vec2);
+	}
+
+	template<typename T>
+	T dot(TVec4<T> vec1, TVec4<T> vec2)
+	{
+		return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z + vec1.w * vec2.w;
+	}
+
+	template<typename T>
+	T angle(TVec4<T> vec1, TVec4<T> vec2)
+	{
+		return acos(dot(vec1, vec2) / length(vec1) / length(vec2));
+	}
+
+	template<typename T>
+	T length(TVec4<T> vec)
+	{
+		return sqrt(dot(vec, vec));
 	}
 
 }

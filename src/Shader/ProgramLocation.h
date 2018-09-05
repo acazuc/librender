@@ -19,21 +19,35 @@ namespace librender
 		GLint location;
 
 	public:
+		ProgramLocation();
 		ProgramLocation(GLint location);
 		void setVec1i(GLint val);
+		void setVec1iv(GLint *val, GLsizei count);
 		void setVec2i(GLint val1, GLint val2);
+		void setVec2i(TVec2<GLint> val);
+		void setVec2iv(TVec2<GLint> *val, GLsizei count);
 		void setVec3i(GLint val1, GLint val2, GLint val3);
+		void setVec3i(TVec3<GLint> val);
+		void setVec3iv(TVec3<GLint> *val, GLsizei count);
 		void setVec4i(GLint val1, GLint val2, GLint val3, GLint val4);
+		void setVec4i(TVec4<GLint> val);
+		void setVec4iv(TVec4<GLint> *val, GLsizei count);
 		void setVec1f(GLfloat val);
+		void setVec1fv(GLfloat *val, GLsizei count);
 		void setVec2f(GLfloat val1, GLfloat val2);
-		void setVec2f(Vec2 &vec);
+		void setVec2f(TVec2<GLfloat> val);
+		void setVec2fv(TVec2<GLfloat> *val, GLsizei count);
 		void setVec3f(GLfloat val1, GLfloat val2, GLfloat val3);
-		void setVec3f(Vec3 &vec);
+		void setVec3f(TVec3<GLfloat> val);
+		void setVec3fv(TVec3<GLfloat> *val, GLsizei count);
 		void setVec4f(GLfloat val1, GLfloat val2, GLfloat val3, GLfloat val4);
-		void setVec4f(Vec4 &vec);
-		void setMat3f(Mat3 &mat);
-		void setMat4f(Mat4 &mat);
-		void setVertexBuffer(VertexBuffer &buffer);
+		void setVec4f(TVec4<GLfloat> val);
+		void setVec4fv(TVec4<GLfloat> *val, GLsizei count);
+		void setMat3f(TMat3<GLfloat> val);
+		void setMat3fv(TMat3<GLfloat> *val, GLsizei count);
+		void setMat4f(TMat4<GLfloat> val);
+		void setMat4fv(TMat4<GLfloat> *val, GLsizei count);
+		void setVertexBuffer(VertexBuffer &buffer, GLint nb, GLenum type, GLboolean normalized = GL_FALSE, GLsizei stride = 0, GLsizei offset = 0);
 		void setVertexAttribArray(bool asArray);
 		inline GLint getLocation() {return this->location;};
 

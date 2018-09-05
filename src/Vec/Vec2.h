@@ -13,11 +13,6 @@ namespace librender
 		TVec2<T>(T x, T y) : x(x), y(y) {};
 		TVec2<T>(T xy) : x(xy), y(xy) {};
 		TVec2<T>() : x(0), y(0) {};
-		TVec2<T> reflect(TVec2<T> vec);
-		T dot(TVec2<T> vec);
-		T angle(TVec2<T> vec);
-		T length();
-		void normalize();
 		T &operator [] (int idx);
 		TVec2<T> operator - ();
 		TVec2<T> operator += (T val);
@@ -89,6 +84,17 @@ namespace librender
 	TVec2<T> ceil(TVec2<T> vec);
 	template <typename T>
 	TVec2<T> fract(TVec2<T> vec);
+
+	template<typename T>
+	TVec2<T> normalize(TVec2<T> vec);
+	template<typename T>
+	TVec2<T> reflect(TVec2<T> vec1, TVec2<T> vec2);
+	template<typename T>
+	T dot(TVec2<T> vec1, TVec2<T> vec2);
+	template<typename T>
+	T angle(TVec2<T> vec1, TVec2<T> vec2);
+	template<typename T>
+	T length(TVec2<T> vec);
 
 	typedef TVec2<float> Vec2;
 

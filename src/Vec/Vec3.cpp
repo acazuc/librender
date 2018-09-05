@@ -9,42 +9,6 @@ namespace librender
 {
 
 	template <typename T>
-	TVec3<T> TVec3<T>::reflect(TVec3<T> vec)
-	{
-		return *this - vec * 2 * this->dot(vec);
-	}
-
-	template <typename T>
-	TVec3<T> TVec3<T>::cross(TVec3<T> vec)
-	{
-		return TVec3<T>(this->y * vec.z - this->z * vec.y, this->z * vec.x - this->x * vec.z, this->x * vec.y - this->y * vec.x);
-	}
-
-	template <typename T>
-	T TVec3<T>::dot(TVec3<T> vec)
-	{
-		return this->x * vec.x + this->y * vec.y + this->z * vec.z;
-	}
-
-	template <typename T>
-	T TVec3<T>::angle(TVec3<T> vec)
-	{
-		return acos(dot(vec) / (length() * vec.length()));
-	}
-
-	template <typename T>
-	T TVec3<T>::length()
-	{
-		return sqrt(dot(*this));
-	}
-
-	template <typename T>
-	void TVec3<T>::normalize()
-	{
-		*this /= this->length();
-	}
-
-	template <typename T>
 	T &TVec3<T>::operator [] (int idx)
 	{
 		return reinterpret_cast<T*>(this)[idx];
@@ -270,6 +234,42 @@ namespace librender
 	TVec3<T> fract(TVec3<T> vec)
 	{
 		return vec - floor(vec);
+	}
+
+	template<typename T>
+	TVec3<T> normalize(TVec3<T> vec)
+	{
+		return vec / length(vec);
+	}
+
+	template<typename T>
+	TVec3<T> reflect(TVec3<T> vec1, TVec3<T> vec2)
+	{
+		return vec1 - vec2 * 2 * dot(vec1, vec2);
+	}
+
+	template<typename T>
+	T dot(TVec3<T> vec1, TVec3<T> vec2)
+	{
+		return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+	}
+
+	template<typename T>
+	T angle(TVec3<T> vec1, TVec3<T> vec2)
+	{
+		return acos(dot(vec1, vec2) / length(vec1) / length(vec2));
+	}
+
+	template<typename T>
+	T length(TVec3<T> vec)
+	{
+		return sqrt(dot(vec, vec));
+	}
+
+	template <typename T>
+	TVec3<T> cross(TVec3<T> vec1, TVec3<T> vec2)
+	{
+		return TVec3<T>(vec1.y * vec2.z - vec1.z * vec2.y, vec1.z * vec2.x - vec1.x * vec2.z, vec1.x * vec2.y - vec1.y * vec2.x);
 	}
 
 }

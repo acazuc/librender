@@ -13,12 +13,10 @@ namespace librender
 		glDeleteBuffers(1, &this->id);
 	}
 
-	void VertexBuffer::setData(GLenum bufType, const void *data, GLsizei len, GLenum type, GLsizei stride, GLenum usage)
+	void VertexBuffer::setData(GLenum type, const void *data, GLsizei len, GLenum usage)
 	{
-		bind(bufType);
-		glBufferData(bufType, len, data, usage);
-		this->type = type;
-		this->stride = stride;
+		bind(type);
+		glBufferData(type, len, data, usage);
 	}
 	
 	void VertexBuffer::bind(GLenum type)

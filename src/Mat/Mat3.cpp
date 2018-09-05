@@ -4,23 +4,29 @@
 #include "Mat3.h"
 #include <cmath>
 
+#include <iostream>
 namespace librender
 {
 
 	template <typename T>
-	TMat3<T>::TMat3(TVec3<T> vec)
+	TMat3<T>::TMat3(TVec3<T> vec1, TVec3<T> vec2, TVec3<T> vec3)
+	: data{vec1, vec2, vec3}
 	{
-		this->data[0] = TVec3<T>(T(vec.x), T(0), T(0));
-		this->data[1] = TVec3<T>(T(0), T(vec.y), T(0));
-		this->data[2] = TVec3<T>(T(0), T(0), T(vec.z));
+		//Empty
+	}
+
+	template <typename T>
+	TMat3<T>::TMat3(TVec3<T> vec)
+	: data{{vec.x, T(0), T(0)}, {T(0), vec.y, T(0)}, {T(0), T(0), T(0), vec.z}}
+	{
+		//Empty
 	}
 
 	template <typename T>
 	TMat3<T>::TMat3(T value)
+	: data{{value, T(0), T(0)}, {T(0), value, T(0)}, {T(0), T(0), value}}
 	{
-		this->data[0] = TVec3<T>(T(value), T(0), T(0));
-		this->data[1] = TVec3<T>(T(0), T(value), T(0));
-		this->data[2] = TVec3<T>(T(0), T(0), T(value));
+		//Empty
 	}
 
 	template <typename T>
@@ -36,20 +42,19 @@ namespace librender
 		T zz(axis.z * t.z);
 		axis.normalize();
 		TMat3<T> rotate;
-		rotate[0][0] = T(vx.x + c);
-		rotate[0][1] = T(vx.y + u.z);
-		rotate[0][2] = T(vx.z - u.y);
-		rotate[1][0] = T(vx.y - u.x);
-		rotate[1][1] = T(yy + c);
-		rotate[1][2] = T(yz + u.z);
-		rotate[2][0] = T(vx.z + u.y);
-		rotate[2][1] = T(yz - u.x);
-		rotate[2][2] = T(zz + c);
-		TMat3<T> result;
-		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
-		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
-		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
-		return result;
+		rotate[0][0] = vx.x + c;
+		rotate[0][1] = vx.y + u.z;
+		rotate[0][2] = vx.z - u.y;
+		rotate[1][0] = vx.y - u.x;
+		rotate[1][1] = yy + c;
+		rotate[1][2] = yz + u.z;
+		rotate[2][0] = vx.z + u.y;
+		rotate[2][1] = yz - u.x;
+		rotate[2][2] = zz + c;
+		return TMat3<T>(
+				mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2],
+				mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2],
+				mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2]);
 	}
 
 	template <typename T>
@@ -57,15 +62,14 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat3<T> rotate;
-		rotate[0] = TVec3<T>(T(1), T( 0), T(0));
-		rotate[1] = TVec3<T>(T(0), T( c), T(s));
-		rotate[2] = TVec3<T>(T(0), T(-s), T(c));
-		TMat3<T> result;
-		result[0] = mat[0];
-		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
-		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
-		return result;
+		TMat3<T> rotate(
+				TVec3<T>(T(1), T( 0), T(0)),
+				TVec3<T>(T(0),    c ,   s ),
+				TVec3<T>(T(0),   -s ,   c ));
+		return TMat3<T>(
+				mat[0],
+				mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2],
+				mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2]);
 	}
 
 	template <typename T>
@@ -73,15 +77,14 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat3<T> rotate;
-		rotate[0] = TVec3<T>(T(c), T(0), T(-s));
-		rotate[1] = TVec3<T>(T(0), T(1), T( 0));
-		rotate[2] = TVec3<T>(T(s), T(0), T( c));
-		TMat3<T> result;
-		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
-		result[1] = mat[1];
-		result[2] = mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2];
-		return result;
+		TMat3<T> rotate(
+				TVec3<T>(  c , T(0),   -s ),
+				TVec3<T>(T(0), T(1), T( 0)),
+				TVec3<T>(  s , T(0),    c ));
+		return TMat3<T>(
+				mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2],
+				mat[1],
+				mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2]);
 	}
 
 	template <typename T>
@@ -89,15 +92,14 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat3<T> rotate;
-		rotate[0] = TVec3<T>(T( c), T(s), T(0));
-		rotate[1] = TVec3<T>(T(-s), T(c), T(0));
-		rotate[2] = TVec3<T>(T( 0), T(0), T(1));
-		TMat3<T> result;
-		result[0] = mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2];
-		result[1] = mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2];
-		result[2] = mat[2];
-		return result;
+		TMat3<T> rotate(
+				TVec3<T>(   c ,   s , T(0)),
+				TVec3<T>(  -s ,   c , T(0)),
+				TVec3<T>(T( 0), T(0), T(1)));
+		return TMat3<T>(
+				mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2],
+				mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2],
+				mat[2]);
 	}
 
 	template <typename T>
@@ -131,6 +133,37 @@ namespace librender
 		for (int i = 0; i < 3; ++i)
 			result[i] = vec.x * mat[i].x + vec.y * mat[i].y + vec.z * mat[i].z;
 		return result;
+	}
+
+	template <typename T>
+	TMat3<T> transpose(TMat3<T> mat)
+	{
+		return TMat3<T>(
+				TVec3<T>(mat[0][0], mat[1][0], mat[2][0]),
+				TVec3<T>(mat[0][1], mat[1][1], mat[2][1]),
+				TVec3<T>(mat[0][2], mat[1][2], mat[2][2]));
+	}
+
+	template <typename T>
+	TMat3<T> inverse(TMat3<T> mat)
+	{
+		T deter(
+				  mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2])
+				- mat[1][0] * (mat[0][1] * mat[2][2] - mat[2][1] * mat[0][2])
+				+ mat[2][0] * (mat[0][1] * mat[1][2] - mat[1][1] * mat[0][2]));
+		return TMat3<T>(
+			TVec3<T>(
+				 (mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]) / deter,
+				-(mat[0][1] * mat[2][2] - mat[0][2] * mat[2][1]) / deter,
+				 (mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1]) / deter),
+			TVec3<T>(
+				-(mat[1][0] * mat[2][2] - mat[1][2] * mat[2][0]) / deter,
+				 (mat[0][0] * mat[2][2] - mat[0][2] * mat[2][0]) / deter,
+				-(mat[0][0] * mat[1][2] - mat[0][2] * mat[1][0]) / deter),
+			TVec3<T>(
+				 (mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]) / deter,
+				-(mat[0][0] * mat[2][1] - mat[0][1] * mat[2][0]) / deter,
+				 (mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]) / deter));
 	}
 
 }

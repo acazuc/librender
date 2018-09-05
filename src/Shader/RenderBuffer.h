@@ -17,6 +17,7 @@ namespace librender
 		~RenderBuffer();
 		void setStorage(GLenum format, GLsizei width, GLsizei height);
 		void bind();
+		inline GLuint getId() {return this->id;};
 
 	};
 

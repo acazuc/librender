@@ -9,36 +9,6 @@ namespace librender
 {
 
 	template <typename T>
-	TVec2<T> TVec2<T>::reflect(TVec2<T> vec)
-	{
-		return *this - vec * 2 * this->dot(vec);
-	}
-
-	template <typename T>
-	T TVec2<T>::dot(TVec2<T> uv)
-	{
-		return this->x * uv.x + this->y * uv.y;
-	}
-
-	template <typename T>
-	T TVec2<T>::angle(TVec2<T> vec)
-	{
-		return acos(dot(vec) / (length() * vec.length()));
-	}
-
-	template <typename T>
-	T TVec2<T>::length()
-	{
-		return sqrt(dot(*this));
-	}
-
-	template <typename T>
-	void TVec2<T>::normalize()
-	{
-		*this /= this->length();
-	}
-
-	template <typename T>
 	T &TVec2<T>::operator [] (int idx)
 	{
 		return reinterpret_cast<T*>(this)[idx];
@@ -264,6 +234,36 @@ namespace librender
 	TVec2<T> fract(TVec2<T> vec)
 	{
 		return vec - floor(vec);
+	}
+
+	template<typename T>
+	TVec2<T> normalize(TVec2<T> vec)
+	{
+		return vec / length(vec);
+	}
+
+	template<typename T>
+	TVec2<T> reflect(TVec2<T> vec1, TVec2<T> vec2)
+	{
+		return vec1 - vec2 * 2 * dot(vec1, vec2);
+	}
+
+	template<typename T>
+	T dot(TVec2<T> vec1, TVec2<T> vec2)
+	{
+		return vec1.x * vec2.x + vec1.y;
+	}
+
+	template<typename T>
+	T angle(TVec2<T> vec1, TVec2<T> vec2)
+	{
+		return acos(dot(vec1, vec2) / length(vec1) / length(vec2));
+	}
+
+	template<typename T>
+	T length(TVec2<T> vec)
+	{
+		return sqrt(dot(vec, vec));
 	}
 
 }

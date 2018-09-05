@@ -22,11 +22,6 @@ namespace librender
 		TVec4(T xyz, T w) : x(xyz), y(xyz), z(xyz), w(w) {};
 		TVec4(T xyzw) : x(xyzw), y(xyzw), z(xyzw), w(xyzw) {};
 		TVec4() : x(0), y(0), z(0), w(0) {};
-		TVec4<T> reflect(TVec4<T> vec);
-		T dot(TVec4 vec);
-		T angle(TVec4 vec);
-		T length();
-		void normalize();
 		TVec3<T> xyz();
 		TVec3<T> rgb();
 		TVec2<T> xy();
@@ -102,6 +97,17 @@ namespace librender
 	TVec4<T> ceil(TVec4<T> vec);
 	template <typename T>
 	TVec4<T> fract(TVec4<T> vec);
+
+	template<typename T>
+	TVec4<T> normalize(TVec4<T> vec);
+	template<typename T>
+	TVec4<T> reflect(TVec4<T> vec1, TVec4<T> vec2);
+	template<typename T>
+	T dot(TVec4<T> vec1, TVec4<T> vec2);
+	template<typename T>
+	T angle(TVec4<T> vec1, TVec4<T> vec2);
+	template<typename T>
+	T length(TVec4<T> vec);
 
 	typedef TVec4<float> Vec4;
 

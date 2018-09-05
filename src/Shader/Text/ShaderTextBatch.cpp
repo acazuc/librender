@@ -48,7 +48,7 @@ namespace librender
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, count * sizeof(*this->texCoords), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, count * sizeof(*this->texCoords), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderTextBatch::updateVertexes()
@@ -64,7 +64,7 @@ namespace librender
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, count * sizeof(*this->vertexes), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, count * sizeof(*this->vertexes), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderTextBatch::updateIndices()
@@ -82,7 +82,7 @@ namespace librender
 			indices[count++] = currentIndice + 3;
 			currentIndice += this->entries[i]->getVerticesNumber();
 		}
-		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, count * sizeof(*indices), GL_UNSIGNED_INT, 1, GL_DYNAMIC_DRAW);
+		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, count * sizeof(*indices), GL_DYNAMIC_DRAW);
 		delete[] (indices);
 	}
 
@@ -99,7 +99,7 @@ namespace librender
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, count * sizeof(*this->colors), GL_FLOAT, 4, GL_DYNAMIC_DRAW);
+		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, count * sizeof(*this->colors), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderTextBatch::resize()
@@ -141,9 +141,9 @@ namespace librender
 		this->changes = 0;
 		this->font->bind();
 		this->program.program->use();
-		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
-		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);
-		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer);
+		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer, 2, GL_FLOAT);
+		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer, 2, GL_FLOAT);
+		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer, 4, GL_FLOAT);
 		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
 		Mat4 mvp(viewProj * model);
 		this->program.mvpLocation->setMat4f(mvp);

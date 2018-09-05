@@ -13,6 +13,7 @@ namespace librender
 	
 	public:
 		TVec4<T> data[4];
+		TMat4(TVec4<T> vec1, TVec4<T> vec2, TVec4<T> vec3, TVec4<T> vec4);
 		TMat4(TMat3<T> vec);
 		TMat4(TVec4<T> vec);
 		TMat4(T val);
@@ -36,6 +37,11 @@ namespace librender
 	TVec4<T> operator * (TMat4<T> mat, TVec4<T> vec);
 	template <typename T>
 	TVec4<T> operator * (TVec4<T> vec, TMat4<T> mat);
+
+	template <typename T>
+	TMat4<T> transpose(TMat4<T> mat);
+	template <typename T>
+	TMat4<T> inverse(TMat4<T> mat);
 
 	typedef TMat4<float> Mat4;
 

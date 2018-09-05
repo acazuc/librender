@@ -26,11 +26,11 @@ namespace librender
 		uint8_t changes = this->updatesRequired;
 		update();
 		if (changes & SHADER_TEXT_UPDATE_TEX_COORDS)
-			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, sizeof(*this->texCoords) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, sizeof(*this->texCoords) * this->verticesNumber, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_TEXT_UPDATE_VERTEXES)
-			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, sizeof(*this->vertexes) * this->verticesNumber, GL_FLOAT, 2, GL_DYNAMIC_DRAW);
+			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, sizeof(*this->vertexes) * this->verticesNumber, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_TEXT_UPDATE_COLORS)
-			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber, GL_FLOAT, 4, GL_DYNAMIC_DRAW);
+			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber, GL_DYNAMIC_DRAW);
 		if (this->verticesNumber != this->oldVerticesNumber)
 		{
 			this->oldVerticesNumber = this->verticesNumber;
@@ -47,14 +47,15 @@ namespace librender
 				indices[pos++] = current + 3;
 				current += 4;
 			}
-			this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, sizeof(*indices) * this->verticesNumber / 4 * 6, GL_UNSIGNED_INT, 1, GL_DYNAMIC_DRAW);
+			this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, sizeof(*indices) * this->verticesNumber / 4 * 6, GL_DYNAMIC_DRAW);
 			delete[] (indices);
 		}
 		this->program.program->use();
+		glActiveTexture(GL_TEXTURE0);
 		this->font->bind();
-		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
-		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer);
-		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer);
+		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer, 2, GL_FLOAT);
+		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer, 2, GL_FLOAT);
+		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer, 4, GL_FLOAT);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 		Mat4 model(Mat4::translate(Mat4(1), Vec3(this->pos, 0)));
 		model = Mat4::scale(model, Vec3(this->scale, 1));

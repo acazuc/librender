@@ -19,7 +19,7 @@ namespace librender
 	{
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		this->semiDiag = std::sqrt(this->width * this->width + this->height * this->height);
-		this->isFullscreen = false;
+		this->fullscreen = false;
 		if (!(this->window = glfwCreateWindow(this->width, this->height, title.c_str(), nullptr, nullptr)))
 			throw std::exception();
 		glfwMakeContextCurrent(this->window);
@@ -73,7 +73,6 @@ namespace librender
 	void Window::show()
 	{
 		glfwShowWindow(this->window);
-		updateGLContext();
 	}
 
 	void Window::setTitle(std::string &title)
@@ -89,30 +88,28 @@ namespace librender
 
 	void Window::enableFullscreen()
 	{
-		if (!this->isFullscreen)
-		{
-			GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-			this->isFullscreen = true;
-			this->prevWidth = this->width;
-			this->prevHeight = this->height;
-			glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-		}
+		if (this->fullscreen)
+			return;
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+		this->fullscreen = true;
+		this->prevWidth = this->width;
+		this->prevHeight = this->height;
+		glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 	}
 
 	void Window::disableFullscreen()
 	{
-		if (this->isFullscreen)
-		{
-			setBorders(true);
-			glfwSetWindowMonitor(window, nullptr, 0, 0, this->prevWidth, this->prevHeight, GLFW_DONT_CARE);
-			this->isFullscreen = false;
-		}
+		if (!this->fullscreen)
+			return;
+		setBorders(true);
+		glfwSetWindowMonitor(window, nullptr, 0, 0, this->prevWidth, this->prevHeight, GLFW_DONT_CARE);
+		this->fullscreen = false;
 	}
 
 	void Window::switchFullscreen()
 	{
-		if (this->isFullscreen)
+		if (this->fullscreen)
 			disableFullscreen();
 		else
 			enableFullscreen();
@@ -128,17 +125,6 @@ namespace librender
 		this->semiDiag = std::sqrt(width * width + height * height) / 2;
 		this->width = width;
 		this->height = height;
-		updateGLContext();
-	}
-
-	void Window::updateGLContext()
-	{
-		glViewport(0, 0, this->width, this->height);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(0, this->width, this->height, 0, 0, 1);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
 	}
 
 	bool Window::isButtonDown(int button)
@@ -186,11 +172,6 @@ namespace librender
 	void Window::setVSync(bool vsync)
 	{
 		glfwSwapInterval(vsync ? 1 : 0);
-	}
-
-	void Window::clearScreen()
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
 	void Window::update()

@@ -26,8 +26,8 @@ namespace librender
 		void attachShader(VertexShader *vertexShader);
 		void detachShader(VertexShader *vertexShader);
 		void link();
-		ProgramLocation *getUniformLocation(const char *name);
-		ProgramLocation *getAttribLocation(const char *name);
+		ProgramLocation getUniformLocation(const char *name);
+		ProgramLocation getAttribLocation(const char *name);
 		void use();
 		inline GLuint getId() {return this->id;};
 

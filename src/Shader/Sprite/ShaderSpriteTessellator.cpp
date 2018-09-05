@@ -26,16 +26,16 @@ namespace librender
 			return;
 		if (this->changed)
 		{
-			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords.data(), sizeof(Vec2) * this->texCoords.size(), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
-			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes.data(), sizeof(Vec2) * this->vertexes.size(), GL_FLOAT, 2, GL_DYNAMIC_DRAW);
-			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors.data(), sizeof(Vec4) * this->colors.size(), GL_FLOAT, 4, GL_DYNAMIC_DRAW);
-			this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, this->indices.data(), sizeof(GLuint) * this->indices.size(), GL_UNSIGNED_INT, 1, GL_DYNAMIC_DRAW);
+			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords.data(), sizeof(Vec2) * this->texCoords.size(), GL_DYNAMIC_DRAW);
+			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes.data(), sizeof(Vec2) * this->vertexes.size(), GL_DYNAMIC_DRAW);
+			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors.data(), sizeof(Vec4) * this->colors.size(), GL_DYNAMIC_DRAW);
+			this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, this->indices.data(), sizeof(GLuint) * this->indices.size(), GL_DYNAMIC_DRAW);
 		}
 		this->texture->bind();
 		this->program->use();
-		this->texCoordsLocation->setVertexBuffer(this->texCoordsBuffer);
-		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer);
-		this->colorsLocation->setVertexBuffer(this->colorsBuffer);
+		this->texCoordsLocation->setVertexBuffer(this->texCoordsBuffer, 2, GL_FLOAT);
+		this->vertexesLocation->setVertexBuffer(this->vertexesBuffer, 2, GL_FLOAT);
+		this->colorsLocation->setVertexBuffer(this->colorsBuffer, 4, GL_FLOAT);
 		this->indicesBuffer.bind(GL_ELEMENT_ARRAY_BUFFER);
 		Mat4 model(1);
 		Mat4 mvp(viewProj * model);
