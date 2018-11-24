@@ -18,14 +18,14 @@ namespace librender
 		_load();
 	}
 
-	FontModel::FontModel(char *ttfData, size_t ttfLen)
+	FontModel::FontModel(char *data, size_t len)
 	{
 		if (!FontModel::ftLib)
 		{
 			if (FT_Init_FreeType(&FontModel::ftLib))
 				throw std::exception();
 		}
-		if (FT_New_Memory_Face(FontModel::ftLib, reinterpret_cast<FT_Byte*>(ttfData), ttfLen, 0, &this->ftFace))
+		if (FT_New_Memory_Face(FontModel::ftLib, reinterpret_cast<FT_Byte*>(data), len, 0, &this->ftFace))
 			throw std::exception();
 		_load();
 	}

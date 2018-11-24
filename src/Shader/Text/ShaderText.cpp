@@ -26,11 +26,11 @@ namespace librender
 		uint8_t changes = this->updatesRequired;
 		update();
 		if (changes & SHADER_TEXT_UPDATE_TEX_COORDS)
-			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, sizeof(*this->texCoords) * this->verticesNumber, GL_DYNAMIC_DRAW);
+			this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords.data(), sizeof(*this->texCoords.data()) * this->verticesNumber, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_TEXT_UPDATE_VERTEXES)
-			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, sizeof(*this->vertexes) * this->verticesNumber, GL_DYNAMIC_DRAW);
+			this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes.data(), sizeof(*this->vertexes.data()) * this->verticesNumber, GL_DYNAMIC_DRAW);
 		if (changes & SHADER_TEXT_UPDATE_COLORS)
-			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, sizeof(*this->colors) * this->verticesNumber, GL_DYNAMIC_DRAW);
+			this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors.data(), sizeof(*this->colors.data()) * this->verticesNumber, GL_DYNAMIC_DRAW);
 		if (this->verticesNumber != this->oldVerticesNumber)
 		{
 			this->oldVerticesNumber = this->verticesNumber;

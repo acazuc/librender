@@ -28,8 +28,8 @@ namespace librender
 	Color Color::DARKPURPLE(.5, 0, .5);
 	Color Color::LIGHTPURPLE(1, 0, 1);
 
-	Color::Color(Color &color)
-	: Vec4(color.r, color.g, color.b, color.a)
+	Color::Color()
+	: Vec4(0)
 	{
 		//Empty
 	}
@@ -41,7 +41,7 @@ namespace librender
 	}
 
 	Color::Color(float rgb, float a)
-	: Vec4(rgb, a)
+	: Vec4(Vec3(rgb), a)
 	{
 		//Empty
 	}

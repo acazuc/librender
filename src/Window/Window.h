@@ -4,8 +4,8 @@
 # include "./EventsManager.h"
 # include <string>
 
-class GLFWcursor;
-class GLFWwindow;
+struct GLFWcursor;
+struct GLFWwindow;
 
 namespace librender
 {

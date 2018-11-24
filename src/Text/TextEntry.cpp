@@ -22,7 +22,6 @@ namespace librender
 	, shadowY(0)
 	, height(0)
 	, width(0)
-	, opacity(1)
 	, mustCalcHeight(false)
 	, mustCalcWidth(false)
 	{
@@ -40,8 +39,8 @@ namespace librender
 			return 0;
 		if (this->shadowSize == 1)
 			return 1;
-		int16_t tmp = this->shadowSize - 1;
-		int16_t tmp2 = 1 + tmp * 2;
+		int32_t tmp = this->shadowSize - 1;
+		int32_t tmp2 = 1 + tmp * 2;
 		return tmp2 * tmp2 - 1 - 4 * tmp;
 	}
 
@@ -54,9 +53,10 @@ namespace librender
 			uint32_t character = utf8::next(iter, end);
 			getFont()->glChar(character, reinterpret_cast<float*>(&texCoords[i * 4]));
 		}
-		uint16_t shadowLen = getShadowLen();
+		uint32_t shadowLen = getShadowLen();
+		uint32_t copyCount = this->charsNumber * 4 * sizeof(*texCoords);
 		for (uint32_t i = 0; i < shadowLen; ++i)
-			std::memcpy(&texCoords[this->charsNumber * 4 * (i + 1)], &texCoords[0], this->charsNumber * 4 * sizeof(*texCoords));
+			std::memcpy(&texCoords[this->charsNumber * 4 * (i + 1)], &texCoords[0], copyCount);
 	}
 
 	void TextEntry::fillVertexes(Vec2 *vertexes)
@@ -112,15 +112,16 @@ namespace librender
 				x += charWidth;
 			}
 		}
-		if (this->shadowSize <= 0)
+		if (!shadowLen)
 			return;
 		uint32_t tmp = 1 + (this->shadowSize - 1) * 2;
 		uint8_t arrCount = 0;
 		uint32_t tmp2 = shadowLen * this->charsNumber * 4;
-		for (uint8_t i = 0; i < tmp * tmp; ++i)
+		uint32_t tmptmp = tmp * tmp;
+		for (uint32_t i = 0; i < tmptmp; ++i)
 		{
-			int8_t sx = i % tmp - (this->shadowSize - 1);
-			int8_t sy = i / tmp - (this->shadowSize - 1);
+			int32_t sx = i % tmp - (this->shadowSize - 1);
+			int32_t sy = i / tmp - (this->shadowSize - 1);
 			if (std::abs(sx) == std::abs(sy) && this->shadowSize != 1)
 				continue;
 			uint32_t index = this->charsNumber * 4 * arrCount;
@@ -135,23 +136,16 @@ namespace librender
 	{
 		uint32_t shadowLen = getShadowLen();
 		{
-			float tab[4] = {this->color.r, this->color.g, this->color.b, this->color.a * this->opacity};
 			int32_t tmp = shadowLen * this->charsNumber * 4;
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-			{
-				std::memcpy(&colors[tmp], tab, sizeof(tab));
-				++tmp;
-			}
+				colors[tmp++] = this->color;
 		}
-		if (this->shadowSize <= 0)
+		if (!shadowLen)
 			return;
-		{
-			float tab[4] = {this->shadowColor.r, this->shadowColor.g, this->shadowColor.b, this->shadowColor.a * this->opacity};
-			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-				std::memcpy(&colors[i], tab, sizeof(tab));
-		}
+		for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
+			colors[i] = this->shadowColor;
 		for (uint32_t i = 1; i < shadowLen; ++i)
-			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * sizeof(*colors));
+			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * sizeof(*this->colors.data()));
 	}
 
 	void TextEntry::requireUpdates(uint8_t update)
@@ -184,7 +178,7 @@ namespace librender
 		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_COLORS);
 		this->charsNumber = len;
 		this->verticesNumber = this->charsNumber * 4;
-		this->verticesNumber *= (1 + getShadowLen());
+		this->verticesNumber *= 1 + getShadowLen();
 		this->texCoords.resize(this->verticesNumber);
 		this->vertexes.resize(this->verticesNumber);
 		this->colors.resize(this->verticesNumber);
@@ -201,17 +195,17 @@ namespace librender
 		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS);
 	}
 
-	void TextEntry::setShadowColor(Color &color)
+	void TextEntry::setShadowColor(Color color)
 	{
-		if (!color.compare(this->shadowColor))
+		if (color == this->shadowColor)
 			return;
 		this->shadowColor = color;
 		requireUpdates(TEXT_UPDATE_COLORS);
 	}
 
-	void TextEntry::setColor(Color &color)
+	void TextEntry::setColor(Color color)
 	{
-		if (!color.compare(this->color))
+		if (color == this->color)
 			return;
 		this->color = color;
 		requireUpdates(TEXT_UPDATE_COLORS);
@@ -240,14 +234,6 @@ namespace librender
 			return;
 		this->shadowY = shadowY;
 		requireUpdates(TEXT_UPDATE_VERTEXES);
-	}
-
-	void TextEntry::setOpacity(float opacity)
-	{
-		if (this->opacity == opacity)
-			return;
-		this->opacity = opacity;
-		requireUpdates(TEXT_UPDATE_COLORS);
 	}
 
 	void TextEntry::setScaleX(float scaleX)

@@ -35,7 +35,7 @@ namespace librender
 		this->updatesRequired = 0;
 	}
 
-	void ShaderSpriteEntry::setColor(Color &color)
+	void ShaderSpriteEntry::setColor(Color color)
 	{
 		setTopLeftColor(color);
 		setTopRightColor(color);
@@ -43,49 +43,49 @@ namespace librender
 		setBotRightColor(color);
 	}
 
-	void ShaderSpriteEntry::setTopColor(Color &color)
+	void ShaderSpriteEntry::setTopColor(Color color)
 	{
 		setTopLeftColor(color);
 		setTopRightColor(color);
 	}
 
-	void ShaderSpriteEntry::setBotColor(Color &color)
+	void ShaderSpriteEntry::setBotColor(Color color)
 	{
 		setBotLeftColor(color);
 		setBotRightColor(color);
 	}
 
-	void ShaderSpriteEntry::setLeftColor(Color &color)
+	void ShaderSpriteEntry::setLeftColor(Color color)
 	{
 		setTopLeftColor(color);
 		setBotLeftColor(color);
 	}
 	
-	void ShaderSpriteEntry::setRightColor(Color &color)
+	void ShaderSpriteEntry::setRightColor(Color color)
 	{
 		setTopRightColor(color);
 		setBotRightColor(color);
 	}
 
-	void ShaderSpriteEntry::setTopLeftColor(Color &color)
+	void ShaderSpriteEntry::setTopLeftColor(Color color)
 	{
 		std::memcpy(&this->colors[0], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
-	void ShaderSpriteEntry::setTopRightColor(Color &color)
+	void ShaderSpriteEntry::setTopRightColor(Color color)
 	{
 		std::memcpy(&this->colors[1], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
-	void ShaderSpriteEntry::setBotLeftColor(Color &color)
+	void ShaderSpriteEntry::setBotLeftColor(Color color)
 	{
 		std::memcpy(&this->colors[2], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;
 	}
 
-	void ShaderSpriteEntry::setBotRightColor(Color &color)
+	void ShaderSpriteEntry::setBotRightColor(Color color)
 	{
 		std::memcpy(&this->colors[3], &color, sizeof(*this->colors.data()));
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_COLORS;

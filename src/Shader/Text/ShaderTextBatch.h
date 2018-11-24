@@ -18,9 +18,9 @@ namespace librender
 		VertexBuffer vertexesBuffer;
 		VertexBuffer indicesBuffer;
 		VertexBuffer colorsBuffer;
-		Vec2 *texCoords;
-		Vec2 *vertexes;
-		Vec4 *colors;
+		std::vector<Vec2> texCoords;
+		std::vector<Vec2> vertexes;
+		std::vector<Vec4> colors;
 		Font *font;
 		Vec2 pos;
 		uint32_t verticesNumber;

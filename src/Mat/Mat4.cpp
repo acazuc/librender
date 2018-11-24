@@ -70,15 +70,10 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat4<T> rotate(
-				TVec4<T>(T(1), T( 0), T(0), T(0)),
-				TVec4<T>(T(0),    c ,   s , T(0)),
-				TVec4<T>(T(0),   -s ,   c , T(0)),
-				TVec4<T>(T(0), T( 0), T(0), T(1)));
 		return TMat4<T>(
 				mat[0],
-				mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2],
-				mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2],
+				mat[1] *  c + mat[2] * s,
+				mat[1] * -s + mat[2] * c,
 				mat[3]);
 	}
 
@@ -87,15 +82,10 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat4<T> rotate(
-				TVec4<T>(  c , T(0),   -s , T(0)),
-				TVec4<T>(T(0), T(1), T( 0), T(0)),
-				TVec4<T>(  s , T(0),    c , T(0)),
-				TVec4<T>(T(0), T(0), T( 0), T(1)));
 		return TMat4<T>(
-				mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2],
+				mat[0] * c + mat[2] * -s,
 				mat[1],
-				mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2],
+				mat[0] * s + mat[2] *  c,
 				mat[3]);
 	}
 
@@ -104,14 +94,9 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat4<T> rotate(
-				TVec4<T>(   c ,   s , T(0), T(0)),
-				TVec4<T>(  -s ,   c , T(0), T(0)),
-				TVec4<T>(T( 0), T(0), T(1), T(0)),
-				TVec4<T>(T( 0), T(0), T(0), T(1)));
 		return TMat4<T>(
-				mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2],
-				mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2],
+				mat[0] *  c + mat[1] * s,
+				mat[0] * -s + mat[1] * c,
 				mat[2],
 				mat[3]);
 	}
@@ -234,31 +219,31 @@ namespace librender
 		T v0113(mat[0][1] * mat[1][3] - mat[1][1] * mat[0][3]);
 		T v0112(mat[0][1] * mat[1][2] - mat[1][1] * mat[0][2]);
 		T deter(
-			 mat[0][0] * (mat[1][1] * v2323 - mat[2][1] * v1323 + mat[3][1] * v1223)
+			+mat[0][0] * (mat[1][1] * v2323 - mat[2][1] * v1323 + mat[3][1] * v1223)
 			-mat[1][0] * (mat[0][1] * v2323 - mat[2][1] * v0323 + mat[3][1] * v0223)
 			+mat[2][0] * (mat[0][1] * v1323 - mat[1][1] * v0323 + mat[3][1] * v0123)
 			-mat[3][0] * (mat[0][1] * v1223 - mat[1][1] * v0223 + mat[2][1] * v0123));
 		return TMat4<T>(
 			TVec4<T>(
-				 (mat[1][1] * v2323 - mat[2][1] * v1323 + mat[3][1] * v1223) / deter,
+				+(mat[1][1] * v2323 - mat[2][1] * v1323 + mat[3][1] * v1223) / deter,
 				-(mat[0][1] * v2323 - mat[2][1] * v0323 + mat[3][1] * v0223) / deter,
-				 (mat[0][1] * v1323 - mat[1][1] * v0323 + mat[3][1] * v0123) / deter,
+				+(mat[0][1] * v1323 - mat[1][1] * v0323 + mat[3][1] * v0123) / deter,
 				-(mat[0][1] * v1223 - mat[1][1] * v0223 + mat[2][1] * v0123) / deter),
 			TVec4<T>(
 				-(mat[1][0] * v2323 - mat[2][0] * v1323 + mat[3][0] * v1223) / deter,
-				 (mat[0][0] * v2323 - mat[2][0] * v0323 + mat[3][0] * v0223) / deter,
+				+(mat[0][0] * v2323 - mat[2][0] * v0323 + mat[3][0] * v0223) / deter,
 				-(mat[0][0] * v1323 - mat[1][0] * v0323 + mat[3][0] * v0123) / deter,
-				 (mat[0][0] * v1223 - mat[1][0] * v0223 + mat[2][0] * v0123) / deter),
+				+(mat[0][0] * v1223 - mat[1][0] * v0223 + mat[2][0] * v0123) / deter),
 			TVec4<T>(
-				 (mat[1][0] * v2313 - mat[2][0] * v1313 + mat[3][0] * v1213) / deter,
+				+(mat[1][0] * v2313 - mat[2][0] * v1313 + mat[3][0] * v1213) / deter,
 				-(mat[0][0] * v2313 - mat[2][0] * v0313 + mat[3][0] * v0213) / deter,
-				 (mat[0][0] * v1313 - mat[1][0] * v0313 + mat[3][0] * v0113) / deter,
+				+(mat[0][0] * v1313 - mat[1][0] * v0313 + mat[3][0] * v0113) / deter,
 				-(mat[0][0] * v1213 - mat[1][0] * v0213 + mat[2][0] * v0113) / deter),
 			TVec4<T>(
 				-(mat[1][0] * v2312 - mat[2][0] * v1312 + mat[3][0] * v1212) / deter,
-				 (mat[0][0] * v2312 - mat[2][0] * v0312 + mat[3][0] * v0212) / deter,
+				+(mat[0][0] * v2312 - mat[2][0] * v0312 + mat[3][0] * v0212) / deter,
 				-(mat[0][0] * v1312 - mat[1][0] * v0312 + mat[3][0] * v0112) / deter,
-				 (mat[0][0] * v1212 - mat[1][0] * v0212 + mat[2][0] * v0112) / deter));
+				+(mat[0][0] * v1212 - mat[1][0] * v0212 + mat[2][0] * v0112) / deter));
 	}
 
 }

@@ -4,29 +4,29 @@
 namespace librender
 {
 
-	typedef struct SKeyEvent
+	struct KeyEvent
 	{
 		int key;
 		int scancode;
 		int mods;
-	} KeyEvent;
+	};
 
-	typedef struct SCharEvent
+	struct CharEvent
 	{
 		char *charcode;
-	} CharEvent;
+	};
 
-	typedef struct SMouseEvent
+	struct MouseEvent
 	{
 		int button;
 		int mods;
-	} MouseEvent;
+	};
 
-	typedef struct SScrollEvent
+	struct ScrollEvent
 	{
 		int xScroll;
 		int yScroll;
-	} ScrollEvent;
+	};
 
 }
 

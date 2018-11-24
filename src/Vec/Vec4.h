@@ -15,13 +15,15 @@ namespace librender
 		union {T y, g;};
 		union {T z, b;};
 		union {T w, a;};
-		TVec4(TVec2<T> vec1, TVec2<T> vec2) : x(vec1.x), y(vec1.y), z(vec2.x), w(vec2.y) {};
-		TVec4(TVec2<T> vec, T z, T w) : x(vec.x), y(vec.y), z(z), w(w) {};
-		TVec4(TVec3<T> vec, T w) : x(vec.x), y(vec.y), z(vec.z), w(w) {};
-		TVec4(T x, T y, T z, T w) : x(x), y(y), z(z), w(w) {};
-		TVec4(T xyz, T w) : x(xyz), y(xyz), z(xyz), w(w) {};
-		TVec4(T xyzw) : x(xyzw), y(xyzw), z(xyzw), w(xyzw) {};
-		TVec4() : x(0), y(0), z(0), w(0) {};
+		TVec4(TVec2<T> xy, TVec2<T> zw);
+		TVec4(TVec2<T> xy, T z, T w);
+		TVec4(T x, TVec2<T> yz, T w);
+		TVec4(T x, T y, TVec2<T> zw);
+		TVec4(TVec3<T> xyz, T w);
+		TVec4(T x, TVec3<T> yzw);
+		TVec4(T x, T y, T z, T w);
+		TVec4(T xyzw);
+		TVec4();
 		TVec3<T> xyz();
 		TVec3<T> rgb();
 		TVec2<T> xy();
@@ -81,12 +83,14 @@ namespace librender
 	TVec4<T> max(T val, TVec4<T> vec);
 
 	template <typename T>
-	TVec4<T> clamp(TVec4<T> vec, T min, T max);
+	TVec4<T> clamp(TVec4<T> vec, T vmin, T vmax);
 	template <typename T>
-	TVec4<T> clamp(TVec4<T> vec, TVec4<T> min, TVec4<T> max);
+	TVec4<T> clamp(TVec4<T> vec, TVec4<T> vmin, TVec4<T> vmax);
 
 	template <typename T>
 	TVec4<T> mix(TVec4<T> vec1, TVec4<T> vec2, T per);
+	template <typename T>
+	TVec4<T> mod(TVec4<T> vec1, TVec4<T> vec2);
 	template <typename T>
 	TVec4<T> mod(TVec4<T> vec, T val);
 	template <typename T>

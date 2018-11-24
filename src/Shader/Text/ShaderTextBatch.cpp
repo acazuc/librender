@@ -7,10 +7,7 @@ namespace librender
 {
 
 	ShaderTextBatch::ShaderTextBatch()
-	: texCoords(nullptr)
-	, vertexes(nullptr)
-	, colors(nullptr)
-	, font(nullptr)
+	: font(nullptr)
 	, pos(0)
 	, verticesNumber(0)
 	, changes(0)
@@ -23,9 +20,6 @@ namespace librender
 	{
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->setParent(nullptr);
-		delete[] (this->texCoords);
-		delete[] (this->vertexes);
-		delete[] (this->colors);
 	}
 
 	void ShaderTextBatch::updateVerticesNumber()
@@ -43,12 +37,12 @@ namespace librender
 			ShaderTextBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SHADER_TEXT_UPDATE_TEX_COORDS)
 			{
-				std::memcpy(&this->texCoords[count], entry->getTexCoords(), entry->getVerticesNumber() * sizeof(*this->texCoords));
+				std::memcpy(&this->texCoords[count], entry->getTexCoords().data(), entry->getVerticesNumber() * sizeof(*this->texCoords.data()));
 				entry->removeChanges(SHADER_TEXT_UPDATE_TEX_COORDS);
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords, count * sizeof(*this->texCoords), GL_DYNAMIC_DRAW);
+		this->texCoordsBuffer.setData(GL_ARRAY_BUFFER, this->texCoords.data(), count * sizeof(*this->texCoords.data()), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderTextBatch::updateVertexes()
@@ -59,17 +53,17 @@ namespace librender
 			ShaderTextBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SHADER_TEXT_UPDATE_VERTEXES)
 			{
-				std::memcpy(&this->vertexes[count], entry->getVertexes(), entry->getVerticesNumber() * sizeof(*this->vertexes));
+				std::memcpy(&this->vertexes[count], entry->getVertexes().data(), entry->getVerticesNumber() * sizeof(*this->vertexes.data()));
 				entry->removeChanges(SHADER_TEXT_UPDATE_VERTEXES);
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes, count * sizeof(*this->vertexes), GL_DYNAMIC_DRAW);
+		this->vertexesBuffer.setData(GL_ARRAY_BUFFER, this->vertexes.data(), count * sizeof(*this->vertexes.data()), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderTextBatch::updateIndices()
 	{
-		GLuint *indices = new GLuint[this->verticesNumber / 4 * 6];
+		std::vector<GLint> indices(this->verticesNumber / 4 * 6);
 		uint32_t count = 0;
 		GLuint currentIndice = 0;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
@@ -82,8 +76,7 @@ namespace librender
 			indices[count++] = currentIndice + 3;
 			currentIndice += this->entries[i]->getVerticesNumber();
 		}
-		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, count * sizeof(*indices), GL_DYNAMIC_DRAW);
-		delete[] (indices);
+		this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices.data(), count * sizeof(*indices.data()), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderTextBatch::updateColors()
@@ -94,12 +87,12 @@ namespace librender
 			ShaderTextBatchEntry *entry = this->entries[i];
 			if (this->mustResize || entry->getChanges() & SHADER_TEXT_UPDATE_COLORS)
 			{
-				std::memcpy(&this->colors[count], entry->getColors(), entry->getVerticesNumber() * sizeof(*this->colors));
+				std::memcpy(&this->colors[count], entry->getColors().data(), entry->getVerticesNumber() * sizeof(*this->colors.data()));
 				entry->removeChanges(SHADER_TEXT_UPDATE_COLORS);
 			}
 			count += entry->getVerticesNumber();
 		}
-		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors, count * sizeof(*this->colors), GL_DYNAMIC_DRAW);
+		this->colorsBuffer.setData(GL_ARRAY_BUFFER, this->colors.data(), count * sizeof(*this->colors.data()), GL_DYNAMIC_DRAW);
 	}
 
 	void ShaderTextBatch::resize()
@@ -107,12 +100,9 @@ namespace librender
 		updateVerticesNumber();
 		if (!this->verticesNumber)
 			return;
-		delete[] (this->texCoords);
-		this->texCoords = new Vec2[this->verticesNumber];
-		delete[] (this->vertexes);
-		this->vertexes = new Vec2[this->verticesNumber];
-		delete[] (this->colors);
-		this->colors = new Vec4[this->verticesNumber];
+		this->texCoords.resize(this->verticesNumber);
+		this->vertexes.resize(this->verticesNumber);
+		this->colors.resize(this->verticesNumber);
 	}
 
 	void ShaderTextBatch::draw(Mat4 &viewProj)

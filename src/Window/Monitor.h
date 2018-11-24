@@ -6,7 +6,7 @@
 # include <string>
 # include <vector>
 
-class GLFWmonitor;
+struct GLFWmonitor;
 
 namespace librender
 {

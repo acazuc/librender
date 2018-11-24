@@ -10,9 +10,9 @@ namespace librender
 	public:
 		union {T x, u;};
 		union {T y, v;};
-		TVec2<T>(T x, T y) : x(x), y(y) {};
-		TVec2<T>(T xy) : x(xy), y(xy) {};
-		TVec2<T>() : x(0), y(0) {};
+		TVec2<T>(T x, T y);
+		TVec2<T>(T xy);
+		TVec2<T>();
 		T &operator [] (int idx);
 		TVec2<T> operator - ();
 		TVec2<T> operator += (T val);
@@ -68,12 +68,14 @@ namespace librender
 	TVec2<T> max(T val, TVec2<T> vec);
 
 	template <typename T>
-	TVec2<T> clamp(TVec2<T> vec, T min, T max);
+	TVec2<T> clamp(TVec2<T> vec, T vmin, T vmax);
 	template <typename T>
-	TVec2<T> clamp(TVec2<T> vec, TVec2<T> min, TVec2<T> max);
+	TVec2<T> clamp(TVec2<T> vec, TVec2<T> vmin, TVec2<T> vmax);
 
 	template <typename T>
 	TVec2<T> mix(TVec2<T> vec1, TVec2<T> vec2, T per);
+	template <typename T>
+	TVec2<T> mod(TVec2<T> vec1, TVec2<T> vec2);
 	template <typename T>
 	TVec2<T> mod(TVec2<T> vec, T val);
 	template <typename T>

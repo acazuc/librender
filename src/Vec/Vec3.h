@@ -13,10 +13,11 @@ namespace librender
 		union {T x, r;};
 		union {T y, g;};
 		union {T z, b;};
-		TVec3<T>(TVec2<T> vec, T z) : x(vec.x), y(vec.y), z(z) {};
-		TVec3<T>(T x, T y, T z) : x(x), y(y), z(z) {};
-		TVec3<T>(T xyz) : x(xyz), y(xyz), z(xyz) {};
-		TVec3<T>() : x(0), y(0), z(0) {};
+		TVec3<T>(TVec2<T> xy, T z);
+		TVec3<T>(T x, TVec2<T> yz);
+		TVec3<T>(T x, T y, T z);
+		TVec3<T>(T xyz);
+		TVec3<T>();
 		T &operator [] (int idx);
 		TVec3<T> operator - ();
 		TVec3<T> operator += (T val);
@@ -72,12 +73,14 @@ namespace librender
 	TVec3<T> max(T val, TVec3<T> vec);
 
 	template <typename T>
-	TVec3<T> clamp(TVec3<T> vec, T min, T max);
+	TVec3<T> clamp(TVec3<T> vec, T vmin, T vmax);
 	template <typename T>
-	TVec3<T> clamp(TVec3<T> vec, TVec3<T> min, TVec3<T> max);
+	TVec3<T> clamp(TVec3<T> vec, TVec3<T> vmin, TVec3<T> vmax);
 
 	template <typename T>
 	TVec3<T> mix(TVec3<T> vec1, TVec3<T> vec2, T per);
+	template <typename T>
+	TVec3<T> mod(TVec3<T> vec1, TVec3<T> vec2);
 	template <typename T>
 	TVec3<T> mod(TVec3<T> vec, T val);
 	template <typename T>

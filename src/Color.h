@@ -10,7 +10,7 @@ namespace librender
 	{
 
 	public:
-		Color(Color &color);
+		Color();
 		Color(float r, float g, float b, float a = 1);
 		Color(float rgb, float a = 1);
 		inline void set(float r, float g, float b, float a = 1) {this->r = r;this->g = g;this->b = b;this->a = a;};

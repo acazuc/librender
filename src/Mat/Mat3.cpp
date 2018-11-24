@@ -62,14 +62,10 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat3<T> rotate(
-				TVec3<T>(T(1), T( 0), T(0)),
-				TVec3<T>(T(0),    c ,   s ),
-				TVec3<T>(T(0),   -s ,   c ));
 		return TMat3<T>(
 				mat[0],
-				mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2],
-				mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2]);
+				mat[1] *  c + mat[2] * s,
+				mat[1] * -s + mat[2] * c);
 	}
 
 	template <typename T>
@@ -77,14 +73,10 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat3<T> rotate(
-				TVec3<T>(  c , T(0),   -s ),
-				TVec3<T>(T(0), T(1), T( 0)),
-				TVec3<T>(  s , T(0),    c ));
 		return TMat3<T>(
-				mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2],
+				mat[0] * c + mat[2] * -s,
 				mat[1],
-				mat[0] * rotate[2][0] + mat[1] * rotate[2][1] + mat[2] * rotate[2][2]);
+				mat[0] * s + mat[2] *  c);
 	}
 
 	template <typename T>
@@ -92,13 +84,9 @@ namespace librender
 	{
 		T c(cos(angle));
 		T s(sin(angle));
-		TMat3<T> rotate(
-				TVec3<T>(   c ,   s , T(0)),
-				TVec3<T>(  -s ,   c , T(0)),
-				TVec3<T>(T( 0), T(0), T(1)));
 		return TMat3<T>(
-				mat[0] * rotate[0][0] + mat[1] * rotate[0][1] + mat[2] * rotate[0][2],
-				mat[0] * rotate[1][0] + mat[1] * rotate[1][1] + mat[2] * rotate[1][2],
+				mat[0] *  c + mat[1] * s,
+				mat[0] * -s + mat[1] * c,
 				mat[2]);
 	}
 
@@ -148,22 +136,22 @@ namespace librender
 	TMat3<T> inverse(TMat3<T> mat)
 	{
 		T deter(
-				  mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2])
+				+ mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2])
 				- mat[1][0] * (mat[0][1] * mat[2][2] - mat[2][1] * mat[0][2])
 				+ mat[2][0] * (mat[0][1] * mat[1][2] - mat[1][1] * mat[0][2]));
 		return TMat3<T>(
 			TVec3<T>(
-				 (mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]) / deter,
+				+(mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]) / deter,
 				-(mat[0][1] * mat[2][2] - mat[0][2] * mat[2][1]) / deter,
-				 (mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1]) / deter),
+				+(mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1]) / deter),
 			TVec3<T>(
 				-(mat[1][0] * mat[2][2] - mat[1][2] * mat[2][0]) / deter,
-				 (mat[0][0] * mat[2][2] - mat[0][2] * mat[2][0]) / deter,
+				+(mat[0][0] * mat[2][2] - mat[0][2] * mat[2][0]) / deter,
 				-(mat[0][0] * mat[1][2] - mat[0][2] * mat[1][0]) / deter),
 			TVec3<T>(
-				 (mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]) / deter,
+				+(mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]) / deter,
 				-(mat[0][0] * mat[2][1] - mat[0][1] * mat[2][0]) / deter,
-				 (mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]) / deter));
+				+(mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]) / deter));
 	}
 
 }

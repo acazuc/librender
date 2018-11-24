@@ -9,9 +9,6 @@ namespace librender
 	ShaderTextEntry::ShaderTextEntry()
 	: shadowColor(Color::BLACK)
 	, color(Color::WHITE)
-	, texCoords(nullptr)
-	, vertexes(nullptr)
-	, colors(nullptr)
 	, scale(1)
 	, pos(0)
 	, verticesNumber(0)
@@ -25,7 +22,6 @@ namespace librender
 	, shadowY(0)
 	, height(0)
 	, width(0)
-	, opacity(1)
 	, mustCalcHeight(false)
 	, mustCalcWidth(false)
 	{
@@ -34,9 +30,18 @@ namespace librender
 
 	ShaderTextEntry::~ShaderTextEntry()
 	{
-		delete[] (this->texCoords);
-		delete[] (this->vertexes);
-		delete[] (this->colors);
+		//Empty
+	}
+
+	uint32_t ShaderTextEntry::getShadowLen()
+	{
+		if (this->shadowSize <= 0)
+			return 0;
+		if (this->shadowSize == 1)
+			return 1;
+		int32_t tmp = this->shadowSize - 1;
+		int32_t tmp2 = 1 + tmp * 2;
+		return tmp2 * tmp2 - 1 - 4 * tmp;
 	}
 
 	void ShaderTextEntry::fillTexCoords(Vec2 *texCoords)
@@ -45,43 +50,18 @@ namespace librender
 		char *end = iter + this->text.length();
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
-			uint32_t currentChar = utf8::next(iter, end);
-			getFont()->glChar(currentChar, reinterpret_cast<float*>(&texCoords[i * 4]));
+			uint32_t character = utf8::next(iter, end);
+			getFont()->glChar(character, reinterpret_cast<float*>(&texCoords[i * 4]));
 		}
-		if (this->shadowSize <= 0)
-			return;
-		uint16_t max;
-		if (this->shadowSize == 1)
-		{
-			max = 1;
-		}
-		else
-		{
-			int16_t tmp = this->shadowSize - 1;
-			int16_t tmp2 = 1 + tmp * 2;
-			max = tmp2 * tmp2 - 1 - 4 * tmp;
-		}
-		for (uint32_t i = 0; i < max; ++i)
-			std::memcpy(&texCoords[this->charsNumber * 4 * (i + 1)], &texCoords[0], this->charsNumber * 4 * sizeof(*texCoords));
+		uint32_t shadowLen = getShadowLen();
+		uint32_t copyCount = this->charsNumber * 4 * sizeof(*texCoords);
+		for (uint32_t i = 0; i < shadowLen; ++i)
+			std::memcpy(&texCoords[this->charsNumber * 4 * (i + 1)], &texCoords[0], copyCount);
 	}
 
 	void ShaderTextEntry::fillVertexes(Vec2 *vertexes)
 	{
-		int32_t shadowLen;
-		if (this->shadowSize <= 0)
-		{
-			shadowLen = 0;
-		}
-		else if (this->shadowSize == 1)
-		{
-		 	shadowLen = 1;
-		}
-		else
-		{
-			int16_t tmp = this->shadowSize - 1;
-			int16_t tmp2 = 1 + tmp * 2;
-			shadowLen = tmp2 * tmp2 - 1 - 4 * tmp;
-		}
+		uint32_t shadowLen = getShadowLen();
 		float x = 0;
 		float y = 0;
 		char *iter = const_cast<char*>(this->text.c_str());
@@ -94,14 +74,14 @@ namespace librender
 			{
 				y += getLineHeight();
 				x = 0;
-				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes));
+				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
 				index += 4;
 				continue;
 			}
 			Glyph *glyph = getFont()->getGlyph(character);
 			if (!glyph)
 			{
-				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes));
+				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
 				index += 4;
 				continue;
 			}
@@ -132,16 +112,16 @@ namespace librender
 				x += charWidth;
 			}
 		}
-		if (this->shadowSize <= 0)
+		if (!shadowLen)
 			return;
 		uint32_t tmp = 1 + (this->shadowSize - 1) * 2;
 		uint8_t arrCount = 0;
-		int32_t tmp2 = shadowLen * this->charsNumber * 4;
-		int32_t tmptmp = tmp * tmp;
-		for (uint8_t i = 0; i < tmptmp; ++i)
+		uint32_t tmp2 = shadowLen * this->charsNumber * 4;
+		uint32_t tmptmp = tmp * tmp;
+		for (uint32_t i = 0; i < tmptmp; ++i)
 		{
-			int8_t sx = i % tmp - (this->shadowSize - 1);
-			int8_t sy = i / tmp - (this->shadowSize - 1);
+			int32_t sx = i % tmp - (this->shadowSize - 1);
+			int32_t sy = i / tmp - (this->shadowSize - 1);
 			if (std::abs(sx) == std::abs(sy) && this->shadowSize != 1)
 				continue;
 			uint32_t index = this->charsNumber * 4 * arrCount;
@@ -154,39 +134,18 @@ namespace librender
 
 	void ShaderTextEntry::fillColors(Vec4 *colors)
 	{
-		int32_t shadowLen;
-		if (this->shadowSize <= 0)
+		uint32_t shadowLen = getShadowLen();
 		{
-			shadowLen = 0;
-		}
-		else if (this->shadowSize == 1)
-		{
-			shadowLen = 1;
-		}
-		else
-		{
-			int16_t tmp = this->shadowSize - 1;
-			int16_t tmp2 = 1 + tmp * 2;
-			shadowLen = tmp2 * tmp2 - 1 - 4 * tmp;
-		}
-		{
-			float tab[4] = {this->color.r, this->color.g, this->color.b, this->color.a * this->opacity};
 			int32_t tmp = shadowLen * this->charsNumber * 4;
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-			{
-				std::memcpy(&colors[tmp], tab, sizeof(tab));
-				tmp++;
-			}
+				colors[tmp++] = this->color;
 		}
-		if (this->shadowSize <= 0)
+		if (!shadowLen)
 			return;
-		{
-			float tab[4] = {this->shadowColor.r, this->shadowColor.g, this->shadowColor.b, this->shadowColor.a * this->opacity};
-			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-				std::memcpy(&colors[i], tab, sizeof(tab));
-		}
-		for (uint16_t i = 1; i < shadowLen; ++i)
-			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * sizeof(*colors));
+		for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
+			colors[i] = this->shadowColor;
+		for (uint32_t i = 1; i < shadowLen; ++i)
+			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * sizeof(*this->colors.data()));
 	}
 
 	void ShaderTextEntry::requireUpdates(uint8_t update)
@@ -219,32 +178,10 @@ namespace librender
 		requireUpdates(SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_TEX_COORDS | SHADER_TEXT_UPDATE_COLORS);
 		this->charsNumber = len;
 		this->verticesNumber = this->charsNumber * 4;
-		if (this->shadowSize > 0)
-		{
-			int16_t fac = 1;
-			if (this->shadowSize > 0)
-			{
-				if (this->shadowSize == 1)
-				{
-					fac += 1;
-				}
-				else
-				{
-					int16_t tmp = this->shadowSize - 1;
-					int16_t tmp2 = 1 + tmp * 2;
-					fac += tmp2 * tmp2 - 1 - 4 * tmp;
-				}
-				if (fac < 1)
-					fac = 1;
-			}
-			this->verticesNumber *= fac;
-		}
-		delete[] (this->texCoords);
-		this->texCoords = new Vec2[std::max(1u, this->verticesNumber)];
-		delete[] (this->vertexes);
-		this->vertexes = new Vec2[std::max(1u, this->verticesNumber)];
-		delete[] (this->colors);
-		this->colors = new Vec4[std::max(1u, this->verticesNumber)];
+		this->verticesNumber *= 1 + getShadowLen();
+		this->texCoords.resize(this->verticesNumber);
+		this->vertexes.resize(this->verticesNumber);
+		this->colors.resize(this->verticesNumber);
 	}
 
 	void ShaderTextEntry::setText(std::string &text)
@@ -258,17 +195,17 @@ namespace librender
 		requireUpdates(SHADER_TEXT_UPDATE_VERTEXES | SHADER_TEXT_UPDATE_TEX_COORDS);
 	}
 
-	void ShaderTextEntry::setShadowColor(Color &color)
+	void ShaderTextEntry::setShadowColor(Color color)
 	{
-		if (!color.compare(this->shadowColor))
+		if (color == this->shadowColor)
 			return;
 		this->shadowColor = color;
 		requireUpdates(SHADER_TEXT_UPDATE_COLORS);
 	}
 
-	void ShaderTextEntry::setColor(Color &color)
+	void ShaderTextEntry::setColor(Color color)
 	{
-		if (!color.compare(this->color))
+		if (color == this->color)
 			return;
 		this->color = color;
 		requireUpdates(SHADER_TEXT_UPDATE_COLORS);
@@ -297,14 +234,6 @@ namespace librender
 			return;
 		this->shadowY = shadowY;
 		requireUpdates(SHADER_TEXT_UPDATE_VERTEXES);
-	}
-
-	void ShaderTextEntry::setOpacity(float opacity)
-	{
-		if (this->opacity == opacity)
-			return;
-		this->opacity = opacity;
-		requireUpdates(SHADER_TEXT_UPDATE_COLORS);
 	}
 
 	void ShaderTextEntry::setScaleX(float scaleX)
@@ -348,7 +277,7 @@ namespace librender
 
 	int32_t ShaderTextEntry::getHeight()
 	{
-		if (!this->mustCalcWidth)
+		if (!this->mustCalcHeight)
 			return this->height * this->scale.y;
 		this->mustCalcHeight = false;
 		this->height = 0;

@@ -3,7 +3,7 @@
 
 # include "./Events.h"
 
-class GLFWwindow;
+struct GLFWwindow;
 
 namespace librender
 {

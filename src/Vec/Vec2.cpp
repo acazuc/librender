@@ -2,11 +2,32 @@
 # define VEC2_CPP
 
 #include "Vec2.h"
-#include <algorithm>
 #include <cmath>
 
 namespace librender
 {
+
+	template <typename T>
+	TVec2<T>::TVec2(T x, T y)
+	: x(x)
+	, y(y)
+	{
+		//Empty
+	}
+
+	template <typename T>
+	TVec2<T>::TVec2(T xy)
+	: x(xy)
+	, y(xy)
+	{
+		//Empty
+	}
+
+	template <typename T>
+	TVec2<T>::TVec2()
+	{
+		//Empty
+	}
 
 	template <typename T>
 	T &TVec2<T>::operator [] (int idx)
@@ -155,55 +176,61 @@ namespace librender
 	template <typename T>
 	TVec2<T> min(TVec2<T> vec1, TVec2<T> vec2)
 	{
-		return TVec2<T>(std::min(vec1.x, vec2.x), std::min(vec1.y, vec2.y));
+		return TVec2<T>(vec1.x < vec2.x ? vec1.x : vec2.x, vec1.y < vec2.y ? vec1.y : vec2.y);
 	}
 
 	template <typename T>
 	TVec2<T> min(TVec2<T> vec, T val)
 	{
-		return TVec2<T>(std::min(val, vec.x), std::min(val, vec.y));
+		return TVec2<T>(val < vec.x ? val : vec.x, val < vec.y ? val : vec.y);
 	}
 
 	template <typename T>
 	TVec2<T> min(T val, TVec2<T> vec)
 	{
-		return TVec2<T>(std::min(val, vec.x), std::min(val, vec.y));
+		return TVec2<T>(val < vec.x ? val : vec.x, val < vec.y ? val : vec.y);
 	}
 
 	template <typename T>
 	TVec2<T> max(TVec2<T> vec1, TVec2<T> vec2)
 	{
-		return TVec2<T>(std::max(vec1.x, vec2.x), std::max(vec1.y, vec2.y));
+		return TVec2<T>(vec1.x > vec2.x ? vec1.x : vec2.x, vec1.y > vec2.y ? vec1.y : vec2.y);
 	}
 
 	template <typename T>
 	TVec2<T> max(TVec2<T> vec, T val)
 	{
-		return TVec2<T>(std::max(val, vec.x), std::max(val, vec.y));
+		return TVec2<T>(val > vec.x ? val : vec.x, val > vec.y ? val : vec.y);
 	}
 
 	template <typename T>
 	TVec2<T> max(T val, TVec2<T> vec)
 	{
-		return TVec2<T>(std::max(val, vec.x), std::max(val, vec.y));
+		return TVec2<T>(val > vec.x ? val : vec.x, val > vec.y ? val : vec.y);
 	}
 
 	template <typename T>
-	TVec2<T> clamp(TVec2<T> vec, T min, T max)
+	TVec2<T> clamp(TVec2<T> vec, T vmin, T vmax)
 	{
-		return max(min, min(max));
+		return max(min(vec, vmax), vmin);
 	}
 
 	template <typename T>
-	TVec2<T> clamp(TVec2<T> vec, TVec2<T> min, TVec2<T> max)
+	TVec2<T> clamp(TVec2<T> vec, TVec2<T> vmin, TVec2<T> vmax)
 	{
-		return max(min, min(max));
+		return max(min(vec, vmax), vmin);
 	}
 
 	template <typename T>
 	TVec2<T> mix(TVec2<T> vec1, TVec2<T> vec2, T a)
 	{
-		return vec1 * (1 - a) + vec2 * a;
+		return vec1 * (T(1) - a) + vec2 * a;
+	}
+
+	template <typename T>
+	TVec2<T> mod(TVec2<T> vec1, TVec2<T> vec2)
+	{
+		return TVec2<T>(std::fmod(vec1.x, vec2.x), std::fmod(vec1.y, vec2.y));
 	}
 
 	template <typename T>
@@ -245,7 +272,7 @@ namespace librender
 	template<typename T>
 	TVec2<T> reflect(TVec2<T> vec1, TVec2<T> vec2)
 	{
-		return vec1 - vec2 * 2 * dot(vec1, vec2);
+		return vec1 - vec2 * T(2) * dot(vec1, vec2);
 	}
 
 	template<typename T>
@@ -263,7 +290,7 @@ namespace librender
 	template<typename T>
 	T length(TVec2<T> vec)
 	{
-		return sqrt(dot(vec, vec));
+		return std::sqrt(dot(vec, vec));
 	}
 
 }

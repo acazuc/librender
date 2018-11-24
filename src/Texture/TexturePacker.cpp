@@ -1,5 +1,6 @@
 #include "TexturePacker.h"
 #include "TexturePackerInternal.h"
+#include <algorithm>
 #include <cstring>
 
 #define DISCARD_STEP 1

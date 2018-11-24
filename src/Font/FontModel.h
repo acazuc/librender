@@ -20,7 +20,7 @@ namespace librender
 
 	public:
 		FontModel(std::string filename);
-		FontModel(char *ttfData, size_t ttfLen);
+		FontModel(char *data, size_t len);
 		~FontModel();
 		Font *derive(uint32_t size);
 		bool setSize(uint32_t size);
