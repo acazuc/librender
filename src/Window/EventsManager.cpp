@@ -1,9 +1,9 @@
 #include "EventsManager.h"
 #include "./Window.h"
 #include "../GL.h"
+#include <libunicode/utf8.h>
 #include <iostream>
 #include <vector>
-#include <utf8.h>
 
 namespace librender
 {
@@ -27,9 +27,9 @@ namespace librender
 		Window *window = reinterpret_cast<Window*>(glfwGetWindowUserPointer(glfwWindow));
 		try
 		{
-			int utf32string[] = {static_cast<int>(codepoint), 0};
-			std::string result;
-			utf8::utf32to8(utf32string, &utf32string[1], std::back_inserter(result));
+			std::string result(4, 0);
+			std::string::iterator iter(result.begin());
+			utf8::encode(iter, codepoint);
 			CharEvent event;
 			event.charcode = const_cast<char*>(result.c_str());
 			if (window->getEventsManager().charCallback)

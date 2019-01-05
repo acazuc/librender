@@ -19,6 +19,7 @@ INCLUDES_PATH+= -I lib
 INCLUDES_PATH+= -I lib/glfw/include
 INCLUDES_PATH+= -I lib/freetype/include
 INCLUDES_PATH+= -I lib/glad/include
+INCLUDES_PATH+= -I lib/libunicode/include
 
 SRCS_PATH = src/
 

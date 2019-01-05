@@ -1,6 +1,5 @@
 #include "TextTessellator.h"
 #include "../GL.h"
-#include <utf8.h>
 
 namespace librender
 {

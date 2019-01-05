@@ -1,7 +1,7 @@
 #include "Font.h"
 #include "../GL.h"
+#include <libunicode/utf8.h>
 #include <cstring>
-#include <utf8.h>
 #include <cmath>
 
 #define CLUSTER_SIZE 512

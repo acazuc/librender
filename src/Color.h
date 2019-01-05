@@ -6,15 +6,13 @@
 namespace librender
 {
 
-	class Color : public Vec4
+	struct Color : public Vec4
 	{
 
 	public:
-		Color();
+		Color() {};
 		Color(float r, float g, float b, float a = 1);
 		Color(float rgb, float a = 1);
-		inline void set(float r, float g, float b, float a = 1) {this->r = r;this->g = g;this->b = b;this->a = a;};
-		inline void set(float rgb, float a = 1) {this->r = rgb;this->g = rgb;this->b = rgb;this->a = a;};
 		bool compare(Color &color);
 		bool compare(Color *color);
 		void bind();

@@ -1,7 +1,7 @@
 #include "ShaderTextEntry.h"
 #include "./ShaderTextUpdate.h"
 #include <cstring>
-#include <utf8.h>
+#include <libunicode/utf8.h>
 
 namespace librender
 {
@@ -93,21 +93,21 @@ namespace librender
 					y += getLineHeight();
 					x = 0;
 				}
-				float charRenderWidth = glyph->getWidth();
-				float charRenderHeight = glyph->getHeight();
-				float charRenderX = x + glyph->getOffsetX();
-				float charRenderY = y + glyph->getOffsetY();
-				vertexes[index].x = charRenderX;
-				vertexes[index].y = charRenderY;
+				float charRenderLeft = x + glyph->getOffsetX();
+				float charRenderTop = y + glyph->getOffsetY();
+				float charRenderRight = charRenderLeft + glyph->getWidth();
+				float charRenderBottom = charRenderTop + glyph->getHeight();
+				vertexes[index].x = charRenderLeft;
+				vertexes[index].y = charRenderTop;
 				++index;
-				vertexes[index].x = charRenderX + charRenderWidth;
-				vertexes[index].y = charRenderY;
+				vertexes[index].x = charRenderRight;
+				vertexes[index].y = charRenderTop;
 				++index;
-				vertexes[index].x = charRenderX + charRenderWidth;
-				vertexes[index].y = charRenderY + charRenderHeight;
+				vertexes[index].x = charRenderRight;
+				vertexes[index].y = charRenderBottom;
 				++index;
-				vertexes[index].x = charRenderX;
-				vertexes[index].y = charRenderY + charRenderHeight;
+				vertexes[index].x = charRenderLeft;
+				vertexes[index].y = charRenderBottom;
 				++index;
 				x += charWidth;
 			}
