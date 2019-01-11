@@ -40,14 +40,6 @@ namespace librender
 	void DrawableBatched::update()
 	{
 		updateBuffers();
-		/*if (this->changes & DRAWABLE_UPDATE_VERTEXES && (this->pos.x || this->pos.y || this->scale.x != 1 || this->scale.y != 1))
-		{
-			for (uint32_t i = 0; i < this->verticesNumber; ++i)
-			{
-				this->vertexes[i] *= this->scale;
-				this->vertexes[i] += this->pos;
-			}
-		}*/
 	}
 
 	void DrawableBatched::setParent(DrawableBatch *parent)
