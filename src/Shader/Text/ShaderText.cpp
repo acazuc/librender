@@ -9,12 +9,10 @@ namespace librender
 	: font(nullptr)
 	, oldVerticesNumber(0)
 	{
-		//Empty
 	}
 
 	ShaderText::~ShaderText()
 	{
-		//Empty
 	}
 
 	void ShaderText::draw(Mat4 &viewProj)

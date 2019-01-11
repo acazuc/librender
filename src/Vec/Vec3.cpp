@@ -13,7 +13,6 @@ namespace librender
 	, y(xy.y)
 	, z(z)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -22,7 +21,6 @@ namespace librender
 	, y(yz.y)
 	, z(yz.z)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -31,7 +29,6 @@ namespace librender
 	, y(y)
 	, z(z)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -40,13 +37,11 @@ namespace librender
 	, y(xyz)
 	, z(xyz)
 	{
-		//Empty
 	}
 
 	template <typename T>
 	TVec3<T>::TVec3()
 	{
-		//Empty
 	}
 
 	template <typename T>

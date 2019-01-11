@@ -19,7 +19,6 @@ namespace librender
 	, keyUpCallback(nullptr)
 	, charCallback(nullptr)
 	{
-		//Emtpy
 	}
 
 	void EventsManager::charListener(GLFWwindow *glfwWindow, unsigned int codepoint)

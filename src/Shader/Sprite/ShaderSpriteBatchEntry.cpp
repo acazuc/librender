@@ -10,7 +10,6 @@ namespace librender
 	, parent(nullptr)
 	, changes(0)
 	{
-		//Empty
 	}
 
 	ShaderSpriteBatchEntry::~ShaderSpriteBatchEntry()

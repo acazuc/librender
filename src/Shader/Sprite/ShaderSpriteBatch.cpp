@@ -13,7 +13,6 @@ namespace librender
 	, changes(0)
 	, mustResize(true)
 	{
-		//Empty
 	}
 
 	ShaderSpriteBatch::~ShaderSpriteBatch()

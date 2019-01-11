@@ -6,7 +6,6 @@ namespace librender
 	SpriteTessellator::SpriteTessellator()
 	: texture(nullptr)
 	{
-		//Empty
 	}
 
 	void SpriteTessellator::clear()

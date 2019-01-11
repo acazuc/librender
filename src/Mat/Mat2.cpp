@@ -10,21 +10,18 @@ namespace librender
 	TMat2<T>::TMat2(TVec2<T> vec1, TVec2<T> vec2)
 	: data{vec1, vec2}
 	{
-		//Empty
 	}
 
 	template <typename T>
 	TMat2<T>::TMat2(TVec2<T> vec)
 	: data{{vec.x, T(0)}, {T(0), vec.y}}
 	{
-		//Empty
 	}
 
 	template <typename T>
 	TMat2<T>::TMat2(T value)
 	: data{{value, T(0)}, {T(0), value}}
 	{
-		//Empty
 	}
 
 	template <typename T>

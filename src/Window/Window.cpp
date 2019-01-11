@@ -95,7 +95,7 @@ namespace librender
 		this->fullscreen = true;
 		this->prevWidth = this->width;
 		this->prevHeight = this->height;
-		glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		glfwSetWindowMonitor(this->window, monitor, 0, 0, mode->width, mode->height, GLFW_DONT_CARE);
 	}
 
 	void Window::disableFullscreen()

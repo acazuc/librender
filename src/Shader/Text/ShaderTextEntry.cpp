@@ -25,12 +25,10 @@ namespace librender
 	, mustCalcHeight(false)
 	, mustCalcWidth(false)
 	{
-		//Empty
 	}
 
 	ShaderTextEntry::~ShaderTextEntry()
 	{
-		//Empty
 	}
 
 	uint32_t ShaderTextEntry::getShadowLen()

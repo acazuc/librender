@@ -25,10 +25,14 @@ SRCS_PATH = src/
 
 SRCS_NAME = Color.cpp \
 	    Draw.cpp \
+	    Drawable.cpp \
+	    DrawableBase.cpp \
+	    DrawableBatch.cpp \
+	    DrawableBatched.cpp \
 	    Text/Text.cpp \
-	    Text/TextEntry.cpp \
+	    Text/TextBase.cpp \
 	    Text/TextBatch.cpp \
-	    Text/TextBatchEntry.cpp \
+	    Text/TextBatched.cpp \
 	    Text/TextTessellator.cpp \
 	    Font/FontModel.cpp \
 	    Font/Font.cpp \
@@ -57,9 +61,9 @@ SRCS_NAME = Color.cpp \
 	    Window/Monitor.cpp \
 	    Window/VideoMode.cpp \
 	    Sprite/Sprite.cpp \
-	    Sprite/SpriteEntry.cpp \
+	    Sprite/SpriteBase.cpp \
 	    Sprite/SpriteBatch.cpp \
-	    Sprite/SpriteBatchEntry.cpp \
+	    Sprite/SpriteBatched.cpp \
 	    Sprite/SpriteTessellator.cpp \
 	    Texture/Texture.cpp \
 	    Texture/TexturePacker.cpp \

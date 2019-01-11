@@ -1,12 +1,12 @@
 #ifndef LIBRENDER_SPRITE_H
 # define LIBRENDER_SPRITE_H
 
-# include "./SpriteEntry.h"
+# include "./SpriteBase.h"
 
 namespace librender
 {
 
-	class Sprite : public SpriteEntry
+	class Sprite : public SpriteBase
 	{
 
 	protected:

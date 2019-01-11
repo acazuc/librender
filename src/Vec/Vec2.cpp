@@ -12,7 +12,6 @@ namespace librender
 	: x(x)
 	, y(y)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -20,13 +19,11 @@ namespace librender
 	: x(xy)
 	, y(xy)
 	{
-		//Empty
 	}
 
 	template <typename T>
 	TVec2<T>::TVec2()
 	{
-		//Empty
 	}
 
 	template <typename T>

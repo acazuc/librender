@@ -14,7 +14,6 @@ namespace librender
 
 	ShaderSprite::~ShaderSprite()
 	{
-		//Empty
 	}
 
 	void ShaderSprite::draw(Mat4 &viewProj)

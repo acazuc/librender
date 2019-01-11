@@ -4,7 +4,6 @@
 #include "Mat3.h"
 #include <cmath>
 
-#include <iostream>
 namespace librender
 {
 
@@ -12,21 +11,18 @@ namespace librender
 	TMat3<T>::TMat3(TVec3<T> vec1, TVec3<T> vec2, TVec3<T> vec3)
 	: data{vec1, vec2, vec3}
 	{
-		//Empty
 	}
 
 	template <typename T>
 	TMat3<T>::TMat3(TVec3<T> vec)
 	: data{{vec.x, T(0), T(0)}, {T(0), vec.y, T(0)}, {T(0), T(0), T(0), vec.z}}
 	{
-		//Empty
 	}
 
 	template <typename T>
 	TMat3<T>::TMat3(T value)
 	: data{{value, T(0), T(0)}, {T(0), value, T(0)}, {T(0), T(0), value}}
 	{
-		//Empty
 	}
 
 	template <typename T>

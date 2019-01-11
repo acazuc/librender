@@ -29,7 +29,6 @@ namespace librender
 
 	Font::~Font()
 	{
-		//Empty
 	}
 	
 	void Font::bind()

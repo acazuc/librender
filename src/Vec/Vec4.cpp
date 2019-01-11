@@ -14,7 +14,6 @@ namespace librender
 	, z(zw.x)
 	, w(zw.y)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -24,7 +23,6 @@ namespace librender
 	, z(z)
 	, w(w)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -34,7 +32,6 @@ namespace librender
 	, z(yz.y)
 	, w(w)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -44,7 +41,6 @@ namespace librender
 	, z(zw.x)
 	, w(zw.y)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -54,7 +50,6 @@ namespace librender
 	, z(xyz.z)
 	, w(w)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -64,7 +59,6 @@ namespace librender
 	, z(yzw.y)
 	, w(yzw.z)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -74,7 +68,6 @@ namespace librender
 	, z(z)
 	, w(w)
 	{
-		//Empty
 	}
 
 	template <typename T>
@@ -84,13 +77,11 @@ namespace librender
 	, z(xyzw)
 	, w(xyzw)
 	{
-		//Empty
 	}
 
 	template <typename T>
 	TVec4<T>::TVec4()
 	{
-		//Empty
 	}
 
 	template <typename T>

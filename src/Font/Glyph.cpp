@@ -12,7 +12,6 @@ namespace librender
 	, texX(0)
 	, texY(0)
 	{
-		//Empty
 	}
 
 }

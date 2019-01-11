@@ -11,7 +11,6 @@ namespace librender
 	, width(width)
 	, height(height)
 	{
-		//Empty
 	}
 
 }

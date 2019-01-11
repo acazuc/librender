@@ -6,13 +6,11 @@ namespace librender
 	ProgramLocation::ProgramLocation()
 	: location(0)
 	{
-		//Empty
 	}
 
 	ProgramLocation::ProgramLocation(GLint location)
 	: location(location)
 	{
-		//Empty
 	}
 
 	void ProgramLocation::setVec1i(GLint val)

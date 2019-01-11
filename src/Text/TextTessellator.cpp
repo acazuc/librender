@@ -7,7 +7,6 @@ namespace librender
 	TextTessellator::TextTessellator()
 	: font(nullptr)
 	{
-		//Empty
 	}
 
 	void TextTessellator::clear()

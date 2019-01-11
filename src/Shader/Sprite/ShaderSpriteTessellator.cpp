@@ -7,7 +7,6 @@ namespace librender
 	: texture(nullptr)
 	, changed(false)
 	{
-		//Empty
 	}
 
 	void ShaderSpriteTessellator::clear()

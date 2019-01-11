@@ -1,20 +1,17 @@
-#include "TextEntry.h"
-#include "./TextUpdate.h"
+#include "TextBase.h"
+#include "./DrawableUpdate.h"
+#include "../GL.h"
 #include <libunicode/utf8.h>
 #include <cstring>
 
 namespace librender
 {
 
-	TextEntry::TextEntry()
+	TextBase::TextBase()
 	: shadowColor(Color::BLACK)
 	, color(Color::WHITE)
-	, scale(1)
-	, pos(0)
-	, verticesNumber(0)
 	, fontRevision(0)
 	, charsNumber(0)
-	, updatesRequired(0)
 	, shadowSize(0)
 	, lineHeight(-1)
 	, maxWidth(-1)
@@ -25,15 +22,9 @@ namespace librender
 	, mustCalcHeight(false)
 	, mustCalcWidth(false)
 	{
-		//Empty
 	}
 
-	TextEntry::~TextEntry()
-	{
-		//Empty
-	}
-
-	uint32_t TextEntry::getShadowLen()
+	uint32_t TextBase::getShadowLen()
 	{
 		if (this->shadowSize <= 0)
 			return 0;
@@ -44,22 +35,22 @@ namespace librender
 		return tmp2 * tmp2 - 1 - 4 * tmp;
 	}
 
-	void TextEntry::fillTexCoords(Vec2 *texCoords)
+	void TextBase::updateTexCoords()
 	{
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = iter + this->text.length();
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t character = utf8::next(iter, end);
-			getFont()->glChar(character, reinterpret_cast<float*>(&texCoords[i * 4]));
+			getFont()->glChar(character, reinterpret_cast<float*>(&this->texCoords[i * 4]));
 		}
 		uint32_t shadowLen = getShadowLen();
-		uint32_t copyCount = this->charsNumber * 4 * sizeof(*texCoords);
+		uint32_t copyCount = this->charsNumber * 4 * sizeof(*this->texCoords.data());
 		for (uint32_t i = 0; i < shadowLen; ++i)
-			std::memcpy(&texCoords[this->charsNumber * 4 * (i + 1)], &texCoords[0], copyCount);
+			std::memcpy(&this->texCoords[this->charsNumber * 4 * (i + 1)], &this->texCoords[0], copyCount);
 	}
 
-	void TextEntry::fillVertexes(Vec2 *vertexes)
+	void TextBase::updateVertexes()
 	{
 		uint32_t shadowLen = getShadowLen();
 		float x = 0;
@@ -74,14 +65,14 @@ namespace librender
 			{
 				y += getLineHeight();
 				x = 0;
-				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
+				std::memset(&this->vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
 				index += 4;
 				continue;
 			}
 			Glyph *glyph = getFont()->getGlyph(character);
 			if (!glyph)
 			{
-				std::memset(&vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
+				std::memset(&this->vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
 				index += 4;
 				continue;
 			}
@@ -127,140 +118,138 @@ namespace librender
 			uint32_t index = this->charsNumber * 4 * arrCount;
 			Vec2 vtmp(this->shadowX + sx, this->shadowY + sy);
 			for (uint32_t j = 0; j < this->charsNumber * 4; ++j)
-				vertexes[index + j] = vertexes[tmp2 + j] + vtmp;
+				this->vertexes[index + j] = this->vertexes[tmp2 + j] + vtmp;
 			arrCount++;
 		}
 	}
 
-	void TextEntry::fillColors(Vec4 *colors)
+	void TextBase::updateIndices()
+	{
+		size_t count = 0;
+		GLuint currentIndice = 0;
+		for (size_t i = 0; i < this->indicesNumber / 6; ++i)
+		{
+			indices[count++] = currentIndice + 0;
+			indices[count++] = currentIndice + 3;
+			indices[count++] = currentIndice + 1;
+			indices[count++] = currentIndice + 2;
+			indices[count++] = currentIndice + 1;
+			indices[count++] = currentIndice + 3;
+			currentIndice += 4;
+		}
+	}
+
+	void TextBase::updateColors()
 	{
 		uint32_t shadowLen = getShadowLen();
 		{
-			int32_t tmp = shadowLen * this->charsNumber * 4;
+			uint32_t tmp = shadowLen * this->charsNumber * 4;
 			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-				colors[tmp++] = this->color;
+				this->colors[tmp++] = this->color;
 		}
 		if (!shadowLen)
 			return;
 		for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-			colors[i] = this->shadowColor;
+			this->colors[i] = this->shadowColor;
 		for (uint32_t i = 1; i < shadowLen; ++i)
-			std::memcpy(&colors[this->charsNumber * 4 * i], &colors[0], this->charsNumber * 4 * sizeof(*this->colors.data()));
+			std::memcpy(&this->colors[this->charsNumber * 4 * i], &this->colors[0], this->charsNumber * 4 * sizeof(*this->colors.data()));
 	}
 
-	void TextEntry::requireUpdates(uint8_t update)
-	{
-		this->updatesRequired |= update;
-	}
-
-	void TextEntry::update()
+	void TextBase::updateBuffers()
 	{
 		Font *font = getFont();
 		if (!font)
 			return;
+		if (this->updatesRequired & (DRAWABLE_UPDATE_TEX_COORDS | DRAWABLE_UPDATE_VERTEXES))
+		{
+			//Hack fix, load all glyphs before update
+			char *iter = const_cast<char*>(this->text.c_str());
+			char *end = iter + this->text.length();
+			for (uint32_t i = 0; i < this->charsNumber; ++i)
+			{
+				uint32_t character = utf8::next(iter, end);
+				font->getGlyph(character);
+			}
+		}
 		font->glUpdate();
 		if (font->getRevision() != this->fontRevision)
 		{
 			this->fontRevision = font->getRevision();
-			requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS);
+			requireUpdates(DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS);
 		}
-		if (this->updatesRequired & TEXT_UPDATE_TEX_COORDS)
-			updateTexCoords();
-		if (this->updatesRequired & TEXT_UPDATE_VERTEXES)
-			updateVertexes();
-		if (this->updatesRequired & TEXT_UPDATE_COLORS)
-			updateColors();
-		this->updatesRequired = 0;
+		DrawableBase::updateBuffers();
 	}
 
-	void TextEntry::resize(uint32_t len)
-	{
-		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_COLORS);
-		this->charsNumber = len;
-		this->verticesNumber = this->charsNumber * 4;
-		this->verticesNumber *= 1 + getShadowLen();
-		this->texCoords.resize(this->verticesNumber);
-		this->vertexes.resize(this->verticesNumber);
-		this->colors.resize(this->verticesNumber);
-	}
-
-	void TextEntry::setText(std::string &text)
+	void TextBase::setText(std::string &text)
 	{
 		recalcWidth();
 		recalcHeight();
 		uint32_t newLen = utf8::distance(text.begin(), text.end());
 		if (this->charsNumber != newLen)
-			resize(newLen);
+		{
+			this->charsNumber = newLen;
+			requireUpdates(DRAWABLE_UPDATE_INDICES);
+			uint32_t shadowLen = getShadowLen();
+			resize(this->charsNumber * 4 * (1 + shadowLen), this->charsNumber * 6 * (1 + shadowLen));
+			requireUpdates(DRAWABLE_UPDATE_INDICES | DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS | DRAWABLE_UPDATE_COLORS);
+		}
 		this->text = text;
-		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS);
+		requireUpdates(DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS);
 	}
 
-	void TextEntry::setShadowColor(Color color)
+	void TextBase::setShadowColor(Color color)
 	{
 		if (color == this->shadowColor)
 			return;
 		this->shadowColor = color;
-		requireUpdates(TEXT_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_UPDATE_COLORS);
 	}
 
-	void TextEntry::setColor(Color color)
+	void TextBase::setColor(Color color)
 	{
 		if (color == this->color)
 			return;
 		this->color = color;
-		requireUpdates(TEXT_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_UPDATE_COLORS);
 	}
 
-	void TextEntry::setShadowSize(int16_t shadowSize)
+	void TextBase::setShadowSize(int16_t shadowSize)
 	{
 		if (this->shadowSize == shadowSize)
 			return;
 		this->shadowSize = shadowSize;
-		resize(this->charsNumber);
-		requireUpdates(TEXT_UPDATE_VERTEXES | TEXT_UPDATE_TEX_COORDS | TEXT_UPDATE_COLORS);
+		uint32_t shadowLen = getShadowLen();
+		resize(this->charsNumber * 4 * (1 + shadowLen), this->charsNumber * 6 * (1 + shadowLen));
+		requireUpdates(DRAWABLE_UPDATE_INDICES | DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS | DRAWABLE_UPDATE_COLORS);
 	}
 
-	void TextEntry::setShadowX(int32_t shadowX)
+	void TextBase::setShadowX(int32_t shadowX)
 	{
 		if (this->shadowX == shadowX)
 			return;
 		this->shadowX = shadowX;
-		requireUpdates(TEXT_UPDATE_VERTEXES);
+		requireUpdates(DRAWABLE_UPDATE_VERTEXES);
 	}
 
-	void TextEntry::setShadowY(int32_t shadowY)
+	void TextBase::setShadowY(int32_t shadowY)
 	{
 		if (this->shadowY == shadowY)
 			return;
 		this->shadowY = shadowY;
-		requireUpdates(TEXT_UPDATE_VERTEXES);
+		requireUpdates(DRAWABLE_UPDATE_VERTEXES);
 	}
 
-	void TextEntry::setScaleX(float scaleX)
-	{
-		if (this->scale.x == scaleX)
-			return;
-		this->scale.x = scaleX;
-	}
-
-	void TextEntry::setScaleY(float scaleY)
-	{
-		if (this->scale.y == scaleY)
-			return;
-		this->scale.y = scaleY;
-	}
-
-	void TextEntry::setMaxWidth(int32_t maxWidth)
+	void TextBase::setMaxWidth(int32_t maxWidth)
 	{
 		if (this->maxWidth == maxWidth)
 			return;
 		this->maxWidth = maxWidth;
-		requireUpdates(TEXT_UPDATE_VERTEXES);
+		requireUpdates(DRAWABLE_UPDATE_VERTEXES);
 		recalcWidth();
 		recalcHeight();
 	}
 
-	int32_t TextEntry::getWidth()
+	int32_t TextBase::getWidth()
 	{
 		if (this->mustCalcWidth)
 		{
@@ -275,7 +264,7 @@ namespace librender
 		return this->width * this->scale.x;
 	}
 
-	int32_t TextEntry::getHeight()
+	int32_t TextBase::getHeight()
 	{
 		if (!this->mustCalcHeight)
 			return this->height * this->scale.y;
@@ -309,7 +298,7 @@ namespace librender
 		return this->height * this->scale.y;
 	}
 
-	int32_t TextEntry::getLineHeight()
+	int32_t TextBase::getLineHeight()
 	{
 		if (this->lineHeight == -1)
 		{

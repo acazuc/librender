@@ -27,7 +27,6 @@ namespace librender
 
 	ShaderSpriteEntry::~ShaderSpriteEntry()
 	{
-		//Empty
 	}
 
 	void ShaderSpriteEntry::update()
