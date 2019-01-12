@@ -1,5 +1,5 @@
 #include "TextBase.h"
-#include "./DrawableUpdate.h"
+#include "./DrawableBuffers.h"
 #include "../GL.h"
 #include <libunicode/utf8.h>
 
@@ -159,7 +159,7 @@ namespace librender
 		Font *font = getFont();
 		if (!font)
 			return;
-		if (this->updatesRequired & (DRAWABLE_UPDATE_TEX_COORDS | DRAWABLE_UPDATE_VERTEXES))
+		if (this->updatesRequired & (DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES))
 		{
 			//Hack fix, load all glyphs before update
 			char *iter = const_cast<char*>(this->text.c_str());
@@ -174,7 +174,7 @@ namespace librender
 		if (font->getRevision() != this->fontRevision)
 		{
 			this->fontRevision = font->getRevision();
-			requireUpdates(DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS);
+			requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
 		}
 		DrawableBase::updateBuffers();
 	}
@@ -187,13 +187,13 @@ namespace librender
 		if (this->charsNumber != newLen)
 		{
 			this->charsNumber = newLen;
-			requireUpdates(DRAWABLE_UPDATE_INDICES);
+			requireUpdates(DRAWABLE_BUFFER_INDICES);
 			uint32_t shadowLen = getShadowLen();
 			resize(this->charsNumber * 4 * (1 + shadowLen), this->charsNumber * 6 * (1 + shadowLen));
-			requireUpdates(DRAWABLE_UPDATE_INDICES | DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS | DRAWABLE_UPDATE_COLORS);
+			requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
 		}
 		this->text = text;
-		requireUpdates(DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS);
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 	void TextBase::setShadowColor(Color color)
@@ -201,7 +201,7 @@ namespace librender
 		if (color == this->shadowColor)
 			return;
 		this->shadowColor = color;
-		requireUpdates(DRAWABLE_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void TextBase::setColor(Color color)
@@ -209,7 +209,7 @@ namespace librender
 		if (color == this->color)
 			return;
 		this->color = color;
-		requireUpdates(DRAWABLE_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void TextBase::setShadowSize(int16_t shadowSize)
@@ -219,7 +219,7 @@ namespace librender
 		this->shadowSize = shadowSize;
 		uint32_t shadowLen = getShadowLen();
 		resize(this->charsNumber * 4 * (1 + shadowLen), this->charsNumber * 6 * (1 + shadowLen));
-		requireUpdates(DRAWABLE_UPDATE_INDICES | DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS | DRAWABLE_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
 	}
 
 	void TextBase::setShadowX(int32_t shadowX)
@@ -227,7 +227,7 @@ namespace librender
 		if (this->shadowX == shadowX)
 			return;
 		this->shadowX = shadowX;
-		requireUpdates(DRAWABLE_UPDATE_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	void TextBase::setShadowY(int32_t shadowY)
@@ -235,7 +235,7 @@ namespace librender
 		if (this->shadowY == shadowY)
 			return;
 		this->shadowY = shadowY;
-		requireUpdates(DRAWABLE_UPDATE_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	void TextBase::setMaxWidth(int32_t maxWidth)
@@ -243,7 +243,7 @@ namespace librender
 		if (this->maxWidth == maxWidth)
 			return;
 		this->maxWidth = maxWidth;
-		requireUpdates(DRAWABLE_UPDATE_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES);
 		recalcWidth();
 		recalcHeight();
 	}

@@ -1,5 +1,5 @@
 #include "Sprite.h"
-#include "../DrawableUpdate.h"
+#include "../DrawableBuffers.h"
 #include "../GL.h"
 
 namespace librender
@@ -13,9 +13,15 @@ namespace librender
 	void Sprite::draw()
 	{
 		if (this->texture)
+		{
+			this->buffers |= DRAWABLE_BUFFER_TEX_COORDS;
 			this->texture->bind();
+		}
 		else
+		{
+			this->buffers &= ~DRAWABLE_BUFFER_TEX_COORDS;
 			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 		updateBuffers();
 		Drawable::draw();
 	}
@@ -25,7 +31,7 @@ namespace librender
 		if (this->texture == texture)
 			return;
 		this->texture = texture;
-		requireUpdates(DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS);
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 }

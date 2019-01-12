@@ -21,6 +21,7 @@ namespace librender
 		uint32_t indicesNumber;
 		uint32_t shapeType;
 		uint8_t updatesRequired;
+		uint8_t buffers;
 		Vec2 scale;
 		Vec2 pos;
 

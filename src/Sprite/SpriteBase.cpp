@@ -1,5 +1,5 @@
 #include "SpriteBase.h"
-#include "../DrawableUpdate.h"
+#include "../DrawableBuffers.h"
 #include <cstring>
 
 namespace librender
@@ -69,25 +69,25 @@ namespace librender
 	void SpriteBase::setTopLeftColor(Color color)
 	{
 		this->colors[0] = color;
-		requireUpdates(DRAWABLE_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void SpriteBase::setTopRightColor(Color color)
 	{
 		this->colors[1] = color;
-		requireUpdates(DRAWABLE_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void SpriteBase::setBotLeftColor(Color color)
 	{
 		this->colors[3] = color;
-		requireUpdates(DRAWABLE_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void SpriteBase::setBotRightColor(Color color)
 	{
 		this->colors[2] = color;
-		requireUpdates(DRAWABLE_UPDATE_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void SpriteBase::setTexX(float texX)
@@ -99,7 +99,7 @@ namespace librender
 		this->texCoords[3].x = texX;
 		this->texCoords[1].x += delta;
 		this->texCoords[2].x += delta;
-		requireUpdates(DRAWABLE_UPDATE_TEX_COORDS);
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 	float SpriteBase::getTexX()
@@ -116,7 +116,7 @@ namespace librender
 		this->texCoords[1].y = texY;
 		this->texCoords[2].y += delta;
 		this->texCoords[3].y += delta;
-		requireUpdates(DRAWABLE_UPDATE_TEX_COORDS);
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 	float SpriteBase::getTexY()
@@ -137,7 +137,7 @@ namespace librender
 			return;
 		this->texCoords[1].x = texWidth + this->texCoords[0].x;
 		this->texCoords[2].x = texWidth + this->texCoords[0].x;
-		requireUpdates(DRAWABLE_UPDATE_TEX_COORDS);
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 	float SpriteBase::getTexWidth()
@@ -152,7 +152,7 @@ namespace librender
 			return;
 		this->texCoords[2].y = texHeight + this->texCoords[0].y;
 		this->texCoords[3].y = texHeight + this->texCoords[0].y;
-		requireUpdates(DRAWABLE_UPDATE_TEX_COORDS);
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 	float SpriteBase::getTexHeight()
@@ -165,7 +165,7 @@ namespace librender
 		if (this->size.x == width)
 			return;
 		this->size.x = width;
-		requireUpdates(DRAWABLE_UPDATE_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	float SpriteBase::getWidth()
@@ -178,7 +178,7 @@ namespace librender
 		if (this->size.y == height)
 			return;
 		this->size.y = height;
-		requireUpdates(DRAWABLE_UPDATE_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	float SpriteBase::getHeight()

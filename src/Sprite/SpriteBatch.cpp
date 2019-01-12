@@ -1,5 +1,5 @@
 #include "SpriteBatch.h"
-#include "../DrawableUpdate.h"
+#include "../DrawableBuffers.h"
 #include "./SpriteBatched.h"
 #include "../GL.h"
 
@@ -16,9 +16,15 @@ namespace librender
 		if (!update())
 			return;
 		if (this->texture)
+		{
+			this->buffers |= DRAWABLE_BUFFER_TEX_COORDS;
 			this->texture->bind();
+		}
 		else
+		{
+			this->buffers &= ~DRAWABLE_BUFFER_TEX_COORDS;
 			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 		DrawableBatch::draw();
 	}
 

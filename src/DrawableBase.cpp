@@ -1,5 +1,5 @@
 #include "DrawableBase.h"
-#include "./DrawableUpdate.h"
+#include "./DrawableBuffers.h"
 
 namespace librender
 {
@@ -12,25 +12,25 @@ namespace librender
 			this->texCoords.resize(this->verticesNumber);
 			this->vertexes.resize(this->verticesNumber);
 			this->colors.resize(this->verticesNumber);
-			requireUpdates(DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS | DRAWABLE_UPDATE_COLORS);
+			requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
 		}
 		if (this->indicesNumber != indices)
 		{
 			this->indicesNumber = indices;
 			this->indices.resize(this->indicesNumber);
-			requireUpdates(DRAWABLE_UPDATE_INDICES);
+			requireUpdates(DRAWABLE_BUFFER_INDICES);
 		}
 	}
 
 	void DrawableBase::updateBuffers()
 	{
-		if (this->updatesRequired & DRAWABLE_UPDATE_TEX_COORDS)
+		if (this->updatesRequired & DRAWABLE_BUFFER_TEX_COORDS)
 			updateTexCoords();
-		if (this->updatesRequired & DRAWABLE_UPDATE_VERTEXES)
+		if (this->updatesRequired & DRAWABLE_BUFFER_VERTEXES)
 			updateVertexes();
-		if (this->updatesRequired & DRAWABLE_UPDATE_INDICES)
+		if (this->updatesRequired & DRAWABLE_BUFFER_INDICES)
 			updateIndices();
-		if (this->updatesRequired & DRAWABLE_UPDATE_COLORS)
+		if (this->updatesRequired & DRAWABLE_BUFFER_COLORS)
 			updateColors();
 		this->updatesRequired = 0;
 	}

@@ -1,5 +1,5 @@
 #include "DrawableBatched.h"
-#include "./DrawableUpdate.h"
+#include "./DrawableBuffers.h"
 #include "./DrawableBatch.h"
 
 namespace librender
@@ -52,7 +52,7 @@ namespace librender
 		if (this->pos.x == x)
 			return;
 		this->pos.x = x;
-		addChanges(DRAWABLE_UPDATE_VERTEXES);
+		addChanges(DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	float DrawableBatched::getX()
@@ -67,7 +67,7 @@ namespace librender
 		if (this->pos.y == y)
 			return;
 		this->pos.y = y;
-		addChanges(DRAWABLE_UPDATE_VERTEXES);
+		addChanges(DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	float DrawableBatched::getY()
@@ -82,7 +82,7 @@ namespace librender
 		if (this->scale.x == scaleX)
 			return;
 		this->scale.x = scaleX;
-		addChanges(DRAWABLE_UPDATE_VERTEXES);
+		addChanges(DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	void DrawableBatched::setScaleY(float scaleY)
@@ -90,7 +90,7 @@ namespace librender
 		if (this->scale.y == scaleY)
 			return;
 		this->scale.y = scaleY;
-		addChanges(DRAWABLE_UPDATE_VERTEXES);
+		addChanges(DRAWABLE_BUFFER_VERTEXES);
 	}
 
 }

@@ -1,5 +1,5 @@
 #include "Text.h"
-#include "../DrawableUpdate.h"
+#include "../DrawableBuffers.h"
 #include "../GL.h"
 
 namespace librender
@@ -26,7 +26,7 @@ namespace librender
 			return;
 		this->font = font;
 		this->lineHeight = this->font->getLineHeight();
-		requireUpdates(DRAWABLE_UPDATE_VERTEXES | DRAWABLE_UPDATE_TEX_COORDS);
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
 		recalcWidth();
 		recalcHeight();
 	}
