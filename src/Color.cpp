@@ -31,13 +31,11 @@ namespace librender
 	Color::Color(float r, float g, float b, float a)
 	: Vec4(r, g, b, a)
 	{
-		//Empty
 	}
 
 	Color::Color(float rgb, float a)
 	: Vec4(Vec3(rgb), a)
 	{
-		//Empty
 	}
 	
 	void Color::bind()

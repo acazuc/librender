@@ -29,6 +29,7 @@ SRCS_NAME = Color.cpp \
 	    DrawableBase.cpp \
 	    DrawableBatch.cpp \
 	    DrawableBatched.cpp \
+	    DrawableTessellator.cpp \
 	    Text/Text.cpp \
 	    Text/TextBase.cpp \
 	    Text/TextBatch.cpp \

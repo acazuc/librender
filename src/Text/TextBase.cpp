@@ -2,7 +2,6 @@
 #include "./DrawableUpdate.h"
 #include "../GL.h"
 #include <libunicode/utf8.h>
-#include <cstring>
 
 namespace librender
 {
@@ -45,9 +44,9 @@ namespace librender
 			getFont()->glChar(character, reinterpret_cast<float*>(&this->texCoords[i * 4]));
 		}
 		uint32_t shadowLen = getShadowLen();
-		uint32_t copyCount = this->charsNumber * 4 * sizeof(*this->texCoords.data());
+		uint32_t copyCount = this->charsNumber * 4/* * sizeof(*this->texCoords.data())*/;
 		for (uint32_t i = 0; i < shadowLen; ++i)
-			std::memcpy(&this->texCoords[this->charsNumber * 4 * (i + 1)], &this->texCoords[0], copyCount);
+			std::copy(this->texCoords.begin(), this->texCoords.begin() + copyCount, this->texCoords.begin() + this->charsNumber * 4 * (i + 1));
 	}
 
 	void TextBase::updateVertexes()
@@ -65,14 +64,14 @@ namespace librender
 			{
 				y += getLineHeight();
 				x = 0;
-				std::memset(&this->vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
+				std::fill(this->vertexes.begin() + index, this->vertexes.begin() + index + 4, 0);
 				index += 4;
 				continue;
 			}
 			Glyph *glyph = getFont()->getGlyph(character);
 			if (!glyph)
 			{
-				std::memset(&this->vertexes[index], 0, 4 * sizeof(*this->vertexes.data()));
+				std::fill(this->vertexes.begin() + index, this->vertexes.begin() + index + 4, 0);
 				index += 4;
 				continue;
 			}
@@ -152,7 +151,7 @@ namespace librender
 		for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
 			this->colors[i] = this->shadowColor;
 		for (uint32_t i = 1; i < shadowLen; ++i)
-			std::memcpy(&this->colors[this->charsNumber * 4 * i], &this->colors[0], this->charsNumber * 4 * sizeof(*this->colors.data()));
+			std::copy(this->colors.begin(), this->colors.begin() + this->charsNumber * 4, this->colors.begin() + this->charsNumber * i * 4);
 	}
 
 	void TextBase::updateBuffers()

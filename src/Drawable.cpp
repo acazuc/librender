@@ -9,6 +9,7 @@ namespace librender
 	, pos(0)
 	, verticesNumber(0)
 	, indicesNumber(0)
+	, shapeType(GL_TRIANGLES)
 	, updatesRequired(0)
 	{
 	}
@@ -24,7 +25,7 @@ namespace librender
 		glPushMatrix();
 		glTranslatef(this->pos.x, this->pos.y, 0);
 		glScalef(this->scale.x, this->scale.y, 0);
-		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT, this->indices.data());
+		glDrawElements(this->shapeType, this->indices.size(), GL_UNSIGNED_INT, this->indices.data());
 		glPopMatrix();
 		glDisableClientState(GL_VERTEX_ARRAY);
 		glDisableClientState(GL_COLOR_ARRAY);

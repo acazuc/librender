@@ -61,7 +61,7 @@ namespace librender
 				Vec2 scale(child->getScaleX(), child->getScaleY());
 				if (pos.x || pos.y || scale.x != 1 || scale.y != 1)
 				{
-					for (uint32_t i = count; i < count + child->getVertexes().size(); ++i)
+					for (size_t i = count; i < count + child->getVertexes().size(); ++i)
 					{
 						this->vertexes[i] *= scale;
 						this->vertexes[i] += pos;
