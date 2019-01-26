@@ -2,12 +2,13 @@
 # define LIBRENDER_TEXT_H
 
 # include "../Font/Font.h"
+# include "../Drawable.h"
 # include "./TextBase.h"
 
 namespace librender
 {
 
-	class Text : public TextBase
+	class Text : public TextBase, public Drawable
 	{
 
 	protected:

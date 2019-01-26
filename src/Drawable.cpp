@@ -6,13 +6,7 @@ namespace librender
 {
 
 	Drawable::Drawable()
-	: scale(1)
-	, pos(0)
-	, verticesNumber(0)
-	, indicesNumber(0)
-	, shapeType(GL_TRIANGLES)
-	, updatesRequired(0)
-	, buffers(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS | DRAWABLE_BUFFER_TEX_COORDS)
+	: shapeType(GL_TRIANGLES)
 	{
 	}
 
@@ -50,11 +44,6 @@ namespace librender
 		glScalef(this->scale.x, this->scale.y, 0);
 		glDrawElements(this->shapeType, this->indices.size(), GL_UNSIGNED_INT, this->indices.data());
 		glPopMatrix();
-	}
-
-	void Drawable::requireUpdates(uint8_t update)
-	{
-		this->updatesRequired |= update;
 	}
 
 }

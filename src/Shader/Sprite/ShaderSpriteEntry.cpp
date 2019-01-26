@@ -106,6 +106,39 @@ namespace librender
 		this->updatesRequired |= SHADER_SPRITE_UPDATE_VERTEXES;
 	}
 
+	void ShaderSpriteEntry::setTexTopLeft(Vec2 pos)
+	{
+		this->texCoords[0] = pos;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
+	}
+
+	void ShaderSpriteEntry::setTexTopRight(Vec2 pos)
+	{
+		this->texCoords[1] = pos;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
+	}
+
+	void ShaderSpriteEntry::setTexBottomLeft(Vec2 pos)
+	{
+		this->texCoords[3] = pos;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
+	}
+
+	void ShaderSpriteEntry::setTexBottomRight(Vec2 pos)
+	{
+		this->texCoords[2] = pos;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
+	}
+
+	void ShaderSpriteEntry::setTex(Vec2 topLeft, Vec2 topRight, Vec2 bottomLeft, Vec2 bottomRight)
+	{
+		this->texCoords[0] = topLeft;
+		this->texCoords[1] = topRight;
+		this->texCoords[2] = bottomRight;
+		this->texCoords[3] = bottomLeft;
+		this->updatesRequired |= SHADER_SPRITE_UPDATE_TEX_COORDS;
+	}
+
 	void ShaderSpriteEntry::setTexX(float texX)
 	{
 		float delta = texX - this->texCoords[0].x;

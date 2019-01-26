@@ -2,11 +2,12 @@
 # define LIBRENDER_SPRITE_H
 
 # include "./SpriteBase.h"
+# include "../Drawable.h"
 
 namespace librender
 {
 
-	class Sprite : public SpriteBase
+	class Sprite : public SpriteBase, public Drawable
 	{
 
 	protected:

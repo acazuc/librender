@@ -13,7 +13,6 @@ namespace librender
 	{
 
 	public:
-		void update();
 		void setParent(DrawableBatch *parent);
 		Font *getFont();
 

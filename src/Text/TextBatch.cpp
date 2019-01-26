@@ -21,6 +21,13 @@ namespace librender
 		DrawableBatch::draw();
 	}
 
+	int32_t TextBatch::getLineHeight()
+	{
+		if (!this->font)
+			return 0;
+		return this->font->getLineHeight();
+	}
+
 	void TextBatch::setFont(Font *font)
 	{
 		this->font = font;
@@ -32,13 +39,6 @@ namespace librender
 			child->recalcWidth();
 			child->recalcHeight();
 		}
-	}
-
-	int32_t TextBatch::getLineHeight()
-	{
-		if (!this->font)
-			return 0;
-		return this->font->getLineHeight();
 	}
 
 }

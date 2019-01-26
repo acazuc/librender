@@ -1,6 +1,5 @@
 #include "DrawableBatch.h"
 #include "./DrawableBuffers.h"
-#include "./GL.h"
 
 namespace librender
 {

@@ -4,6 +4,16 @@
 namespace librender
 {
 
+	DrawableBase::DrawableBase()
+	: scale(1)
+	, pos(0)
+	, verticesNumber(0)
+	, indicesNumber(0)
+	, updatesRequired(0)
+	, buffers(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS | DRAWABLE_BUFFER_TEX_COORDS)
+	{
+	}
+
 	void DrawableBase::resize(uint32_t vertices, uint32_t indices)
 	{
 		if (this->verticesNumber != vertices)
@@ -20,6 +30,11 @@ namespace librender
 			this->indices.resize(this->indicesNumber);
 			requireUpdates(DRAWABLE_BUFFER_INDICES);
 		}
+	}
+
+	void DrawableBase::requireUpdates(uint8_t update)
+	{
+		this->updatesRequired |= update;
 	}
 
 	void DrawableBase::updateBuffers()

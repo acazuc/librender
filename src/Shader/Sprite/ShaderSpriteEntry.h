@@ -45,6 +45,11 @@ namespace librender
 		inline float getScaleY() {return this->scale.y;};
 		void setScale(float scaleX, float scaleY) {setScaleX(scaleX);setScaleY(scaleY);};
 		void setScale(float scale) {setScaleX(scale);setScaleY(scale);};
+		void setTexTopLeft(Vec2 pos);
+		void setTexTopRight(Vec2 pos);
+		void setTexBottomLeft(Vec2 pos);
+		void setTexBottomRight(Vec2 pos);
+		void setTex(Vec2 topLeft, Vec2 topRight, Vec2 bottomLeft, Vec2 bottomRight);
 		void setTexX(float texX);
 		void setTexY(float texY);
 		void setTexPos(float texX, float texY);
