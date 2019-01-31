@@ -7,6 +7,8 @@ namespace librender
 	class Circle : public DrawableBase
 	{
 
+	private:
+
 	public:
 
 	};

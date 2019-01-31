@@ -14,7 +14,7 @@ namespace librender
 		Font *font;
 
 	public:
-		TextBatch();
+		TextBatch(Context *context);
 		void draw();
 		int32_t getLineHeight();
 		void setFont(Font *font);

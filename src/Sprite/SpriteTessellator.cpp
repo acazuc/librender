@@ -5,8 +5,9 @@
 namespace librender
 {
 
-	SpriteTessellator::SpriteTessellator()
-	: texture(nullptr)
+	SpriteTessellator::SpriteTessellator(Context *context)
+	: DrawableTessellator(context)
+	, texture(nullptr)
 	{
 	}
 
@@ -36,12 +37,12 @@ namespace librender
 		addPoint(Vec2(dst.x, org.y), Vec2(texDst.x, texOrg.y), color);
 		addPoint(Vec2(dst.x, dst.y), Vec2(texDst.x, texDst.y), color);
 		addPoint(Vec2(org.x, dst.y), Vec2(texOrg.x, texDst.y), color);
-		this->indices.push_back(base + 0);
-		this->indices.push_back(base + 3);
-		this->indices.push_back(base + 1);
-		this->indices.push_back(base + 2);
-		this->indices.push_back(base + 1);
-		this->indices.push_back(base + 3);
+		addIndice(base + 0);
+		addIndice(base + 3);
+		addIndice(base + 1);
+		addIndice(base + 2);
+		addIndice(base + 1);
+		addIndice(base + 3);
 	}
 
 }

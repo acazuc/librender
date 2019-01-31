@@ -4,8 +4,9 @@
 namespace librender
 {
 
-	TextTessellator::TextTessellator()
-	: font(nullptr)
+	TextTessellator::TextTessellator(Context *context)
+	: DrawableTessellator(context)
+	, font(nullptr)
 	{
 	}
 
@@ -32,12 +33,12 @@ namespace librender
 		addPoint(Vec2(dst.x, org.y), tmp[1], color);
 		addPoint(Vec2(dst.x, dst.y), tmp[2], color);
 		addPoint(Vec2(org.x, dst.y), tmp[3], color);
-		this->indices.push_back(base + 0);
-		this->indices.push_back(base + 3);
-		this->indices.push_back(base + 1);
-		this->indices.push_back(base + 2);
-		this->indices.push_back(base + 1);
-		this->indices.push_back(base + 3);
+		addIndice(base + 0);
+		addIndice(base + 3);
+		addIndice(base + 1);
+		addIndice(base + 2);
+		addIndice(base + 1);
+		addIndice(base + 3);
 	}
 
 	void TextTessellator::addChar(uint32_t character, Vec2 pos, Vec4 color)

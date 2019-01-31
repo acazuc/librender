@@ -1,6 +1,5 @@
 #include "TextBase.h"
 #include "./DrawableBuffers.h"
-#include "../GL.h"
 #include <libunicode/utf8.h>
 
 namespace librender
@@ -21,6 +20,26 @@ namespace librender
 	, mustCalcHeight(false)
 	, mustCalcWidth(false)
 	{
+	}
+
+	void TextBase::fillIndices(std::vector<uint32_t>::iterator indices)
+	{
+		std::copy(this->indices.begin(), this->indices.end(), indices);
+	}
+
+	void TextBase::fillTexCoords(std::vector<Vec2>::iterator texCoords)
+	{
+		std::copy(this->texCoords.begin(), this->texCoords.end(), texCoords);
+	}
+
+	void TextBase::fillVertexes(std::vector<Vec2>::iterator vertexes)
+	{
+		std::copy(this->vertexes.begin(), this->vertexes.end(), vertexes);
+	}
+
+	void TextBase::fillColors(std::vector<Vec4>::iterator colors)
+	{
+		std::copy(this->colors.begin(), this->colors.end(), colors);
 	}
 
 	uint32_t TextBase::getShadowLen()
@@ -44,7 +63,7 @@ namespace librender
 			getFont()->glChar(character, reinterpret_cast<float*>(&this->texCoords[i * 4]));
 		}
 		uint32_t shadowLen = getShadowLen();
-		uint32_t copyCount = this->charsNumber * 4/* * sizeof(*this->texCoords.data())*/;
+		uint32_t copyCount = this->charsNumber * 4;
 		for (uint32_t i = 0; i < shadowLen; ++i)
 			std::copy(this->texCoords.begin(), this->texCoords.begin() + copyCount, this->texCoords.begin() + this->charsNumber * 4 * (i + 1));
 	}
@@ -125,15 +144,15 @@ namespace librender
 	void TextBase::updateIndices()
 	{
 		size_t count = 0;
-		GLuint currentIndice = 0;
+		uint32_t currentIndice = 0;
 		for (size_t i = 0; i < this->indicesNumber / 6; ++i)
 		{
 			indices[count++] = currentIndice + 0;
 			indices[count++] = currentIndice + 3;
 			indices[count++] = currentIndice + 1;
-			indices[count++] = currentIndice + 2;
 			indices[count++] = currentIndice + 1;
 			indices[count++] = currentIndice + 3;
+			indices[count++] = currentIndice + 2;
 			currentIndice += 4;
 		}
 	}
@@ -189,7 +208,12 @@ namespace librender
 			this->charsNumber = newLen;
 			requireUpdates(DRAWABLE_BUFFER_INDICES);
 			uint32_t shadowLen = getShadowLen();
-			resize(this->charsNumber * 4 * (1 + shadowLen), this->charsNumber * 6 * (1 + shadowLen));
+			setVerticesNumber(this->charsNumber * 4 * (1 + shadowLen));
+			setIndicesNumber(this->charsNumber * 6 * (1 + shadowLen));
+			this->texCoords.resize(getVerticesNumber());
+			this->vertexes.resize(getVerticesNumber());
+			this->colors.resize(getVerticesNumber());
+			this->indices.resize(getIndicesNumber());
 			requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
 		}
 		this->text = text;
@@ -218,7 +242,12 @@ namespace librender
 			return;
 		this->shadowSize = shadowSize;
 		uint32_t shadowLen = getShadowLen();
-		resize(this->charsNumber * 4 * (1 + shadowLen), this->charsNumber * 6 * (1 + shadowLen));
+		setVerticesNumber(this->charsNumber * 4 * (1 + shadowLen));
+		setIndicesNumber(this->charsNumber * 6 * (1 + shadowLen));
+		this->texCoords.resize(getVerticesNumber());
+		this->vertexes.resize(getVerticesNumber());
+		this->colors.resize(getVerticesNumber());
+		this->indices.resize(getIndicesNumber());
 		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
 	}
 

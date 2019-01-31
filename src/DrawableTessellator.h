@@ -10,9 +10,15 @@ namespace librender
 	{
 
 	protected:
+		std::vector<uint32_t> indices;
+		std::vector<Vec2> texCoords;
+		std::vector<Vec2> vertexes;
+		std::vector<Vec4> colors;
 		void addPoint(Vec2 vertex, Vec2 texCoords, Vec4 color);
+		void addIndice(uint32_t indice);
 
 	public:
+		DrawableTessellator(Context *context);
 		void clear();
 
 	};

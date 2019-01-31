@@ -1,6 +1,7 @@
 #include "SpriteBase.h"
 #include "../DrawableBuffers.h"
 #include <cstring>
+#include <iostream>
 
 namespace librender
 {
@@ -8,30 +9,42 @@ namespace librender
 	SpriteBase::SpriteBase()
 	: size(0)
 	{
-		this->verticesNumber = 4;
-		this->texCoords.resize(4);
-		texCoords[0] = Vec2(0, 0);
-		texCoords[1] = Vec2(1, 0);
-		texCoords[2] = Vec2(1, 1);
-		texCoords[3] = Vec2(0, 1);
-		this->colors.resize(4, Vec4(1));
-		this->vertexes.resize(4, Vec2(0));
-		this->indicesNumber = 6;
-		this->indices.reserve(6);
-		this->indices.push_back(0);
-		this->indices.push_back(1);
-		this->indices.push_back(2);
-		this->indices.push_back(2);
-		this->indices.push_back(3);
-		this->indices.push_back(0);
+		setVerticesNumber(4);
+		setIndicesNumber(6);
+		this->texTopLeft = Vec2(0, 0);
+		this->texBotRight = Vec2(1, 1);
+		std::fill(this->colors.begin(), this->colors.end(), Vec4(1));
 	}
 
-	void SpriteBase::updateVertexes()
+	void SpriteBase::fillIndices(std::vector<uint32_t>::iterator indices)
 	{
-		this->vertexes[0] = Vec2(0, 0);
-		this->vertexes[1] = Vec2(this->size.x, 0);
-		this->vertexes[2] = this->size;
-		this->vertexes[3] = Vec2(0, this->size.y);
+		indices[0] = 0;
+		indices[1] = 3;
+		indices[2] = 1;
+		indices[3] = 1;
+		indices[4] = 3;
+		indices[5] = 2;
+	}
+
+	void SpriteBase::fillTexCoords(std::vector<Vec2>::iterator texCoords)
+	{
+		texCoords[0] = Vec2(this->texTopLeft.x, this->texTopLeft.y);
+		texCoords[1] = Vec2(this->texBotRight.x, this->texTopLeft.y);
+		texCoords[2] = Vec2(this->texBotRight.x, this->texBotRight.y);
+		texCoords[3] = Vec2(this->texTopLeft.x, this->texBotRight.y);
+	}
+
+	void SpriteBase::fillVertexes(std::vector<Vec2>::iterator vertexes)
+	{
+		vertexes[0] = Vec2(0, 0);
+		vertexes[1] = Vec2(this->size.x, 0);
+		vertexes[2] = Vec2(this->size.x, this->size.y);
+		vertexes[3] = Vec2(0, this->size.y);
+	}
+
+	void SpriteBase::fillColors(std::vector<Vec4>::iterator colors)
+	{
+		std::copy(this->colors.begin(), this->colors.end(), colors);
 	}
 
 	void SpriteBase::setColor(Color color)
@@ -90,74 +103,54 @@ namespace librender
 		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
-	void SpriteBase::setTexX(float texX)
+	void SpriteBase::setTexLeft(float left)
 	{
-		float delta = texX - this->texCoords[0].x;
-		if (!delta)
-			return;
-		this->texCoords[0].x = texX;
-		this->texCoords[3].x = texX;
-		this->texCoords[1].x += delta;
-		this->texCoords[2].x += delta;
+		this->texTopLeft.x = left;
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
-	float SpriteBase::getTexX()
+	void SpriteBase::setTexRight(float right)
 	{
-		return this->texCoords[0].x;
-	}
-
-	void SpriteBase::setTexY(float texY)
-	{
-		float delta = texY - this->texCoords[0].y;
-		if (!delta)
-			return;
-		this->texCoords[0].y = texY;
-		this->texCoords[1].y = texY;
-		this->texCoords[2].y += delta;
-		this->texCoords[3].y += delta;
+		this->texBotRight.x = right;
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
-	float SpriteBase::getTexY()
+	void SpriteBase::setTexTop(float top)
 	{
-		return this->texCoords[0].y;
-	}
-
-	void SpriteBase::setTexPos(float texX, float texY)
-	{
-		setTexX(texX);
-		setTexY(texY);
-	}
-
-	void SpriteBase::setTexWidth(float texWidth)
-	{
-		float delta = texWidth - (this->texCoords[1].x - this->texCoords[0].x);
-		if (!delta)
-			return;
-		this->texCoords[1].x = texWidth + this->texCoords[0].x;
-		this->texCoords[2].x = texWidth + this->texCoords[0].x;
+		this->texTopLeft.y = top;
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
-	float SpriteBase::getTexWidth()
+	void SpriteBase::setTexBot(float bot)
 	{
-		return this->texCoords[1].x - this->texCoords[0].x;
-	}
-
-	void SpriteBase::setTexHeight(float texHeight)
-	{
-		float delta = texHeight - (this->texCoords[3].y - this->texCoords[0].y);
-		if (!delta)
-			return;
-		this->texCoords[2].y = texHeight + this->texCoords[0].y;
-		this->texCoords[3].y = texHeight + this->texCoords[0].y;
+		this->texBotRight.y = bot;
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
-	float SpriteBase::getTexHeight()
+	void SpriteBase::setTexTopBot(Vec2 topBot)
 	{
-		return this->texCoords[2].y - this->texCoords[0].y;
+		this->texTopLeft.y = topBot.x;
+		this->texBotRight.y = topBot.y;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
+	}
+
+	void SpriteBase::setTexLeftRight(Vec2 leftRight)
+	{
+		this->texTopLeft.x = leftRight.x;
+		this->texBotRight.x = leftRight.y;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
+	}
+
+	void SpriteBase::setTexTopLeft(Vec2 topLeft)
+	{
+		this->texTopLeft = topLeft;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
+	}
+
+	void SpriteBase::setTexBotRight(Vec2 botRight)
+	{
+		this->texBotRight = botRight;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 	void SpriteBase::setWidth(float width)
@@ -186,18 +179,26 @@ namespace librender
 		return this->size.y * this->scale.y;
 	}
 
+	void SpriteBase::setSize(float width, float height)
+	{
+		setWidth(width);
+		setHeight(height);
+	}
+
 	int32_t SpriteBase::getTextureWidth()
 	{
-		if (!getTexture())
+		Texture *texture = getTexture();
+		if (!texture)
 			return 0;
-		return getTexture()->getWidth();
+		return texture->getWidth();
 	}
 
 	int32_t SpriteBase::getTextureHeight()
 	{
-		if (!getTexture())
+		Texture *texture = getTexture();
+		if (!texture)
 			return 0;
-		return getTexture()->getHeight();
+		return texture->getHeight();
 	}
 
 }

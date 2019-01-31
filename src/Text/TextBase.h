@@ -12,6 +12,10 @@ namespace librender
 	{
 
 	protected:
+		std::vector<uint32_t> indices;
+		std::vector<Vec2> texCoords;
+		std::vector<Vec2> vertexes;
+		std::vector<Vec4> colors;
 		std::string text;
 		Color shadowColor;
 		Color color;
@@ -35,6 +39,10 @@ namespace librender
 
 	public:
 		TextBase();
+		void fillIndices(std::vector<uint32_t>::iterator indices) override;
+		void fillTexCoords(std::vector<Vec2>::iterator texCoords) override;
+		void fillVertexes(std::vector<Vec2>::iterator vertexes) override;
+		void fillColors(std::vector<Vec4>::iterator colors) override;
 		void setText(std::string &text);
 		inline std::string &getText() {return this->text;};
 		inline void setShadow(int32_t x, int32_t y, int32_t size, Color color) {setShadowPos(x, y);setShadowSize(size);setShadowColor(color);};

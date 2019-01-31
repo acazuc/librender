@@ -4,8 +4,10 @@
 namespace librender
 {
 
-	DrawableBatch::DrawableBatch()
-	: mustResize(true)
+	DrawableBatch::DrawableBatch(Context *context)
+	: Drawable(context)
+	, dirtyVertices(false)
+	, dirtyIndices(false)
 	{
 	}
 
@@ -15,44 +17,30 @@ namespace librender
 			this->childs[i]->setParent(nullptr);
 	}
 
-	void DrawableBatch::updateVerticesNumber()
-	{
-		this->verticesNumber = 0;
-		for (size_t i = 0; i < this->childs.size(); ++i)
-			this->verticesNumber += this->childs[i]->getVerticesNumber();
-	}
-
-	void DrawableBatch::updateIndicesNumber()
-	{
-		this->indicesNumber = 0;
-		for (size_t i = 0; i < this->childs.size(); ++i)
-			this->indicesNumber += this->childs[i]->getIndicesNumber();
-	}
-
-	void DrawableBatch::updateTexCoords()
+	void DrawableBatch::fillTexCoords(std::vector<Vec2>::iterator texCoords)
 	{
 		size_t count = 0;
 		for (size_t i = 0; i < this->childs.size(); ++i)
 		{
 			DrawableBatched *child = this->childs[i];
-			if (this->mustResize || child->getChanges() & DRAWABLE_BUFFER_TEX_COORDS)
+			if (this->dirtyVertices || child->getChanges() & DRAWABLE_BUFFER_TEX_COORDS)
 			{
-				std::copy(child->getTexCoords().begin(), child->getTexCoords().end(), this->texCoords.begin() + count);
+				child->fillTexCoords(texCoords + count);
 				child->removeChanges(DRAWABLE_BUFFER_TEX_COORDS);
 			}
-			count += child->getTexCoords().size();
+			count += child->getVerticesNumber();
 		}
 	}
 
-	void DrawableBatch::updateVertexes()
+	void DrawableBatch::fillVertexes(std::vector<Vec2>::iterator vertexes)
 	{
 		size_t count = 0;
 		for (size_t i = 0; i < this->childs.size(); ++i)
 		{
 			DrawableBatched *child = this->childs[i];
-			if (this->mustResize || child->getChanges() & DRAWABLE_BUFFER_VERTEXES)
+			if (this->dirtyVertices || child->getChanges() & DRAWABLE_BUFFER_VERTEXES)
 			{
-				std::copy(child->getVertexes().begin(), child->getVertexes().end(), this->vertexes.begin() + count);
+				child->fillVertexes(vertexes + count);
 				child->removeChanges(DRAWABLE_BUFFER_VERTEXES);
 				float x = child->getX() - this->getX();
 				float y = child->getY() - this->getY();
@@ -60,90 +48,95 @@ namespace librender
 				Vec2 scale(child->getScaleX(), child->getScaleY());
 				if (pos.x || pos.y || scale.x != 1 || scale.y != 1)
 				{
-					for (size_t i = count; i < count + child->getVertexes().size(); ++i)
+					for (size_t i = count; i < count + child->getVerticesNumber(); ++i)
 					{
-						this->vertexes[i] *= scale;
-						this->vertexes[i] += pos;
+						vertexes[i] *= scale;
+						vertexes[i] += pos;
 					}
 				}
 			}
-			count += child->getVertexes().size();
+			count += child->getVerticesNumber();
 		}
 	}
 
-	void DrawableBatch::updateIndices()
+	void DrawableBatch::fillIndices(std::vector<uint32_t>::iterator indices)
 	{
 		size_t count = 0;
 		size_t offset = 0;
 		for (size_t i = 0; i < this->childs.size(); ++i)
 		{
 			DrawableBatched *child = this->childs[i];
-			if (this->mustResize || child->getChanges() & DRAWABLE_BUFFER_INDICES)
+			if (this->dirtyIndices || child->getChanges() & DRAWABLE_BUFFER_INDICES)
 			{
-				std::copy(child->getIndices().begin(), child->getIndices().end(), this->indices.begin() + count);
-				for (size_t i = count; i < count + child->getIndices().size(); ++i)
-					this->indices[i] += offset;
+				child->fillIndices(indices + count);
 				child->removeChanges(DRAWABLE_BUFFER_INDICES);
+				for (size_t i = count; i < count + child->getIndicesNumber(); ++i)
+					indices[i] += offset;
 			}
 			offset += child->getVerticesNumber();
-			count += child->getIndices().size();
+			count += child->getIndicesNumber();
 		}
 	}
 
-	void DrawableBatch::updateColors()
+	void DrawableBatch::fillColors(std::vector<Vec4>::iterator colors)
 	{
 		size_t count = 0;
 		for (size_t i = 0; i < this->childs.size(); ++i)
 		{
 			DrawableBatched *child = this->childs[i];
-			if (this->mustResize || child->getChanges() & DRAWABLE_BUFFER_COLORS)
+			if (this->dirtyVertices || child->getChanges() & DRAWABLE_BUFFER_COLORS)
 			{
-				std::copy(child->getColors().begin(), child->getColors().end(), this->colors.begin() + count);
+				child->fillColors(colors + count);
 				child->removeChanges(DRAWABLE_BUFFER_COLORS);
 			}
-			count += child->getColors().size();
+			count += child->getVerticesNumber();
 		}
 	}
 
-	void DrawableBatch::resize()
+	void DrawableBatch::rebuildVertices()
 	{
-		updateVerticesNumber();
-		updateIndicesNumber();
-		this->texCoords.resize(this->verticesNumber);
-		this->vertexes.resize(this->verticesNumber);
-		this->indices.resize(this->indicesNumber);
-		this->colors.resize(this->verticesNumber);
+		this->verticesNumber = 0;
+		for (size_t i = 0; i < this->childs.size(); ++i)
+			this->verticesNumber += this->childs[i]->getVerticesNumber();
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
+	}
+
+	void DrawableBatch::rebuildIndices()
+	{
+		this->indicesNumber = 0;
+		for (size_t i = 0; i < this->childs.size(); ++i)
+			this->indicesNumber += this->childs[i]->getIndicesNumber();
+		requireUpdates(DRAWABLE_BUFFER_INDICES);
 	}
 
 	bool DrawableBatch::update()
 	{
 		for (size_t i = 0; i < this->childs.size(); ++i)
 			this->childs[i]->update();
-		if (this->mustResize)
-			resize();
+		if (this->dirtyVertices)
+			rebuildVertices();
+		if (this->dirtyIndices)
+			rebuildIndices();
 		if (!this->verticesNumber)
 			return false;
-		if (this->mustResize)
-			requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
-		if (this->updatesRequired & DRAWABLE_BUFFER_TEX_COORDS)
-			updateTexCoords();
-		if (this->updatesRequired & DRAWABLE_BUFFER_VERTEXES)
-			updateVertexes();
-		if (this->updatesRequired & DRAWABLE_BUFFER_INDICES)
-			updateIndices();
-		if (this->updatesRequired & DRAWABLE_BUFFER_COLORS)
-			updateColors();
-		if (this->mustResize)
-			setMustResize(false);
-		this->updatesRequired = 0;
 		return true;
+	}
+
+	void DrawableBatch::draw()
+	{
+		Drawable::draw();
+		this->dirtyVertices = false;
+		this->dirtyIndices = false;
 	}
 
 	void DrawableBatch::addChild(DrawableBatched *child)
 	{
 		child->setParent(this);
 		this->childs.push_back(child);
-		this->mustResize = true;
+		if (child->getVerticesNumber())
+			setDirtyVertices();
+		if (child->getIndicesNumber())
+			setDirtyIndices();
 		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
 	}
 
@@ -155,7 +148,10 @@ namespace librender
 			{
 				this->childs.erase(this->childs.begin() + i);
 				child->setParent(nullptr);
-				setMustResize(true);
+				if (child->getVerticesNumber())
+					setDirtyVertices();
+				if (child->getIndicesNumber())
+					setDirtyIndices();
 				requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
 				return;
 			}
@@ -167,7 +163,8 @@ namespace librender
 		for (size_t i = 0; i < this->childs.size(); ++i)
 			this->childs[i]->setParent(nullptr);
 		this->childs.clear();
-		setMustResize(true);
+		setDirtyVertices();
+		setDirtyIndices();
 		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
 	}
 

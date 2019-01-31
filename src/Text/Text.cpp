@@ -5,10 +5,12 @@
 namespace librender
 {
 
-	Text::Text()
-	: font(nullptr)
+	Text::Text(Context *context)
+	: Drawable(context)
+	, font(nullptr)
 	, lastVerticesNumber(0)
 	{
+		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS | DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	void Text::draw()

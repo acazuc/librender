@@ -14,12 +14,13 @@ namespace librender
 	protected:
 		DrawableBatch *parent;
 		uint8_t changes;
+		void setVerticesNumber(uint32_t verticesNumber) override;
+		void setIndicesNumber(uint32_t indicesNumber) override;
 
 	public:
 		DrawableBatched();
 		~DrawableBatched();
-		void requireUpdates(uint8_t updates);
-		void resize(uint32_t vertices, uint32_t indices);
+		void requireUpdates(uint8_t updates) override;
 		void update();
 		virtual void setParent(DrawableBatch *parent);
 		void setX(float x);

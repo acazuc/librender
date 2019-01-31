@@ -3,6 +3,7 @@
 
 # include "../Texture/Texture.h"
 # include "../DrawableBase.h"
+# include <array>
 
 namespace librender
 {
@@ -11,11 +12,17 @@ namespace librender
 	{
 
 	private:
+		std::array<Vec4, 4> colors;
+		Vec2 texTopLeft;
+		Vec2 texBotRight;
 		Vec2 size;
-		void updateVertexes();
 
 	public:
 		SpriteBase();
+		void fillIndices(std::vector<uint32_t>::iterator indices) override;
+		void fillTexCoords(std::vector<Vec2>::iterator texCoords) override;
+		void fillVertexes(std::vector<Vec2>::iterator vertexes) override;
+		void fillColors(std::vector<Vec4>::iterator colors) override;
 		void setColor(Color color);
 		void setTopColor(Color color);
 		void setBotColor(Color color);
@@ -26,21 +33,19 @@ namespace librender
 		void setBotLeftColor(Color color);
 		void setBotRightColor(Color color);
 		virtual Texture *getTexture() {return nullptr;};
-		void setTexX(float texX);
-		float getTexX();
-		void setTexY(float texY);
-		float getTexY();
-		void setTexPos(float texX, float texY);
-		void setTexWidth(float texWidth);
-		float getTexWidth();
-		void setTexHeight(float texHeight);
-		float getTexHeight();
-		inline void setTexSize(float texWidth, float texHeight) {setTexWidth(texWidth);setTexHeight(texHeight);};
-		virtual void setWidth(float width);
+		void setTexLeft(float left);
+		void setTexRight(float right);
+		void setTexTop(float top);
+		void setTexBot(float bot);
+		void setTexTopBot(Vec2 topBot);
+		void setTexLeftRight(Vec2 leftRight);
+		void setTexTopLeft(Vec2 topLeft);
+		void setTexBotRight(Vec2 botRight);
+		void setWidth(float width);
 		float getWidth();
-		virtual void setHeight(float height);
+		void setHeight(float height);
 		float getHeight();
-		inline void setSize(float width, float height) {setWidth(width);setHeight(height);};
+		void setSize(float width, float height);
 		int32_t getTextureWidth();
 		int32_t getTextureHeight();
 

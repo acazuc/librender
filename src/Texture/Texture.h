@@ -9,8 +9,11 @@ namespace librender
 
 	enum TextureFilterType
 	{
+		TEXTURE_FILTER_NEAREST,
 		TEXTURE_FILTER_LINEAR,
-		TEXTURE_FILTER_NEAREST
+		TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST,
+		TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST,
+		TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR,
 	};
 
 	enum TextureWrapType
@@ -21,16 +24,32 @@ namespace librender
 		TEXTURE_WRAP_CLAMP_TO_BORDER
 	};
 
+	enum TextureFormat
+	{
+		TEXTURE_BGRA8,
+		TEXTURE_RGB8,
+		TEXTURE_RGB_DXT1,
+		TEXTURE_RGBA_DXT1,
+		TEXTURE_RGBA_DXT3,
+		TEXTURE_RGBA_DXT5,
+	};
+
 	class Texture
 	{
 
 	private:
+		uint16_t format : 3;
+		uint16_t wrapS : 2;
+		uint16_t wrapT : 2;
+		uint16_t filter : 3;
+		uint16_t anisotropicLevel : 5;
+		uint16_t generateMipmap : 1;
 		uint32_t width;
 		uint32_t height;
 		uint32_t id;
+		void *data;
 
 	public:
-		Texture(void *data, uint32_t width, uint32_t height);
 		Texture();
 		~Texture();
 		void bind();

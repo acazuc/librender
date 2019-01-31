@@ -12,7 +12,7 @@ RANLIB = gcc-ranlib
 
 RANLIBFLAGS =
 
-CLFAGS = -std=c++14 -Wall -Wextra -O3 -pipe -fno-rtti
+CLFAGS = -std=c++11 -Wall -Wextra -O3 -pipe -fno-rtti
 
 INCLUDES_PATH = -I src
 INCLUDES_PATH+= -I lib
@@ -68,6 +68,8 @@ SRCS_NAME = Color.cpp \
 	    Sprite/SpriteTessellator.cpp \
 	    Texture/Texture.cpp \
 	    Texture/TexturePacker.cpp \
+	    Context/Context.cpp \
+	    Context/OpenGL1/OpenGL1Context.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 
@@ -100,6 +102,9 @@ odir:
 	@mkdir -p $(OBJS_PATH)Vec
 	@mkdir -p $(OBJS_PATH)Mat
 	@mkdir -p $(OBJS_PATH)Texture
+	@mkdir -p $(OBJS_PATH)Context
+	@mkdir -p $(OBJS_PATH)Context/OpenGL1
+	@mkdir -p $(OBJS_PATH)Context/OpenGL2
 
 clean:
 	@echo " - Cleaning objs"

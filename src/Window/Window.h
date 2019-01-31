@@ -10,7 +10,6 @@ struct GLFWwindow;
 namespace librender
 {
 
-
 	enum WindowCursor
 	{
 		WINDOW_CURSOR_HRESIZE,
@@ -20,6 +19,8 @@ namespace librender
 		WINDOW_CURSOR_IBEAM,
 		WINDOW_CURSOR_HAND
 	};
+
+	class Context;
 
 	class Window
 	{
@@ -34,6 +35,7 @@ namespace librender
 		GLFWcursor *crossCursor;
 		GLFWcursor *ibeamCursor;
 		GLFWcursor *handCursor;
+		Context *context;
 		bool fullscreen;
 		bool focused;
 		int currentCursor;
@@ -48,6 +50,7 @@ namespace librender
 	public:
 		Window(std::string title, int width, int height);
 		~Window();
+		Context *getContext();
 		void show();
 		void enableFullscreen();
 		void disableFullscreen();

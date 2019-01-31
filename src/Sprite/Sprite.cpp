@@ -5,9 +5,11 @@
 namespace librender
 {
 
-	Sprite::Sprite()
-	: texture(nullptr)
+	Sprite::Sprite(Context *context)
+	: Drawable(context)
+	, texture(nullptr)
 	{
+		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS | DRAWABLE_BUFFER_VERTEXES);
 	}
 
 	void Sprite::draw()

@@ -17,7 +17,7 @@ namespace librender
 		void resize(uint32_t len);
 
 	public:
-		Text();
+		Text(Context *context);
 		void draw();
 		void setFont(Font *font);
 		inline Font *getFont() {return this->font;};

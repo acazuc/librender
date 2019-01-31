@@ -17,6 +17,20 @@ namespace librender
 			this->parent->removeChild(this);
 	}
 
+	void DrawableBatched::setVerticesNumber(uint32_t verticesNumber)
+	{
+		if (this->parent)
+			this->parent->setDirtyVertices();
+		DrawableBase::setVerticesNumber(verticesNumber);
+	}
+
+	void DrawableBatched::setIndicesNumber(uint32_t indicesNumber)
+	{
+		if (this->parent)
+			this->parent->setDirtyIndices();
+		DrawableBase::setIndicesNumber(indicesNumber);
+	}
+
 	void DrawableBatched::requireUpdates(uint8_t updates)
 	{
 		DrawableBase::requireUpdates(updates);
@@ -28,13 +42,6 @@ namespace librender
 		this->changes |= changes;
 		if (this->parent)
 			this->parent->requireUpdates(changes);
-	}
-
-	void DrawableBatched::resize(uint32_t vertices, uint32_t indices)
-	{
-		if (this->parent)
-			this->parent->setMustResize(true);
-		DrawableBase::resize(vertices, indices);
 	}
 
 	void DrawableBatched::update()

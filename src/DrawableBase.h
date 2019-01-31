@@ -13,33 +13,30 @@ namespace librender
 	{
 
 	protected:
-		std::vector<uint32_t> indices;
-		std::vector<Vec2> texCoords;
-		std::vector<Vec2> vertexes;
-		std::vector<Vec4> colors;
 		Vec2 scale;
 		Vec2 pos;
 		uint32_t verticesNumber;
 		uint32_t indicesNumber;
 		uint8_t updatesRequired;
 		uint8_t buffers;
-		inline virtual void updateTexCoords() {};
-		inline virtual void updateVertexes() {};
-		inline virtual void updateIndices() {};
-		inline virtual void updateColors() {};
+		virtual void updateTexCoords() {};
+		virtual void updateVertexes() {};
+		virtual void updateIndices() {};
+		virtual void updateColors() {};
+		virtual void setVerticesNumber(uint32_t verticesNumber);
+		virtual void setIndicesNumber(uint32_t indicesNumber);
 		virtual void updateBuffers();
 
 	public:
 		DrawableBase();
 		virtual ~DrawableBase() {};
-		virtual void resize(uint32_t vertices, uint32_t indices);
-		virtual void requireUpdates(uint8_t updates);
-		inline std::vector<uint32_t> &getIndices() {return this->indices;};
-		inline std::vector<Vec2> &getTexCoords() {return this->texCoords;};
-		inline std::vector<Vec2> &getVertexes() {return this->vertexes;};
-		inline std::vector<Vec4> &getColors() {return this->colors;};
+		virtual void fillIndices(std::vector<uint32_t>::iterator indices);
+		virtual void fillTexCoords(std::vector<Vec2>::iterator texCoords);
+		virtual void fillVertexes(std::vector<Vec2>::iterator vertexes);
+		virtual void fillColors(std::vector<Vec4>::iterator colors);
 		inline uint32_t getVerticesNumber() {return this->verticesNumber;};
 		inline uint32_t getIndicesNumber() {return this->indicesNumber;};
+		virtual void requireUpdates(uint8_t updates);
 		inline virtual void setScaleX(float scaleX) {this->scale.x = scaleX;};
 		inline float getScaleX() {return this->scale.x;};
 		inline virtual void setScaleY(float scaleY) {this->scale.y = scaleY;};

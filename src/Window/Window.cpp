@@ -1,4 +1,5 @@
 #include "Window.h"
+#include "../Context/OpenGL1/OpenGL1Context.h"
 #include "../GL.h"
 #include <libunicode/utf8.h>
 #include <iostream>
@@ -11,7 +12,8 @@ namespace librender
 	int32_t Window::maxMSAA = -1;
 
 	Window::Window(std::string title, int width, int height)
-	: focused(true)
+	: context(nullptr)
+	, focused(true)
 	, mouseX(0)
 	, mouseY(0)
 	, width(width)
@@ -54,6 +56,7 @@ namespace librender
 
 	Window::~Window()
 	{
+		delete (this->context);
 		if (this->window)
 			glfwDestroyWindow(this->window);
 		if (this->hResizeCursor)
@@ -68,6 +71,13 @@ namespace librender
 			glfwDestroyCursor(this->ibeamCursor);
 		if (this->handCursor)
 			glfwDestroyCursor(this->handCursor);
+	}
+
+	Context *Window::getContext()
+	{
+		if (!this->context)
+			return this->context = new OpenGL1Context(this);
+		return this->context;
 	}
 
 	void Window::show()

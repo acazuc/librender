@@ -4,14 +4,6 @@
 namespace librender
 {
 
-	Texture::Texture(void *data, uint32_t width, uint32_t height)
-	{
-		glGenTextures(1, &this->id);
-		setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);
-		setWrap(TEXTURE_WRAP_CLAMP_TO_BORDER, TEXTURE_WRAP_CLAMP_TO_BORDER);
-		setData(data, width, height);
-	}
-
 	Texture::Texture()
 	{
 		glGenTextures(1, &this->id);

@@ -6,8 +6,9 @@
 namespace librender
 {
 
-	TextBatch::TextBatch()
-	: font(nullptr)
+	TextBatch::TextBatch(Context *context)
+	: DrawableBatch(context)
+	, font(nullptr)
 	{
 	}
 

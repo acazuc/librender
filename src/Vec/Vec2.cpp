@@ -275,7 +275,7 @@ namespace librender
 	template<typename T>
 	T dot(TVec2<T> vec1, TVec2<T> vec2)
 	{
-		return vec1.x * vec2.x + vec1.y;
+		return vec1.x * vec2.x + vec1.y * vec2.y;
 	}
 
 	template<typename T>

@@ -6,8 +6,9 @@
 namespace librender
 {
 
-	SpriteBatch::SpriteBatch()
-	: texture(nullptr)
+	SpriteBatch::SpriteBatch(Context *context)
+	: DrawableBatch(context)
+	, texture(nullptr)
 	{
 	}
 

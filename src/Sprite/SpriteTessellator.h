@@ -14,7 +14,7 @@ namespace librender
 		Texture *texture;
 
 	public:
-		SpriteTessellator();
+		SpriteTessellator(Context *context);
 		void draw();
 		void addQuad(Vec2 pos, Vec2 size, Vec2 texOrg, Vec2 texSize, Vec4 color);
 		inline void setTexture(Texture *texture) {this->texture = texture;};
