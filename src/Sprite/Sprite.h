@@ -14,7 +14,7 @@ namespace librender
 		Texture *texture;
 
 	public:
-		Sprite(Context *context);
+		Sprite(Context &context);
 		void draw();
 		void setTexture(Texture *texture);
 		inline Texture *getTexture() {return this->texture;};

@@ -1,7 +1,6 @@
 #ifndef LIBRENDER_FONT_H
 # define LIBRENDER_FONT_H
 
-# include "../Texture/Texture.h"
 # include "./FontModel.h"
 # include "../Color.h"
 # include "./Glyph.h"
@@ -64,7 +63,7 @@ namespace librender
 		Glyph *getGlyph(uint32_t character);
 		int32_t getWidth(std::string &text);
 		int32_t getHeight(std::string &text);
-		void bind();
+		void bind(uint32_t sampler);
 		void glUpdate();
 		void glChar(uint32_t character, float *texCoords);
 		void glGlyph(Glyph *glyph, float *texCoords);

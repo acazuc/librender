@@ -11,15 +11,13 @@ namespace librender
 
 	Font::Font(FontModel &parent, uint32_t size)
 	: parent(parent)
-	, textureHeight(0)
-	, textureWidth(0)
+	, textureHeight(CLUSTER_SIZE)
+	, textureWidth(CLUSTER_SIZE)
 	, revision(1)
 	, height(0)
 	, size(size)
 	{
-		this->texture.bind();
-		this->texture.setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);
-		this->texture.setWrap(TEXTURE_WRAP_CLAMP_TO_BORDER, TEXTURE_WRAP_CLAMP_TO_BORDER);
+		this->parent.getContext().createTexture(&this->texture, this->textureWidth, this->textureHeight, TEXTURE_B8G8R8A8, 1);
 		if (!this->parent.setSize(this->size))
 			throw std::exception();
 		this->height = this->parent.getFtFace()->size->metrics.height >> 6;
@@ -30,10 +28,10 @@ namespace librender
 	Font::~Font()
 	{
 	}
-	
-	void Font::bind()
+
+	void Font::bind(uint32_t sampler)
 	{
-		this->texture.bind();
+		this->parent.getContext().setSamplerTexture(sampler, &this->texture);
 	}
 
 	Glyph *Font::loadGlyph(uint32_t character)
@@ -187,9 +185,8 @@ namespace librender
 		if (!this->tmpGlyphs.size())
 			return;
 		bool needUpdate = false;
-		std::vector<char> textureDatas(this->textureWidth * this->textureHeight);
-		this->texture.bind();
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
+		std::vector<char> textureDatas(this->textureWidth * this->textureHeight * 4);
+		this->parent.getContext().getTextureDatas(&this->texture, 0, textureDatas.data());
 		for (uint32_t i = 0; i < this->tmpGlyphs.size(); ++i)
 		{
 			FontTmpGlyph &tmpGlyph = this->tmpGlyphs[i];
@@ -233,7 +230,7 @@ namespace librender
 		this->tmpGlyphs.clear();
 		if (needUpdate)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, this->textureWidth, this->textureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
+			this->parent.getContext().updateTexture(&this->texture, 0, textureDatas.data(), textureDatas.size());
 			++this->revision;
 		}
 	}

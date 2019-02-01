@@ -4,7 +4,7 @@
 namespace librender
 {
 
-	DrawableBatch::DrawableBatch(Context *context)
+	DrawableBatch::DrawableBatch(Context &context)
 	: Drawable(context)
 	, dirtyVertices(false)
 	, dirtyIndices(false)

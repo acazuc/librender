@@ -2,7 +2,7 @@
 # define SPRITE_TESSELLATOR_H
 
 # include "../DrawableTessellator.h"
-# include "../Texture/Texture.h"
+# include "../Context/Context.h"
 
 namespace librender
 {
@@ -14,7 +14,7 @@ namespace librender
 		Texture *texture;
 
 	public:
-		SpriteTessellator(Context *context);
+		SpriteTessellator(Context &context);
 		void draw();
 		void addQuad(Vec2 pos, Vec2 size, Vec2 texOrg, Vec2 texSize, Vec4 color);
 		inline void setTexture(Texture *texture) {this->texture = texture;};

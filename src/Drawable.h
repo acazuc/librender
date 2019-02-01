@@ -11,22 +11,18 @@ namespace librender
 	{
 
 	protected:
-		/*std::vector<uint32_t> indices;
-		std::vector<Vec2> texCoords;
-		std::vector<Vec2> vertexes;
-		std::vector<Vec4> colors;*/
 		VertexArray vertexArray;
+		Context &context;
 		Buffer texCoords;
 		Buffer vertexes;
 		Buffer indices;
 		Buffer colors;
-		Context *context;
 		uint32_t shapeType;
 		uint8_t buffersChanged;
 		bool initialized;
 
 	public:
-		Drawable(Context *context);
+		Drawable(Context &context);
 		~Drawable();
 		virtual void draw();
 		void requireUpdates(uint8_t updates) override;

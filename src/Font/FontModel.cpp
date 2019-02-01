@@ -6,7 +6,8 @@ namespace librender
 
 	FT_Library FontModel::ftLib = nullptr;
 
-	FontModel::FontModel(std::string filename)
+	FontModel::FontModel(Context &context, std::string filename)
+	: context(context)
 	{
 		if (!FontModel::ftLib)
 		{
@@ -18,7 +19,8 @@ namespace librender
 		_load();
 	}
 
-	FontModel::FontModel(char *data, size_t len)
+	FontModel::FontModel(Context &context, char *data, size_t len)
+	: context(context)
 	{
 		if (!FontModel::ftLib)
 		{

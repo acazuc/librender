@@ -5,7 +5,7 @@
 namespace librender
 {
 
-	Sprite::Sprite(Context *context)
+	Sprite::Sprite(Context &context)
 	: Drawable(context)
 	, texture(nullptr)
 	{
@@ -17,7 +17,7 @@ namespace librender
 		if (this->texture)
 		{
 			this->buffers |= DRAWABLE_BUFFER_TEX_COORDS;
-			this->texture->bind();
+			glBindTexture(GL_TEXTURE_2D, texture->native.ui);
 		}
 		else
 		{

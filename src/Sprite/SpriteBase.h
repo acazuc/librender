@@ -1,8 +1,9 @@
 #ifndef LIBRENDER_SPRITE_BASE_H
 # define LIBRENDER_SPRITE_BASE_H
 
-# include "../Texture/Texture.h"
+# include "../Context/Context.h"
 # include "../DrawableBase.h"
+# include "../Color.h"
 # include <array>
 
 namespace librender

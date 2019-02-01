@@ -5,7 +5,7 @@
 namespace librender
 {
 
-	Text::Text(Context *context)
+	Text::Text(Context &context)
 	: Drawable(context)
 	, font(nullptr)
 	, lastVerticesNumber(0)

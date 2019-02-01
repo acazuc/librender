@@ -18,7 +18,7 @@ namespace librender
 		void addIndice(uint32_t indice);
 
 	public:
-		DrawableTessellator(Context *context);
+		DrawableTessellator(Context &context);
 		void clear();
 
 	};

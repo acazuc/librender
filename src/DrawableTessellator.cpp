@@ -4,7 +4,7 @@
 namespace librender
 {
 
-	DrawableTessellator::DrawableTessellator(Context *context)
+	DrawableTessellator::DrawableTessellator(Context &context)
 	: Drawable(context)
 	{
 	}

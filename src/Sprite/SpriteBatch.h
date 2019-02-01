@@ -1,7 +1,6 @@
 #ifndef LIBRENDER_SPRITE_BATCH_H
 # define LIBRENDER_SPRITE_BATCH_H
 
-# include "../Texture/Texture.h"
 # include "../DrawableBatch.h"
 
 namespace librender
@@ -14,7 +13,7 @@ namespace librender
 		Texture *texture;
 
 	public:
-		SpriteBatch(Context *context);
+		SpriteBatch(Context &context);
 		void draw();
 		void setTexture(Texture *texture);
 		inline Texture *getTexture() {return this->texture;};

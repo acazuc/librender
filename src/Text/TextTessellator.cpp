@@ -4,7 +4,7 @@
 namespace librender
 {
 
-	TextTessellator::TextTessellator(Context *context)
+	TextTessellator::TextTessellator(Context &context)
 	: DrawableTessellator(context)
 	, font(nullptr)
 	{

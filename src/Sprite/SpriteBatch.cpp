@@ -6,7 +6,7 @@
 namespace librender
 {
 
-	SpriteBatch::SpriteBatch(Context *context)
+	SpriteBatch::SpriteBatch(Context &context)
 	: DrawableBatch(context)
 	, texture(nullptr)
 	{
@@ -19,7 +19,7 @@ namespace librender
 		if (this->texture)
 		{
 			this->buffers |= DRAWABLE_BUFFER_TEX_COORDS;
-			this->texture->bind();
+			glBindTexture(GL_TEXTURE_2D, this->texture->native.ui);
 		}
 		else
 		{

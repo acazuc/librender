@@ -95,6 +95,46 @@ namespace librender
 		return true;
 	}
 
+	bool OpenGL1Context::textureTypeToGL(enum TextureType textureType, uint32_t *glTarget)
+	{
+		static_assert(sizeof(*glTarget) == sizeof(GLenum), "sizeof(GLenum) != sizeof(uint32_t)");
+		if (textureType > TEXTURE_CUBE_ARRAY)
+			return false;
+		static GLenum values[] = {GL_TEXTURE_1D, GL_TEXTURE_2D, GL_TEXTURE_3D, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_CUBE_MAP_ARRAY};
+		*glTarget = values[textureType];
+		return true;
+	}
+
+	bool OpenGL1Context::samplerWrapToGL(enum SamplerWrap wrap, uint32_t *glWrap)
+	{
+		static_assert(sizeof(*glWrap) == sizeof(GLenum), "sizeof(GLenum) != sizeof(uint32_t)");
+		if (wrap > SAMPLER_MIRROR_CLAMP_TO_EDGE)
+			return false;
+		static GLenum values[] = {GL_REPEAT, GL_MIRRORED_REPEAT, GL_CLAMP_TO_EDGE, GL_CLAMP_TO_BORDER, GL_MIRROR_CLAMP_TO_EDGE};
+		*glWrap = values[wrap];
+		return true;
+	}
+
+	bool OpenGL1Context::samplerMinFilterToGL(enum SamplerFilter filter, enum SamplerMipmapFilter mipmapFilter, uint32_t *glFilter)
+	{
+		static_assert(sizeof(*glFilter) == sizeof(GLenum), "sizeof(GLenum) != sizeof(uint32_t)");
+		if (filter > SAMPLER_LINEAR || mipmapFilter > SAMPLER_MIPMAP_LINEAR)
+			return false;
+		static GLenum values[] = {GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_LINEAR};
+		*glFilter = values[filter + mipmapFilter * 2];
+		return true;
+	}
+
+	bool OpenGL1Context::samplerMagFilterToGL(enum SamplerFilter filter, uint32_t *glFilter)
+	{
+		static_assert(sizeof(*glFilter) == sizeof(GLenum), "sizeof(GLenum) != sizeof(uint32_t)");
+		if (filter > SAMPLER_LINEAR)
+			return false;
+		static GLenum values[] = {GL_NEAREST, GL_LINEAR};
+		*glFilter = values[filter];
+		return true;
+	}
+
 	void OpenGL1Context::setState(enum OpenGL1State state, uint32_t value)
 	{
 		if (state >= GL1_STATE_LAST)
@@ -187,11 +227,11 @@ namespace librender
 		this->states[state] = value;
 	}
 
-	void OpenGL1Context::updateAttrib(uint8_t id)
+	void OpenGL1Context::updateAttrib(VertexAttrib *attrib, uint8_t id)
 	{
-		if (!this->vertexArrayChanged && !this->currentVertexArray->attribs[id].changed)
+		if (!this->vertexArrayChanged && !attrib->changed)
 			return;
-		if (!this->currentVertexArray->attribs[id].buffer)
+		if (!attrib->buffer)
 		{
 			switch (id + 1)
 			{
@@ -221,30 +261,30 @@ namespace librender
 			return;
 		}
 		GLenum type;
-		if (!vertexAttribTypeToGL(this->currentVertexArray->attribs[id].type, &type))
+		if (!vertexAttribTypeToGL(attrib->type, &type))
 			return;
-		intptr_t offset = this->currentVertexArray->attribs[id].offset;
+		intptr_t offset = attrib->offset;
 		switch (id + 1)
 		{
 			case 0x1:
 				setState(GL1_STATE_CLIENT_VERTEX_ARRAY, true);
-				bindBuffer(this->currentVertexArray->attribs[id].buffer);
-				glVertexPointer(this->currentVertexArray->attribs[id].size, type, this->currentVertexArray->attribs[id].stride, (void*)offset);
+				bindBuffer(attrib->buffer);
+				glVertexPointer(attrib->size, type, attrib->stride, (void*)offset);
 				break;
 			case 0x2:
 				setState(GL1_STATE_CLIENT_COLOR_ARRAY, true);
-				bindBuffer(this->currentVertexArray->attribs[id].buffer);
-				glColorPointer(this->currentVertexArray->attribs[id].size, type, this->currentVertexArray->attribs[id].stride, (void*)offset);
+				bindBuffer(attrib->buffer);
+				glColorPointer(attrib->size, type, attrib->stride, (void*)offset);
 				break;
 			case 0x3:
 				setState(GL1_STATE_CLIENT_SECONDARY_COLOR_ARRAY, true);
-				bindBuffer(this->currentVertexArray->attribs[id].buffer);
-				glSecondaryColorPointer(this->currentVertexArray->attribs[id].size, type, this->currentVertexArray->attribs[id].stride, (void*)offset);
+				bindBuffer(attrib->buffer);
+				glSecondaryColorPointer(attrib->size, type, attrib->stride, (void*)offset);
 				break;
 			case 0x4:
 				setState(GL1_STATE_CLIENT_NORMAL_ARRAY, true);
-				bindBuffer(this->currentVertexArray->attribs[id].buffer);
-				glNormalPointer(type, this->currentVertexArray->attribs[id].stride, (void*)offset);
+				bindBuffer(attrib->buffer);
+				glNormalPointer(type, attrib->stride, (void*)offset);
 				break;
 			case 0x5:
 			case 0x6:
@@ -255,8 +295,8 @@ namespace librender
 			case 0xB:
 			case 0xC:
 				setState(static_cast<enum OpenGL1State>(GL1_STATE_CLIENT_TEX_COORD0_ARRAY + (id + 1) - 0x5), true);
-				bindBuffer(this->currentVertexArray->attribs[id].buffer);
-				glTexCoordPointer(this->currentVertexArray->attribs[id].size, type, this->currentVertexArray->attribs[id].stride, (void*)offset);
+				bindBuffer(attrib->buffer);
+				glTexCoordPointer(attrib->size, type, attrib->stride, (void*)offset);
 				break;
 		}
 		this->currentVertexArray->attribs[id].changed = false;
@@ -264,29 +304,94 @@ namespace librender
 
 	void OpenGL1Context::updateAttribs()
 	{
-		for (uint8_t i = 0; i < 0x10; ++i)
-			updateAttrib(i);
+		for (uint8_t i = 0; i < CONTEXT_MAX_VERTEX_ARRAY_ATTRIBS; ++i)
+			updateAttrib(&this->currentVertexArray->attribs[i], i);
 		if ((this->vertexArrayChanged || this->currentVertexArray->indiceChanged) && this->currentVertexArray->indiceBuffer)
 			bindBuffer(this->currentVertexArray->indiceBuffer);
 		this->vertexArrayChanged = false;
 	}
 
+	void OpenGL1Context::updateSampler(Sampler *sampler, uint8_t id)
+	{
+		if (!sampler->changes)
+			return;
+		setState(GL1_STATE_ACTIVE_TEXTURE, id);
+		if (!sampler->texture)
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+			goto end;
+		}
+		GLenum target;
+		if (!textureTypeToGL(sampler->texture->type, &target))
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+			goto end;
+		}
+		if (sampler->changes & SAMPLER_CHANGE_TEXTURE)
+			sampler->changes = 0xFF;
+		glBindTexture(target, sampler->texture->native.ui);
+		if (sampler->changes & SAMPLER_CHANGE_MIN_FILTER || sampler->changes & SAMPLER_CHANGE_MIPMAP)
+		{
+			GLenum filter;
+			if (samplerMinFilterToGL(sampler->minFilter, sampler->mipmap, &filter))
+				glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filter);
+		}
+		if (sampler->changes & SAMPLER_CHANGE_MAG_FILTER)
+		{
+			GLenum filter;
+			if (samplerMagFilterToGL(sampler->magFilter, &filter))
+				glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filter);
+		}
+		if (sampler->changes & SAMPLER_CHANGE_WRAP_S)
+		{
+			GLenum wrap;
+			if (samplerWrapToGL(sampler->wrapS, &wrap))
+				glTexParameteri(target, GL_TEXTURE_WRAP_S, wrap);
+		}
+		if (sampler->changes & SAMPLER_CHANGE_WRAP_T)
+		{
+			GLenum wrap;
+			if (samplerWrapToGL(sampler->wrapT, &wrap))
+				glTexParameteri(target, GL_TEXTURE_WRAP_T, wrap);
+		}
+		if (sampler->changes & SAMPLER_CHANGE_WRAP_R)
+		{
+			GLenum wrap;
+			if (samplerWrapToGL(sampler->wrapR, &wrap))
+				glTexParameteri(target, GL_TEXTURE_WRAP_R, wrap);
+		}
+		if (sampler->changes & SAMPLER_CHANGE_ANISOTROPIC_LEVEL)
+			glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, sampler->anisotropicLevel);
+end:
+		sampler->changes = 0;
+	}
+
+	void OpenGL1Context::updateSamplers()
+	{
+		for (uint8_t i = 0; i < CONTEXT_MAX_SAMPLERS; ++i)
+			updateSampler(&this->samplers[i], i);
+	}
+
 	void OpenGL1Context::createVertexBuffer(Buffer *buffer)
 	{
 		if (!buffer->initialized)
+		{
 			glGenBuffers(1, &buffer->native.ui);
+			buffer->initialized = true;
+		}
 		buffer->usage = BUFFER_USAGE_STATIC;
 		buffer->type = BUFFER_TYPE_VERTEX;
-		buffer->initialized = true;
 	}
 
 	void OpenGL1Context::createIndiceBuffer(Buffer *buffer)
 	{
 		if (!buffer->initialized)
+		{
 			glGenBuffers(1, &buffer->native.ui);
+			buffer->initialized = true;
+		}
 		buffer->usage = BUFFER_USAGE_STATIC;
 		buffer->type = BUFFER_TYPE_INDICE;
-		buffer->initialized = true;
 	}
 
 	void OpenGL1Context::updateBuffer(Buffer *buffer, void *data, uint32_t size)
@@ -296,11 +401,33 @@ namespace librender
 		GLenum usage;
 		if (!bufferUsageToGL(buffer->usage, &usage))
 			return;
+		uint32_t old;
+		switch (buffer->type)
+		{
+			case BUFFER_TYPE_VERTEX:
+				old = this->states[GL1_STATE_VERTEX_BUFFER_BOUND];
+				setState(GL1_STATE_VERTEX_BUFFER_BOUND, buffer->native.ui);
+				break;
+			case BUFFER_TYPE_INDICE:
+				old = this->states[GL1_STATE_INDICE_BUFFER_BOUND];
+				setState(GL1_STATE_INDICE_BUFFER_BOUND, buffer->native.ui);
+				break;
+			default:
+				return;
+		}
 		bindBuffer(buffer);
 		GLenum target;
-		if (!bufferTypeToGL(buffer->type, &target))
-			return;
-		glBufferData(target, size, data, usage);
+		if (bufferTypeToGL(buffer->type, &target))
+			glBufferData(target, size, data, usage);
+		switch (buffer->type)
+		{
+			case BUFFER_TYPE_VERTEX:
+				setState(GL1_STATE_VERTEX_BUFFER_BOUND, old);
+				break;
+			case BUFFER_TYPE_INDICE:
+				setState(GL1_STATE_INDICE_BUFFER_BOUND, old);
+				break;
+		}
 	}
 
 	void OpenGL1Context::bindBuffer(Buffer *buffer)
@@ -320,7 +447,7 @@ namespace librender
 
 	void OpenGL1Context::deleteBuffer(Buffer *buffer)
 	{
-		for (uint8_t i = 0; i <= 0x10; ++i)
+		for (uint8_t i = 0; i < CONTEXT_MAX_VERTEX_ARRAY_ATTRIBS; ++i)
 		{
 			if (this->currentVertexArray->attribs[i].buffer == buffer)
 				setAttribBuffer(i, nullptr);
@@ -355,26 +482,165 @@ namespace librender
 			vertexArray->initialized = false;
 	}
 
-	void OpenGL1Context::createTexture(Texture *texture)
+	void OpenGL1Context::createTexture(Texture *texture, enum TextureType type, uint32_t width, uint32_t height, enum TextureFormat format, uint32_t levels)
 	{
-		//texture->initialized = true;
+		if (!texture->initialized)
+		{
+			glGenTextures(1, &texture->native.ui);
+			texture->initialized = true;
+		}
+		texture->type = type;
+		texture->width = width;
+		texture->height = height;
+		texture->format = format;
+		texture->levels = levels;
 	}
 
-	void OpenGL1Context::updateTexture(Texture *texture)
+	void OpenGL1Context::updateTexture(Texture *texture, uint32_t level, void *data, uint32_t len)
 	{
+		GLenum glTarget;
+		if (!textureTypeToGL(texture->type, &glTarget))
+			return;
+		glBindTexture(glTarget, texture->native.ui);
+		switch (texture->format)
+		{
+			case TEXTURE_B8G8R8A8:
+				glTexImage2D(glTarget, level, GL_RGBA8, texture->width, texture->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+				break;
+			case TEXTURE_B5G5R5A1:
+				glTexImage2D(glTarget, level, GL_RGB5_A1, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, data);
+				break;
+			case TEXTURE_R8G8:
+				glTexImage2D(glTarget, level, GL_RG8, texture->width, texture->height, 0, GL_RG, GL_UNSIGNED_BYTE, data);
+				break;
+			case TEXTURE_R8:
+				glTexImage2D(glTarget, level, GL_R8, texture->width, texture->height, 0, GL_R, GL_UNSIGNED_BYTE, data);
+				break;
+			case TEXTURE_BC1:
+				//TODO support dynamic conversion if not supported
+				glCompressedTexImage2D(glTarget, level, GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, texture->width, texture->height, 0, len, data);
+				break;
+			case TEXTURE_BC2:
+				//TODO support dynamic conversion if not supported
+				glCompressedTexImage2D(glTarget, level, GL_COMPRESSED_RGBA_S3TC_DXT3_EXT, texture->width, texture->height, 0, len, data);
+				break;
+			case TEXTURE_BC3:
+				//TODO support dynamic conversion if not supported
+				glCompressedTexImage2D(glTarget, level, GL_COMPRESSED_RGBA_S3TC_DXT5_EXT, texture->width, texture->height, 0, len, data);
+				break;
+			case TEXTURE_BC4:
+				//TODO support dynamic conversion if not supported
+				glCompressedTexImage2D(glTarget, level, GL_COMPRESSED_RED_RGTC1, texture->width, texture->height, 0, len, data);
+				break;
+			case TEXTURE_BC5:
+				//TODO support dynamic conversion if not supported
+				glCompressedTexImage2D(glTarget, level, GL_COMPRESSED_RG_RGTC2, texture->width, texture->height, 0, len, data);
+				break;
+		}
+	}
+
+	void OpenGL1Context::getTextureDatas(Texture *texture, uint32_t level, void *data)
+	{
+		if (!texture->initialized)
+			return;
+		GLenum glTarget;
+		if (!textureTypeToGL(texture->type, &glTarget))
+			return;
+		glBindTexture(glTarget, texture->native.ui);
+		switch (texture->format)
+		{
+			case TEXTURE_B8G8R8A8:
+				glGetTexImage(glTarget, level, GL_BGRA, GL_UNSIGNED_BYTE, data);
+				break;
+			case TEXTURE_B5G5R5A1:
+				glGetTexImage(glTarget, level, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, data);
+				break;
+			case TEXTURE_R8G8:
+				glGetTexImage(glTarget, level, GL_RG, GL_UNSIGNED_BYTE, data);
+				break;
+			case TEXTURE_R8:
+				glGetTexImage(glTarget, level, GL_RED, GL_UNSIGNED_BYTE, data);
+				break;
+			case TEXTURE_BC1:
+			case TEXTURE_BC2:
+			case TEXTURE_BC3:
+			case TEXTURE_BC4:
+			case TEXTURE_BC5:
+				glGetCompressedTexImage(glTarget, level, data);
+				break;
+		}
 	}
 
 	void OpenGL1Context::deleteTexture(Texture *texture)
 	{
-		//texture->initalized = false;
+		if (!texture->initialized)
+			return;
+		for (uint32_t i = 0; i < CONTEXT_MAX_SAMPLERS; ++i)
+		{
+			if (this->samplers[i].texture == texture)
+				setSamplerTexture(i, texture);
+		}
+		glDeleteTextures(1, &texture->native.ui);
+		texture->initialized = false;
 	}
 
-	void OpenGL1Context::bindTexture(int32_t id, Texture *texture)
+	void OpenGL1Context::setSamplerTexture(uint32_t sampler, Texture *texture)
 	{
-		if (id > 7)
+		if (sampler >= CONTEXT_MAX_SAMPLERS)
 			return;
-		setState(GL1_STATE_ACTIVE_TEXTURE, id);
-		//setState(GL1_STATE_TEXTURE_BOUND, texture ? texture->getId() : 0);
+		this->samplers[sampler].texture = texture;
+		this->samplers[sampler].changes |= SAMPLER_CHANGE_TEXTURE;
+	}
+
+	void OpenGL1Context::setSamplerState(uint32_t sampler, enum SamplerState state, uint32_t value)
+	{
+		if (sampler >= CONTEXT_MAX_SAMPLERS)
+			return;
+		switch (state)
+		{
+			case SAMPLER_MIN_FILTER:
+				if (this->samplers[sampler].minFilter == value)
+					break;
+				this->samplers[sampler].minFilter = static_cast<enum SamplerFilter>(value);
+				this->samplers[sampler].changes |= SAMPLER_CHANGE_MIN_FILTER;
+				break;
+			case SAMPLER_MAG_FILTER:
+				if (this->samplers[sampler].magFilter == value)
+					break;
+				this->samplers[sampler].magFilter = static_cast<enum SamplerFilter>(value);
+				this->samplers[sampler].changes |= SAMPLER_CHANGE_MAG_FILTER;
+				break;
+			case SAMPLER_MIPMAP:
+				if (this->samplers[sampler].mipmap == value)
+					break;
+				this->samplers[sampler].mipmap = static_cast<enum SamplerMipmapFilter>(value);
+				this->samplers[sampler].changes |= SAMPLER_CHANGE_MIPMAP;
+				break;
+			case SAMPLER_WRAP_S:
+				if (this->samplers[sampler].wrapS == value)
+					break;
+				this->samplers[sampler].wrapS = static_cast<enum SamplerWrap>(value);
+				this->samplers[sampler].changes |= SAMPLER_CHANGE_WRAP_S;
+				break;
+			case SAMPLER_WRAP_T:
+				if (this->samplers[sampler].wrapT == value)
+					break;
+				this->samplers[sampler].wrapT = static_cast<enum SamplerWrap>(value);
+				this->samplers[sampler].changes |= SAMPLER_CHANGE_WRAP_T;
+				break;
+			case SAMPLER_WRAP_R:
+				if (this->samplers[sampler].wrapR == value)
+					break;
+				this->samplers[sampler].wrapR = static_cast<enum SamplerWrap>(value);
+				this->samplers[sampler].changes |= SAMPLER_CHANGE_WRAP_R;
+				break;
+			case SAMPLER_ANISOTROPIC_LEVEL:
+				if (this->samplers[sampler].anisotropicLevel == value)
+					break;
+				this->samplers[sampler].anisotropicLevel = value;
+				this->samplers[sampler].changes |= SAMPLER_CHANGE_ANISOTROPIC_LEVEL;
+				break;
+		}
 	}
 
 	int32_t OpenGL1Context::getAttribLocation(std::string name)
@@ -408,7 +674,7 @@ namespace librender
 
 	void OpenGL1Context::setAttrib(int32_t id, enum VertexAttribType type, uint8_t size, uint32_t stride, uint32_t offset)
 	{
-		if (id <= 0 || id > 0xC)
+		if (id <= 0 || id > CONTEXT_MAX_VERTEX_ARRAY_ATTRIBS)
 			return;
 		this->currentVertexArray->attribs[id - 1].type = type;
 		this->currentVertexArray->attribs[id - 1].size = size;
@@ -419,7 +685,7 @@ namespace librender
 
 	void OpenGL1Context::setAttribBuffer(int32_t id, Buffer *buffer)
 	{
-		if (id <= 0 || id > 0xC)
+		if (id <= 0 || id > CONTEXT_MAX_VERTEX_ARRAY_ATTRIBS)
 			return;
 		this->currentVertexArray->attribs[id - 1].buffer = buffer;
 		this->currentVertexArray->attribs[id - 1].changed = true;
@@ -446,6 +712,8 @@ namespace librender
 			return 0x3;
 		if (!name.compare("matrix_texture"))
 			return 0x4;
+		if (!name.compare("fog_color"))
+			return 0x5;
 		return -1;
 	}
 
@@ -463,6 +731,12 @@ namespace librender
 
 	void OpenGL1Context::setUniform(int32_t id, TVec4<int32_t> value)
 	{
+		switch (id)
+		{
+			case 0x5:
+				glFogiv(GL_FOG_COLOR, &value[0]);
+				break;
+		}
 	}
 
 	void OpenGL1Context::setUniform(int32_t id, TVec1<uint32_t> value)
@@ -479,6 +753,12 @@ namespace librender
 
 	void OpenGL1Context::setUniform(int32_t id, TVec4<uint32_t> value)
 	{
+		switch (id)
+		{
+			case 0x5:
+				glFogiv(GL_FOG_COLOR, reinterpret_cast<const int32_t*>(&value[0]));
+				break;
+		}
 	}
 
 	void OpenGL1Context::setUniform(int32_t id, TVec1<float> value)
@@ -495,6 +775,12 @@ namespace librender
 
 	void OpenGL1Context::setUniform(int32_t id, TVec4<float> value)
 	{
+		switch (id)
+		{
+			case 0x5:
+				glFogfv(GL_FOG_COLOR, &value[0]);
+				break;
+		}
 	}
 
 	void OpenGL1Context::setUniform(int32_t id, Mat2 value)
@@ -531,6 +817,7 @@ namespace librender
 	void OpenGL1Context::draw(enum PrimitiveType primitive, uint32_t first, uint32_t count)
 	{
 		updateAttribs();
+		updateSamplers();
 		GLenum glPrimitive;
 		if (!primitiveTypeToGL(primitive, &glPrimitive))
 			return;
@@ -540,6 +827,7 @@ namespace librender
 	void OpenGL1Context::drawIndexed(enum PrimitiveType primitive, uint32_t count)
 	{
 		updateAttribs();
+		updateSamplers();
 		GLenum glPrimitive;
 		if (!primitiveTypeToGL(primitive, &glPrimitive))
 			return;

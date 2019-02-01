@@ -190,7 +190,7 @@ namespace librender
 		Texture *texture = getTexture();
 		if (!texture)
 			return 0;
-		return texture->getWidth();
+		return texture->width;
 	}
 
 	int32_t SpriteBase::getTextureHeight()
@@ -198,7 +198,7 @@ namespace librender
 		Texture *texture = getTexture();
 		if (!texture)
 			return 0;
-		return texture->getHeight();
+		return texture->height;
 	}
 
 }

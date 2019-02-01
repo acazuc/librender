@@ -23,7 +23,7 @@ namespace librender
 		void fillColors(std::vector<Vec4>::iterator colors) override;
 
 	public:
-		DrawableBatch(Context *context);
+		DrawableBatch(Context &context);
 		~DrawableBatch();
 		void draw() override;
 		virtual void addChild(DrawableBatched *child);

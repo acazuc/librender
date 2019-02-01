@@ -43,11 +43,18 @@ namespace librender
 		bool primitiveTypeToGL(enum PrimitiveType primitive, uint32_t *glPrimitive);
 		bool blendFactorToGL(enum BlendFactor factor, uint32_t *glFactor);
 		bool blendEquationToGL(enum BlendEquation equation, uint32_t *glEquation);
-		void updateAttrib(uint8_t id);
-		void updateAttribs();
+		bool textureTypeToGL(enum TextureType type, uint32_t *glTarget);
+		bool samplerWrapToGL(enum SamplerWrap wrap, uint32_t *glWrap);
+		bool samplerMinFilterToGL(enum SamplerFilter filter, enum SamplerMipmapFilter mipmapFilter, uint32_t *glFilter);
+		bool samplerMagFilterToGL(enum SamplerFilter filter, uint32_t *glFilter);
 		bool vertexArrayChanged;
 		uint32_t states[GL1_STATE_LAST];
 		void setState(enum OpenGL1State state, uint32_t value);
+		void updateAttrib(VertexAttrib *attrib, uint8_t id);
+		void updateAttribs();
+		void updateSampler(Sampler *sampler, uint8_t id);
+		void updateSamplers();
+		void bindBuffer(Buffer *buffer);
 		OpenGL1Context(Window *window);
 
 	public:
@@ -55,15 +62,16 @@ namespace librender
 		void createVertexBuffer(Buffer *buffer);
 		void createIndiceBuffer(Buffer *buffer);
 		void updateBuffer(Buffer *buffer, void *data, uint32_t size);
-		void bindBuffer(Buffer *buffer);
 		void deleteBuffer(Buffer *buffer);
 		void createVertexArray(VertexArray *vertexArray);
 		void bindVertexArray(VertexArray *vertexArray);
 		void deleteVertexArray(VertexArray *vertexArray);
-		void createTexture(Texture *texture);
-		void updateTexture(Texture *texture);
+		void createTexture(Texture *texture, enum TextureType type, uint32_t width, uint32_t height, enum TextureFormat format, uint32_t levels);
+		void updateTexture(Texture *texture, uint32_t level, void *data, uint32_t len);
+		void getTextureDatas(Texture *texture, uint32_t level, void *data);
 		void deleteTexture(Texture *texture);
-		void bindTexture(int32_t id, Texture *texture);
+		void setSamplerTexture(uint32_t sampler, Texture *texture);
+		void setSamplerState(uint32_t sampler, enum SamplerState state, uint32_t value);
 		int32_t getAttribLocation(std::string name);
 		void setAttrib(int32_t id, enum VertexAttribType type, uint8_t size, uint32_t stride, uint32_t offset);
 		void setAttribBuffer(int32_t id, Buffer *buffer);

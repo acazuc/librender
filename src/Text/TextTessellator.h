@@ -14,7 +14,7 @@ namespace librender
 		Font *font;
 
 	public:
-		TextTessellator(Context *context);
+		TextTessellator(Context &context);
 		void draw();
 		void addGlyph(Glyph *glyph, Vec2 pos, Vec4 color);
 		void addChar(uint32_t character, Vec2 pos, Vec4 color);

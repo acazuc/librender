@@ -14,6 +14,13 @@
 namespace librender
 {
 
+	enum ContextRanges
+	{
+		CONTEXT_MAX_LIGHTS = 0x8,
+		CONTEXT_MAX_SAMPLERS = 0x8,
+		CONTEXT_MAX_VERTEX_ARRAY_ATTRIBS = 0x10
+	};
+
 	union NativeType
 	{
 		int32_t i;
@@ -107,7 +114,7 @@ namespace librender
 
 	struct VertexArray
 	{
-		VertexAttrib attribs[0x10];
+		VertexAttrib attribs[CONTEXT_MAX_VERTEX_ARRAY_ATTRIBS];
 		uint32_t attribsUpdateMask;
 		NativeType native;
 		Buffer *indiceBuffer;
@@ -117,46 +124,132 @@ namespace librender
 		VertexArray() : indiceBuffer(nullptr), indiceType(VERTEX_ATTRIB_UNSIGNED_SHORT), indiceChanged(false), initialized(false) {};
 	};
 
-	enum TextureFilterType
-	{
-		TEXTURE_FILTER_NEAREST,
-		TEXTURE_FILTER_LINEAR,
-		TEXTURE_FILTER_NEAREST_MIPMAP_NEAREST,
-		TEXTURE_FILTER_LINEAR_MIPMAP_NEAREST,
-		TEXTURE_FILTER_LINEAR_MIPMAP_LINEAR,
-	};
-
-	enum TextureWrapType
-	{
-		TEXTURE_WRAP_REPEAT,
-		TEXTURE_WRAP_MIRRORED_REPEAT,
-		TEXTURE_WRAP_CLAMP_TO_EDGE,
-		TEXTURE_WRAP_CLAMP_TO_BORDER
-	};
-
 	enum TextureFormat
 	{
-		TEXTURE_BGRA8,
-		TEXTURE_RGB8,
-		TEXTURE_RGB_DXT1,
-		TEXTURE_RGBA_DXT1,
-		TEXTURE_RGBA_DXT3,
-		TEXTURE_RGBA_DXT5,
+		TEXTURE_B8G8R8A8,
+		TEXTURE_B5G5R5A1,
+		TEXTURE_R8G8,
+		TEXTURE_R8,
+		TEXTURE_BC1,
+		TEXTURE_BC2,
+		TEXTURE_BC3,
+		TEXTURE_BC4,
+		TEXTURE_BC5,
+	};
+
+	enum TextureType
+	{
+		TEXTURE_1D,
+		TEXTURE_2D,
+		TEXTURE_3D,
+		TEXTURE_CUBE,
+		TEXTURE_1D_ARRAY,
+		TEXTURE_2D_ARRAY,
+		TEXTURE_CUBE_ARRAY
 	};
 
 	struct Texture
 	{
-		enum TextureFilterType filter;
-		enum TextureWrapType wrapS;
-		enum TextureWrapType wrapT;
+		enum TextureType type;
 		enum TextureFormat format;
+		uint8_t anisotropyLevel;
+		uint32_t levels;
+		uint32_t width;
+		uint32_t height;
 		NativeType native;
 		bool initialized;
 		Texture() : initialized(false) {};
 	};
 
+	enum SamplerFilter
+	{
+		SAMPLER_NEAREST,
+		SAMPLER_LINEAR
+	};
+
+	enum SamplerMipmapFilter
+	{
+		SAMPLER_MIPMAP_NONE,
+		SAMPLER_MIPMAP_NEAREST,
+		SAMPLER_MIPMAP_LINEAR
+	};
+
+	enum SamplerWrap
+	{
+		SAMPLER_REPEAT,
+		SAMPLER_MIRRORED_REPEAT,
+		SAMPLER_CLAMP_TO_EDGE,
+		SAMPLER_CLAMP_TO_BORDER,
+		SAMPLER_MIRROR_CLAMP_TO_EDGE
+	};
+
+	enum SamplerState
+	{
+		SAMPLER_MIN_FILTER,
+		SAMPLER_MAG_FILTER,
+		SAMPLER_MIPMAP,
+		SAMPLER_WRAP_S,
+		SAMPLER_WRAP_T,
+		SAMPLER_WRAP_R,
+		SAMPLER_ANISOTROPIC_LEVEL
+	};
+
+	enum SamplerChanges
+	{
+		SAMPLER_CHANGE_MIN_FILTER,
+		SAMPLER_CHANGE_MAG_FILTER,
+		SAMPLER_CHANGE_MIPMAP,
+		SAMPLER_CHANGE_WRAP_S,
+		SAMPLER_CHANGE_WRAP_T,
+		SAMPLER_CHANGE_WRAP_R,
+		SAMPLER_CHANGE_ANISOTROPIC_LEVEL,
+		SAMPLER_CHANGE_TEXTURE
+	};
+
+	struct Sampler
+	{
+		enum SamplerMipmapFilter mipmap : 3;
+		enum SamplerFilter minFilter : 2;
+		enum SamplerFilter magFilter : 2;
+		enum SamplerWrap wrapS : 3;
+		enum SamplerWrap wrapT : 3;
+		enum SamplerWrap wrapR : 3;
+		uint32_t anisotropicLevel : 5;
+		uint8_t changes;
+		Texture *texture;
+		NativeType native;
+		Sampler() : texture(nullptr), changes(0) {};
+	};
+
+	enum FogMode
+	{
+		FOG_LINEAR,
+		FOG_EXP,
+		FOG_EXP2
+	};
+
+	struct Fog
+	{
+		enum FogMode mode;
+		Vec4 color;
+		float density;
+		float start;
+		float end;
+		bool enabled;
+	};
+
+	struct Light
+	{
+		Vec4 ambientColor;
+		Vec4 diffuseColor;
+		Vec4 specularColor;
+		Vec3 pos;
+		float attenuations[3];
+		bool enabled;
+		Light() : enabled(false) {};
+	};
+
 	class Window;
-	class Texture;
 
 	class Context
 	{
@@ -165,6 +258,9 @@ namespace librender
 
 	protected:
 		Window *window;
+		Fog fog;
+		Light lights[CONTEXT_MAX_LIGHTS];
+		Sampler samplers[CONTEXT_MAX_SAMPLERS];
 		VertexArray defaultVertexArray;
 		VertexArray *currentVertexArray;
 		Context(Window *window);
@@ -174,15 +270,16 @@ namespace librender
 		virtual void createVertexBuffer(Buffer *buffer) = 0;
 		virtual void createIndiceBuffer(Buffer *buffer) = 0;
 		virtual void updateBuffer(Buffer *buffer, void *data, uint32_t size) = 0;
-		virtual void bindBuffer(Buffer *buffer) = 0;
 		virtual void deleteBuffer(Buffer *buffer) = 0;
 		virtual void createVertexArray(VertexArray *vertexArray) = 0;
 		virtual void bindVertexArray(VertexArray *vertexArray) = 0;
 		virtual void deleteVertexArray(VertexArray *vertexArray) = 0;
-		virtual void createTexture(Texture *texture) = 0;
-		virtual void updateTexture(Texture *texture) = 0;
+		virtual void createTexture(Texture *texture, enum TextureType type, uint32_t width, uint32_t height, enum TextureFormat format, uint32_t levels) = 0;
+		virtual void updateTexture(Texture *texture, uint32_t level, void *data, uint32_t len) = 0;
+		virtual void getTextureDatas(Texture *texture, uint32_t level, void *data) = 0;
 		virtual void deleteTexture(Texture *texture) = 0;
-		virtual void bindTexture(int32_t id, Texture *texture) = 0;
+		virtual void setSamplerTexture(uint32_t sampler, Texture *texture) = 0;
+		virtual void setSamplerState(uint32_t sampler, enum SamplerState state, uint32_t value) = 0;
 		virtual int32_t getAttribLocation(std::string name) = 0;
 		virtual void setAttrib(int32_t id, enum VertexAttribType type, uint8_t size, uint32_t stride, uint32_t offset) = 0;
 		virtual void setAttribBuffer(int32_t id, Buffer *buffer) = 0;
