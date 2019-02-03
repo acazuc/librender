@@ -60,12 +60,12 @@ namespace librender
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t character = utf8::next(iter, end);
-			getFont()->glChar(character, reinterpret_cast<float*>(&this->texCoords[i * 4]));
+			getFont()->glChar(character, &this->texCoords[i * 4].x);
 		}
 		uint32_t shadowLen = getShadowLen();
 		uint32_t copyCount = this->charsNumber * 4;
-		for (uint32_t i = 0; i < shadowLen; ++i)
-			std::copy(this->texCoords.begin(), this->texCoords.begin() + copyCount, this->texCoords.begin() + this->charsNumber * 4 * (i + 1));
+		for (uint32_t i = 1; i <= shadowLen; ++i)
+			std::copy(this->texCoords.begin(), this->texCoords.begin() + copyCount, this->texCoords.begin() + copyCount * i);
 	}
 
 	void TextBase::updateVertexes()
@@ -159,18 +159,17 @@ namespace librender
 
 	void TextBase::updateColors()
 	{
+		uint32_t copyCount = this->charsNumber * 4;
 		uint32_t shadowLen = getShadowLen();
 		{
-			uint32_t tmp = shadowLen * this->charsNumber * 4;
-			for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-				this->colors[tmp++] = this->color;
+			uint32_t tmp = shadowLen * copyCount;
+			std::fill(this->colors.begin() + tmp, this->colors.begin() + tmp + copyCount, this->color);
 		}
 		if (!shadowLen)
 			return;
-		for (uint32_t i = 0; i < this->charsNumber * 4; ++i)
-			this->colors[i] = this->shadowColor;
+		std::fill(this->colors.begin(), this->colors.begin() + copyCount, this->shadowColor);
 		for (uint32_t i = 1; i < shadowLen; ++i)
-			std::copy(this->colors.begin(), this->colors.begin() + this->charsNumber * 4, this->colors.begin() + this->charsNumber * i * 4);
+			std::copy(this->colors.begin(), this->colors.begin() + copyCount, this->colors.begin() + copyCount * i);
 	}
 
 	void TextBase::updateBuffers()
@@ -193,7 +192,7 @@ namespace librender
 		if (font->getRevision() != this->fontRevision)
 		{
 			this->fontRevision = font->getRevision();
-			requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
+			requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 		}
 		DrawableBase::updateBuffers();
 	}
@@ -202,11 +201,11 @@ namespace librender
 	{
 		recalcWidth();
 		recalcHeight();
-		uint32_t newLen = utf8::distance(text.begin(), text.end());
+		this->text = text;
+		uint32_t newLen = utf8::distance(this->text.begin(), this->text.end());
 		if (this->charsNumber != newLen)
 		{
 			this->charsNumber = newLen;
-			requireUpdates(DRAWABLE_BUFFER_INDICES);
 			uint32_t shadowLen = getShadowLen();
 			setVerticesNumber(this->charsNumber * 4 * (1 + shadowLen));
 			setIndicesNumber(this->charsNumber * 6 * (1 + shadowLen));
@@ -216,8 +215,10 @@ namespace librender
 			this->indices.resize(getIndicesNumber());
 			requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
 		}
-		this->text = text;
-		requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
+		else
+		{
+			requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
+		}
 	}
 
 	void TextBase::setShadowColor(Color color)

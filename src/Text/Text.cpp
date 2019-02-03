@@ -1,6 +1,5 @@
 #include "Text.h"
 #include "../DrawableBuffers.h"
-#include "../GL.h"
 
 namespace librender
 {
@@ -18,7 +17,7 @@ namespace librender
 		if (!this->font)
 			return;
 		updateBuffers();
-		this->font->bind();
+		this->font->bind(0);
 		Drawable::draw();
 	}
 

@@ -1,11 +1,13 @@
 #ifndef LIBRENDER_DRAW_H
 # define LIBRENDER_DRAW_H
 
-# include "Texture/Texture.h"
+//# include "Texture/Texture.h"
 # include "Color.h"
 
 namespace librender
 {
+
+	class Texture;
 
 	double getTime();
 	void scissorBegin(int32_t x, int32_t y, int32_t width, int32_t height);

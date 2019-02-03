@@ -1,6 +1,5 @@
 #include "SpriteTessellator.h"
 #include "../DrawableBuffers.h"
-#include "../GL.h"
 
 namespace librender
 {
@@ -14,15 +13,10 @@ namespace librender
 	void SpriteTessellator::draw()
 	{
 		if (this->texture)
-		{
 			this->buffers |= DRAWABLE_BUFFER_TEX_COORDS;
-			glBindTexture(GL_TEXTURE_2D, this->texture->native.ui);
-		}
 		else
-		{
 			this->buffers &= ~DRAWABLE_BUFFER_TEX_COORDS;
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
+		this->context.setSamplerTexture(0, this->texture);
 		DrawableTessellator::draw();
 	}
 

@@ -2,7 +2,6 @@
 #include "../Context/OpenGL1/OpenGL1Context.h"
 #include "../GL.h"
 #include <libunicode/utf8.h>
-#include <iostream>
 #include <cstring>
 #include <cmath>
 

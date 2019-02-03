@@ -1,7 +1,6 @@
 #include "SpriteBase.h"
 #include "../DrawableBuffers.h"
 #include <cstring>
-#include <iostream>
 
 namespace librender
 {

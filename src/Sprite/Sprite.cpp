@@ -1,6 +1,5 @@
 #include "Sprite.h"
 #include "../DrawableBuffers.h"
-#include "../GL.h"
 
 namespace librender
 {
@@ -9,21 +8,12 @@ namespace librender
 	: Drawable(context)
 	, texture(nullptr)
 	{
-		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS | DRAWABLE_BUFFER_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_COLORS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 	void Sprite::draw()
 	{
-		if (this->texture)
-		{
-			this->buffers |= DRAWABLE_BUFFER_TEX_COORDS;
-			glBindTexture(GL_TEXTURE_2D, texture->native.ui);
-		}
-		else
-		{
-			this->buffers &= ~DRAWABLE_BUFFER_TEX_COORDS;
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
+		this->context.setSamplerTexture(0, this->texture);
 		updateBuffers();
 		Drawable::draw();
 	}

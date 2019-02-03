@@ -1,7 +1,6 @@
 #include "TextBatch.h"
 #include "../DrawableBuffers.h"
 #include "./TextBatched.h"
-#include "../GL.h"
 
 namespace librender
 {
@@ -18,7 +17,7 @@ namespace librender
 			return;
 		if (!update())
 			return;
-		this->font->bind();
+		this->font->bind(0);
 		DrawableBatch::draw();
 	}
 
@@ -31,6 +30,8 @@ namespace librender
 
 	void TextBatch::setFont(Font *font)
 	{
+		if (this->font == font)
+			return;
 		this->font = font;
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES);
 		for (size_t i = 0; i < this->childs.size(); ++i)

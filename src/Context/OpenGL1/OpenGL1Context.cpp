@@ -1,6 +1,7 @@
 #include "OpenGL1Context.h"
 #include "../../Window/Window.h"
 #include "../../GL.h"
+#include <vector>
 
 namespace librender
 {
@@ -28,7 +29,23 @@ namespace librender
 		states[GL1_STATE_VERTEX_BUFFER_BOUND] = 0;
 		states[GL1_STATE_INDICE_BUFFER_BOUND] = 0;
 		states[GL1_STATE_ACTIVE_TEXTURE] = 0;
-		states[GL1_STATE_TEXTURE_BOUND] = 0;
+		states[GL1_STATE_TEXTURE0_TYPE] = 0;
+		states[GL1_STATE_TEXTURE1_TYPE] = 0;
+		states[GL1_STATE_TEXTURE2_TYPE] = 0;
+		states[GL1_STATE_TEXTURE3_TYPE] = 0;
+		states[GL1_STATE_TEXTURE4_TYPE] = 0;
+		states[GL1_STATE_TEXTURE5_TYPE] = 0;
+		states[GL1_STATE_TEXTURE6_TYPE] = 0;
+		states[GL1_STATE_TEXTURE7_TYPE] = 0;
+		states[GL1_STATE_TEXTURE0] = 0;
+		states[GL1_STATE_TEXTURE1] = 0;
+		states[GL1_STATE_TEXTURE2] = 0;
+		states[GL1_STATE_TEXTURE3] = 0;
+		states[GL1_STATE_TEXTURE4] = 0;
+		states[GL1_STATE_TEXTURE5] = 0;
+		states[GL1_STATE_TEXTURE6] = 0;
+		states[GL1_STATE_TEXTURE7] = 0;
+		this->hasAnisotropicFiltering = GL_EXT_texture_filter_anisotropic;
 	}
 
 	OpenGL1Context::~OpenGL1Context()
@@ -220,8 +237,29 @@ namespace librender
 			case GL1_STATE_ACTIVE_TEXTURE:
 				glActiveTexture(GL_TEXTURE0 + value);
 				break;
-			case GL1_STATE_TEXTURE_BOUND:
-				glBindTexture(GL_TEXTURE_2D, value);
+			case GL1_STATE_TEXTURE0_TYPE:
+			case GL1_STATE_TEXTURE1_TYPE:
+			case GL1_STATE_TEXTURE2_TYPE:
+			case GL1_STATE_TEXTURE3_TYPE:
+			case GL1_STATE_TEXTURE4_TYPE:
+			case GL1_STATE_TEXTURE5_TYPE:
+			case GL1_STATE_TEXTURE6_TYPE:
+			case GL1_STATE_TEXTURE7_TYPE:
+				if (this->states[state])
+					glDisable(this->states[state]);
+				setState(GL1_STATE_ACTIVE_TEXTURE, state - GL1_STATE_TEXTURE0_TYPE);
+				glEnable(value);
+				break;
+			case GL1_STATE_TEXTURE0:
+			case GL1_STATE_TEXTURE1:
+			case GL1_STATE_TEXTURE2:
+			case GL1_STATE_TEXTURE3:
+			case GL1_STATE_TEXTURE4:
+			case GL1_STATE_TEXTURE5:
+			case GL1_STATE_TEXTURE6:
+			case GL1_STATE_TEXTURE7:
+				setState(GL1_STATE_ACTIVE_TEXTURE, state - GL1_STATE_TEXTURE0);
+				glBindTexture(this->states[static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + state - GL1_STATE_TEXTURE0)], value);
 				break;
 		}
 		this->states[state] = value;
@@ -313,23 +351,23 @@ namespace librender
 
 	void OpenGL1Context::updateSampler(Sampler *sampler, uint8_t id)
 	{
-		if (!sampler->changes)
-			return;
-		setState(GL1_STATE_ACTIVE_TEXTURE, id);
 		if (!sampler->texture)
 		{
-			glBindTexture(GL_TEXTURE_2D, 0);
+			setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + id), 0);
 			goto end;
 		}
 		GLenum target;
 		if (!textureTypeToGL(sampler->texture->type, &target))
 		{
-			glBindTexture(GL_TEXTURE_2D, 0);
+			setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + id), 0);
 			goto end;
 		}
+		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + id), target);
+		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + id), sampler->texture->native.ui);
+		if (!sampler->changes)
+			return;
 		if (sampler->changes & SAMPLER_CHANGE_TEXTURE)
 			sampler->changes = 0xFF;
-		glBindTexture(target, sampler->texture->native.ui);
 		if (sampler->changes & SAMPLER_CHANGE_MIN_FILTER || sampler->changes & SAMPLER_CHANGE_MIPMAP)
 		{
 			GLenum filter;
@@ -360,8 +398,11 @@ namespace librender
 			if (samplerWrapToGL(sampler->wrapR, &wrap))
 				glTexParameteri(target, GL_TEXTURE_WRAP_R, wrap);
 		}
-		if (sampler->changes & SAMPLER_CHANGE_ANISOTROPIC_LEVEL)
-			glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, sampler->anisotropicLevel);
+		if (this->hasAnisotropicFiltering)
+		{
+			if (sampler->changes & SAMPLER_CHANGE_ANISOTROPIC_LEVEL)
+				glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, sampler->anisotropicLevel);
+		}
 end:
 		sampler->changes = 0;
 	}
@@ -487,6 +528,13 @@ end:
 		if (!texture->initialized)
 		{
 			glGenTextures(1, &texture->native.ui);
+			GLenum glTarget;
+			if (!textureTypeToGL(type, &glTarget))
+				return;
+			setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + this->states[GL1_STATE_ACTIVE_TEXTURE]), glTarget);
+			setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + this->states[GL1_STATE_ACTIVE_TEXTURE]), texture->native.ui);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			texture->initialized = true;
 		}
 		texture->type = type;
@@ -498,14 +546,17 @@ end:
 
 	void OpenGL1Context::updateTexture(Texture *texture, uint32_t level, void *data, uint32_t len)
 	{
+		if (!texture->initialized)
+			return;
 		GLenum glTarget;
 		if (!textureTypeToGL(texture->type, &glTarget))
 			return;
-		glBindTexture(glTarget, texture->native.ui);
+		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + this->states[GL1_STATE_ACTIVE_TEXTURE]), glTarget);
+		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + this->states[GL1_STATE_ACTIVE_TEXTURE]), texture->native.ui);
 		switch (texture->format)
 		{
 			case TEXTURE_B8G8R8A8:
-				glTexImage2D(glTarget, level, GL_RGBA8, texture->width, texture->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
+				glTexImage2D(glTarget, level, GL_RGBA, texture->width, texture->height, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
 				break;
 			case TEXTURE_B5G5R5A1:
 				glTexImage2D(glTarget, level, GL_RGB5_A1, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, data);
@@ -546,7 +597,8 @@ end:
 		GLenum glTarget;
 		if (!textureTypeToGL(texture->type, &glTarget))
 			return;
-		glBindTexture(glTarget, texture->native.ui);
+		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + this->states[GL1_STATE_ACTIVE_TEXTURE]), glTarget);
+		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + this->states[GL1_STATE_ACTIVE_TEXTURE]), texture->native.ui);
 		switch (texture->format)
 		{
 			case TEXTURE_B8G8R8A8:
@@ -828,6 +880,12 @@ end:
 	{
 		updateAttribs();
 		updateSamplers();
+		if (this->samplers[0].texture)
+		{
+			glActiveTexture(GL_TEXTURE0);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		}
 		GLenum glPrimitive;
 		if (!primitiveTypeToGL(primitive, &glPrimitive))
 			return;

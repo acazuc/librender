@@ -24,7 +24,6 @@ INCLUDES_PATH+= -I lib/libunicode/include
 SRCS_PATH = src/
 
 SRCS_NAME = Color.cpp \
-	    Draw.cpp \
 	    Drawable.cpp \
 	    DrawableBase.cpp \
 	    DrawableBatch.cpp \
@@ -38,25 +37,6 @@ SRCS_NAME = Color.cpp \
 	    Font/FontModel.cpp \
 	    Font/Font.cpp \
 	    Font/Glyph.cpp \
-	    Shader/FragmentShader.cpp \
-	    Shader/VertexShader.cpp \
-	    Shader/Program.cpp \
-	    Shader/VertexBuffer.cpp \
-	    Shader/ProgramLocation.cpp \
-	    Shader/GeometryShader.cpp \
-	    Shader/Shader.cpp \
-	    Shader/FrameBuffer.cpp \
-	    Shader/RenderBuffer.cpp \
-	    Shader/VertexArray.cpp \
-	    Shader/Sprite/ShaderSprite.cpp \
-	    Shader/Sprite/ShaderSpriteEntry.cpp \
-	    Shader/Sprite/ShaderSpriteBatch.cpp \
-	    Shader/Sprite/ShaderSpriteBatchEntry.cpp \
-	    Shader/Sprite/ShaderSpriteTessellator.cpp \
-	    Shader/Text/ShaderText.cpp \
-	    Shader/Text/ShaderTextEntry.cpp \
-	    Shader/Text/ShaderTextBatch.cpp \
-	    Shader/Text/ShaderTextBatchEntry.cpp \
 	    Window/EventsManager.cpp \
 	    Window/Window.cpp \
 	    Window/Monitor.cpp \
@@ -66,8 +46,6 @@ SRCS_NAME = Color.cpp \
 	    Sprite/SpriteBatch.cpp \
 	    Sprite/SpriteBatched.cpp \
 	    Sprite/SpriteTessellator.cpp \
-	    Texture/Texture.cpp \
-	    Texture/TexturePacker.cpp \
 	    Context/Context.cpp \
 	    Context/OpenGL1/OpenGL1Context.cpp \
 

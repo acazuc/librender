@@ -1,7 +1,6 @@
 #include "SpriteBatch.h"
 #include "../DrawableBuffers.h"
 #include "./SpriteBatched.h"
-#include "../GL.h"
 
 namespace librender
 {
@@ -16,22 +15,16 @@ namespace librender
 	{
 		if (!update())
 			return;
-		if (this->texture)
-		{
-			this->buffers |= DRAWABLE_BUFFER_TEX_COORDS;
-			glBindTexture(GL_TEXTURE_2D, this->texture->native.ui);
-		}
-		else
-		{
-			this->buffers &= ~DRAWABLE_BUFFER_TEX_COORDS;
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
+		this->context.setSamplerTexture(0, this->texture);
 		DrawableBatch::draw();
 	}
 
 	void SpriteBatch::setTexture(Texture *texture)
 	{
+		if (this->texture == texture)
+			return;
 		this->texture = texture;
+		requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 }

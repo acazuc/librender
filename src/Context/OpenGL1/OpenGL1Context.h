@@ -27,7 +27,22 @@ namespace librender
 		GL1_STATE_VERTEX_BUFFER_BOUND,
 		GL1_STATE_INDICE_BUFFER_BOUND,
 		GL1_STATE_ACTIVE_TEXTURE,
-		GL1_STATE_TEXTURE_BOUND,
+		GL1_STATE_TEXTURE0_TYPE,
+		GL1_STATE_TEXTURE1_TYPE,
+		GL1_STATE_TEXTURE2_TYPE,
+		GL1_STATE_TEXTURE3_TYPE,
+		GL1_STATE_TEXTURE4_TYPE,
+		GL1_STATE_TEXTURE5_TYPE,
+		GL1_STATE_TEXTURE6_TYPE,
+		GL1_STATE_TEXTURE7_TYPE,
+		GL1_STATE_TEXTURE0,
+		GL1_STATE_TEXTURE1,
+		GL1_STATE_TEXTURE2,
+		GL1_STATE_TEXTURE3,
+		GL1_STATE_TEXTURE4,
+		GL1_STATE_TEXTURE5,
+		GL1_STATE_TEXTURE6,
+		GL1_STATE_TEXTURE7,
 		GL1_STATE_LAST
 	};
 
@@ -47,6 +62,7 @@ namespace librender
 		bool samplerWrapToGL(enum SamplerWrap wrap, uint32_t *glWrap);
 		bool samplerMinFilterToGL(enum SamplerFilter filter, enum SamplerMipmapFilter mipmapFilter, uint32_t *glFilter);
 		bool samplerMagFilterToGL(enum SamplerFilter filter, uint32_t *glFilter);
+		bool hasAnisotropicFiltering;
 		bool vertexArrayChanged;
 		uint32_t states[GL1_STATE_LAST];
 		void setState(enum OpenGL1State state, uint32_t value);

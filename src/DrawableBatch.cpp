@@ -137,7 +137,6 @@ namespace librender
 			setDirtyVertices();
 		if (child->getIndicesNumber())
 			setDirtyIndices();
-		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
 	}
 
 	void DrawableBatch::removeChild(DrawableBatched *child)

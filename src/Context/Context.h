@@ -17,7 +17,7 @@ namespace librender
 	enum ContextRanges
 	{
 		CONTEXT_MAX_LIGHTS = 0x8,
-		CONTEXT_MAX_SAMPLERS = 0x8,
+		CONTEXT_MAX_SAMPLERS = 0x20,
 		CONTEXT_MAX_VERTEX_ARRAY_ATTRIBS = 0x10
 	};
 

@@ -1,23 +1,22 @@
 #include "Font.h"
-#include "../GL.h"
 #include <libunicode/utf8.h>
 #include <cstring>
 #include <cmath>
 
-#define CLUSTER_SIZE 512
+#define CLUSTER_SIZE 256
 
 namespace librender
 {
 
 	Font::Font(FontModel &parent, uint32_t size)
 	: parent(parent)
-	, textureHeight(CLUSTER_SIZE)
-	, textureWidth(CLUSTER_SIZE)
+	, textureHeight(0)
+	, textureWidth(0)
 	, revision(1)
 	, height(0)
 	, size(size)
 	{
-		this->parent.getContext().createTexture(&this->texture, this->textureWidth, this->textureHeight, TEXTURE_B8G8R8A8, 1);
+		this->parent.getContext().createTexture(&this->texture, TEXTURE_2D, this->textureWidth, this->textureHeight, TEXTURE_B8G8R8A8, 1);
 		if (!this->parent.setSize(this->size))
 			throw std::exception();
 		this->height = this->parent.getFtFace()->size->metrics.height >> 6;
@@ -65,7 +64,16 @@ namespace librender
 	void Font::charCopy(char *data, uint32_t x, uint32_t y, uint32_t width, Glyph &glyph, char *glyphData)
 	{
 		for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
-			std::memcpy(&data[(y + tY) * width + x], &glyphData[tY * glyph.getWidth()], glyph.getWidth());
+		{
+			for (uint32_t tX = 0; tX < glyph.getWidth(); ++tX)
+			{
+				uint32_t idx = ((y + tY) * width + x + tX) * 4;
+				data[idx + 0] = 0xFF;
+				data[idx + 1] = 0xFF;
+				data[idx + 2] = 0xFF;
+				data[idx + 3] = glyphData[tY * glyph.getWidth() + tX];
+			}
+		}
 	}
 
 	bool Font::findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y)
@@ -185,8 +193,10 @@ namespace librender
 		if (!this->tmpGlyphs.size())
 			return;
 		bool needUpdate = false;
+		bool resized = false;
 		std::vector<char> textureDatas(this->textureWidth * this->textureHeight * 4);
-		this->parent.getContext().getTextureDatas(&this->texture, 0, textureDatas.data());
+		if (this->textureWidth && this->textureHeight)
+			this->parent.getContext().getTextureDatas(&this->texture, 0, textureDatas.data());
 		for (uint32_t i = 0; i < this->tmpGlyphs.size(); ++i)
 		{
 			FontTmpGlyph &tmpGlyph = this->tmpGlyphs[i];
@@ -223,15 +233,35 @@ namespace librender
 			if (this->textureWidth == 0)
 				this->textureWidth = CLUSTER_SIZE;
 			this->textureHeight += CLUSTER_SIZE;
-			textureDatas.resize(this->textureWidth * this->textureHeight, 0);
+			textureDatas.resize(this->textureWidth * this->textureHeight * 4, 0);
 			charCopy(textureDatas.data(), x + 1, y + 1, this->textureWidth, glyph, tmpGlyph.datas.data());
 			needUpdate = true;
+			resized = true;
 		}
 		this->tmpGlyphs.clear();
+		if (resized)
+		{
+			this->parent.getContext().deleteTexture(&this->texture);
+			this->parent.getContext().createTexture(&this->texture, TEXTURE_2D, this->textureWidth, this->textureHeight, TEXTURE_B8G8R8A8, 1);
+			++this->revision; //Texture coordinate changes only if resizing
+		}
 		if (needUpdate)
 		{
+			//std::fill(textureDatas.begin(), textureDatas.end(), 0x80);
+			/*std::cout << std::hex;
+			for (uint32_t y = 0; y < this->textureHeight; ++y)
+			{
+				for (uint32_t x = 0; x < this->textureWidth; ++x)
+				{
+					std::cout << ((textureDatas[(y * this->textureWidth + x) * 4 + 3] >> 0x4) & 0xf);
+				}
+				std::cout << std::endl;
+			}
+			std::cout << std::endl;
+			std::cout << std::endl;
+			std::cout << std::endl;
+			std::cout << std::dec;*/
 			this->parent.getContext().updateTexture(&this->texture, 0, textureDatas.data(), textureDatas.size());
-			++this->revision;
 		}
 	}
 
