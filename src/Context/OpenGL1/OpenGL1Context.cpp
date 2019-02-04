@@ -259,7 +259,7 @@ namespace librender
 			case GL1_STATE_TEXTURE6:
 			case GL1_STATE_TEXTURE7:
 				setState(GL1_STATE_ACTIVE_TEXTURE, state - GL1_STATE_TEXTURE0);
-				glBindTexture(this->states[static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + state - GL1_STATE_TEXTURE0)], value);
+				glBindTexture(this->states[GL1_STATE_TEXTURE0_TYPE + state - GL1_STATE_TEXTURE0], value);
 				break;
 		}
 		this->states[state] = value;
@@ -362,8 +362,7 @@ namespace librender
 			setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + id), 0);
 			goto end;
 		}
-		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + id), target);
-		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + id), sampler->texture->native.ui);
+		bindTexture(sampler->texture);
 		if (!sampler->changes)
 			return;
 		if (sampler->changes & SAMPLER_CHANGE_TEXTURE)
@@ -528,11 +527,7 @@ end:
 		if (!texture->initialized)
 		{
 			glGenTextures(1, &texture->native.ui);
-			GLenum glTarget;
-			if (!textureTypeToGL(type, &glTarget))
-				return;
-			setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + this->states[GL1_STATE_ACTIVE_TEXTURE]), glTarget);
-			setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + this->states[GL1_STATE_ACTIVE_TEXTURE]), texture->native.ui);
+			bindTexture(texture);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			texture->initialized = true;
@@ -544,6 +539,15 @@ end:
 		texture->levels = levels;
 	}
 
+	void OpenGL1Context::bindTexture(Texture *texture)
+	{
+		GLenum glTarget;
+		if (!textureTypeToGL(texture->type, &glTarget))
+			return;
+		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + this->states[GL1_STATE_ACTIVE_TEXTURE]), glTarget);
+		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + this->states[GL1_STATE_ACTIVE_TEXTURE]), texture->native.ui);
+	}
+
 	void OpenGL1Context::updateTexture(Texture *texture, uint32_t level, void *data, uint32_t len)
 	{
 		if (!texture->initialized)
@@ -551,8 +555,7 @@ end:
 		GLenum glTarget;
 		if (!textureTypeToGL(texture->type, &glTarget))
 			return;
-		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + this->states[GL1_STATE_ACTIVE_TEXTURE]), glTarget);
-		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + this->states[GL1_STATE_ACTIVE_TEXTURE]), texture->native.ui);
+		bindTexture(texture);
 		switch (texture->format)
 		{
 			case TEXTURE_B8G8R8A8:
@@ -597,8 +600,7 @@ end:
 		GLenum glTarget;
 		if (!textureTypeToGL(texture->type, &glTarget))
 			return;
-		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0_TYPE + this->states[GL1_STATE_ACTIVE_TEXTURE]), glTarget);
-		setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + this->states[GL1_STATE_ACTIVE_TEXTURE]), texture->native.ui);
+		bindTexture(texture);
 		switch (texture->format)
 		{
 			case TEXTURE_B8G8R8A8:
@@ -631,6 +633,11 @@ end:
 		{
 			if (this->samplers[i].texture == texture)
 				setSamplerTexture(i, texture);
+		}
+		for (uint32_t i = 0; i < 8; ++i)
+		{
+			if (this->states[static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + i)] == texture->native.ui)
+				setState(static_cast<enum OpenGL1State>(GL1_STATE_TEXTURE0 + i), 0);
 		}
 		glDeleteTextures(1, &texture->native.ui);
 		texture->initialized = false;

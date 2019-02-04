@@ -71,6 +71,7 @@ namespace librender
 		void updateSampler(Sampler *sampler, uint8_t id);
 		void updateSamplers();
 		void bindBuffer(Buffer *buffer);
+		void bindTexture(Texture *texture);
 		OpenGL1Context(Window *window);
 
 	public:
