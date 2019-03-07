@@ -90,6 +90,59 @@ namespace librender
 		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
+	void SpriteBase::setTexTopLeft(Vec2 pos)
+	{
+		this->texCoords[0] = pos;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
+	}
+
+	Vec2 SpriteBase::getTexTopLeft()
+	{
+		return this->texCoords[0];
+	}
+
+	void SpriteBase::setTexTopRight(Vec2 pos)
+	{
+		this->texCoords[1] = pos;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
+	}
+
+	Vec2 SpriteBase::getTexTopRight()
+	{
+		return this->texCoords[1];
+	}
+
+	void SpriteBase::setTexBottomLeft(Vec2 pos)
+	{
+		this->texCoords[3] = pos;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
+	}
+
+	Vec2 SpriteBase::getTexBottomLeft()
+	{
+		return this->texCoords[3];
+	}
+
+	void SpriteBase::setTexBottomRight(Vec2 pos)
+	{
+		this->texCoords[2] = pos;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
+	}
+
+	Vec2 SpriteBase::getTexBottomRight()
+	{
+		return this->texCoords[2];
+	}
+
+	void SpriteBase::setTex(Vec2 topLeft, Vec2 topRight, Vec2 bottomLeft, Vec2 bottomRight)
+	{
+		this->texCoords[0] = topLeft;
+		this->texCoords[1] = topRight;
+		this->texCoords[2] = bottomRight;
+		this->texCoords[3] = bottomLeft;
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
+	}
+
 	void SpriteBase::setTexX(float texX)
 	{
 		float delta = texX - this->texCoords[0].x;
@@ -100,11 +153,6 @@ namespace librender
 		this->texCoords[1].x += delta;
 		this->texCoords[2].x += delta;
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
-	}
-
-	float SpriteBase::getTexX()
-	{
-		return this->texCoords[0].x;
 	}
 
 	void SpriteBase::setTexY(float texY)
@@ -119,11 +167,6 @@ namespace librender
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
-	float SpriteBase::getTexY()
-	{
-		return this->texCoords[0].y;
-	}
-
 	void SpriteBase::setTexPos(float texX, float texY)
 	{
 		setTexX(texX);
@@ -136,13 +179,8 @@ namespace librender
 		if (!delta)
 			return;
 		this->texCoords[1].x = texWidth + this->texCoords[0].x;
-		this->texCoords[2].x = texWidth + this->texCoords[0].x;
+		this->texCoords[2].x = texWidth + this->texCoords[3].x;
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
-	}
-
-	float SpriteBase::getTexWidth()
-	{
-		return this->texCoords[1].x - this->texCoords[0].x;
 	}
 
 	void SpriteBase::setTexHeight(float texHeight)
@@ -150,14 +188,15 @@ namespace librender
 		float delta = texHeight - (this->texCoords[3].y - this->texCoords[0].y);
 		if (!delta)
 			return;
-		this->texCoords[2].y = texHeight + this->texCoords[0].y;
+		this->texCoords[2].y = texHeight + this->texCoords[1].y;
 		this->texCoords[3].y = texHeight + this->texCoords[0].y;
 		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
-	float SpriteBase::getTexHeight()
+	void SpriteBase::setTexSize(float texWidth, float texHeight)
 	{
-		return this->texCoords[2].y - this->texCoords[0].y;
+		setTexWidth(texWidth);
+		setTexHeight(texHeight);
 	}
 
 	void SpriteBase::setWidth(float width)
