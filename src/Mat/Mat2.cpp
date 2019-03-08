@@ -70,8 +70,8 @@ namespace librender
 	{
 		T invDeter(T(1) / (mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1]));
 		return TMat2<T>(
-				TVec2<T>( mat[1][1] / deter, -mat[0][1] * invDeter),
-				TVec2<T>(-mat[1][0] / deter,  mat[0][0] * invDeter));
+				TVec2<T>( mat[1][1] * invDeter, -mat[0][1] * invDeter),
+				TVec2<T>(-mat[1][0] * invDeter,  mat[0][0] * invDeter));
 	}
 
 }
