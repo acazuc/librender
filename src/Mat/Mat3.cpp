@@ -131,23 +131,23 @@ namespace librender
 	template <typename T>
 	TMat3<T> inverse(TMat3<T> mat)
 	{
-		T deter(
+		T invDeter(T(1) / (
 				+ mat[0][0] * (mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2])
 				- mat[1][0] * (mat[0][1] * mat[2][2] - mat[2][1] * mat[0][2])
-				+ mat[2][0] * (mat[0][1] * mat[1][2] - mat[1][1] * mat[0][2]));
+				+ mat[2][0] * (mat[0][1] * mat[1][2] - mat[1][1] * mat[0][2])));
 		return TMat3<T>(
 			TVec3<T>(
-				+(mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]) / deter,
-				-(mat[0][1] * mat[2][2] - mat[0][2] * mat[2][1]) / deter,
-				+(mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1]) / deter),
+				+(mat[1][1] * mat[2][2] - mat[1][2] * mat[2][1]) * invDeter,
+				-(mat[0][1] * mat[2][2] - mat[0][2] * mat[2][1]) * invDeter,
+				+(mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1]) * invDeter),
 			TVec3<T>(
-				-(mat[1][0] * mat[2][2] - mat[1][2] * mat[2][0]) / deter,
-				+(mat[0][0] * mat[2][2] - mat[0][2] * mat[2][0]) / deter,
-				-(mat[0][0] * mat[1][2] - mat[0][2] * mat[1][0]) / deter),
+				-(mat[1][0] * mat[2][2] - mat[1][2] * mat[2][0]) * invDeter,
+				+(mat[0][0] * mat[2][2] - mat[0][2] * mat[2][0]) * invDeter,
+				-(mat[0][0] * mat[1][2] - mat[0][2] * mat[1][0]) * invDeter),
 			TVec3<T>(
-				+(mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]) / deter,
-				-(mat[0][0] * mat[2][1] - mat[0][1] * mat[2][0]) / deter,
-				+(mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]) / deter));
+				+(mat[1][0] * mat[2][1] - mat[1][1] * mat[2][0]) * invDeter,
+				-(mat[0][0] * mat[2][1] - mat[0][1] * mat[2][0]) * invDeter,
+				+(mat[0][0] * mat[1][1] - mat[0][1] * mat[1][0]) * invDeter));
 	}
 
 }

@@ -68,10 +68,10 @@ namespace librender
 	template <typename T>
 	TMat2<T> inverse(TMat2<T> mat)
 	{
-		T deter(mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1]);
+		T invDeter(T(1) / (mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1]));
 		return TMat2<T>(
-				TVec2<T>( mat[1][1] / deter, -mat[0][1] / deter),
-				TVec2<T>(-mat[1][0] / deter,  mat[0][0] / deter));
+				TVec2<T>( mat[1][1] / deter, -mat[0][1] * invDeter),
+				TVec2<T>(-mat[1][0] / deter,  mat[0][0] * invDeter));
 	}
 
 }
