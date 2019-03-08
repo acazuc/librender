@@ -214,32 +214,32 @@ namespace librender
 		T v0212(mat[0][1] * mat[2][2] - mat[2][1] * mat[0][2]);
 		T v0113(mat[0][1] * mat[1][3] - mat[1][1] * mat[0][3]);
 		T v0112(mat[0][1] * mat[1][2] - mat[1][1] * mat[0][2]);
-		T deter(
+		T invDeter(T(1) / (
 			+mat[0][0] * (mat[1][1] * v2323 - mat[2][1] * v1323 + mat[3][1] * v1223)
 			-mat[1][0] * (mat[0][1] * v2323 - mat[2][1] * v0323 + mat[3][1] * v0223)
 			+mat[2][0] * (mat[0][1] * v1323 - mat[1][1] * v0323 + mat[3][1] * v0123)
-			-mat[3][0] * (mat[0][1] * v1223 - mat[1][1] * v0223 + mat[2][1] * v0123));
+			-mat[3][0] * (mat[0][1] * v1223 - mat[1][1] * v0223 + mat[2][1] * v0123)));
 		return TMat4<T>(
 			TVec4<T>(
-				+(mat[1][1] * v2323 - mat[2][1] * v1323 + mat[3][1] * v1223) / deter,
-				-(mat[0][1] * v2323 - mat[2][1] * v0323 + mat[3][1] * v0223) / deter,
-				+(mat[0][1] * v1323 - mat[1][1] * v0323 + mat[3][1] * v0123) / deter,
-				-(mat[0][1] * v1223 - mat[1][1] * v0223 + mat[2][1] * v0123) / deter),
+				+(mat[1][1] * v2323 - mat[2][1] * v1323 + mat[3][1] * v1223) * invDeter,
+				-(mat[0][1] * v2323 - mat[2][1] * v0323 + mat[3][1] * v0223) * invDeter,
+				+(mat[0][1] * v1323 - mat[1][1] * v0323 + mat[3][1] * v0123) * invDeter,
+				-(mat[0][1] * v1223 - mat[1][1] * v0223 + mat[2][1] * v0123) * invDeter),
 			TVec4<T>(
-				-(mat[1][0] * v2323 - mat[2][0] * v1323 + mat[3][0] * v1223) / deter,
-				+(mat[0][0] * v2323 - mat[2][0] * v0323 + mat[3][0] * v0223) / deter,
-				-(mat[0][0] * v1323 - mat[1][0] * v0323 + mat[3][0] * v0123) / deter,
-				+(mat[0][0] * v1223 - mat[1][0] * v0223 + mat[2][0] * v0123) / deter),
+				-(mat[1][0] * v2323 - mat[2][0] * v1323 + mat[3][0] * v1223) * invDeter,
+				+(mat[0][0] * v2323 - mat[2][0] * v0323 + mat[3][0] * v0223) * invDeter,
+				-(mat[0][0] * v1323 - mat[1][0] * v0323 + mat[3][0] * v0123) * invDeter,
+				+(mat[0][0] * v1223 - mat[1][0] * v0223 + mat[2][0] * v0123) * invDeter),
 			TVec4<T>(
-				+(mat[1][0] * v2313 - mat[2][0] * v1313 + mat[3][0] * v1213) / deter,
-				-(mat[0][0] * v2313 - mat[2][0] * v0313 + mat[3][0] * v0213) / deter,
-				+(mat[0][0] * v1313 - mat[1][0] * v0313 + mat[3][0] * v0113) / deter,
-				-(mat[0][0] * v1213 - mat[1][0] * v0213 + mat[2][0] * v0113) / deter),
+				+(mat[1][0] * v2313 - mat[2][0] * v1313 + mat[3][0] * v1213) * invDeter,
+				-(mat[0][0] * v2313 - mat[2][0] * v0313 + mat[3][0] * v0213) * invDeter,
+				+(mat[0][0] * v1313 - mat[1][0] * v0313 + mat[3][0] * v0113) * invDeter,
+				-(mat[0][0] * v1213 - mat[1][0] * v0213 + mat[2][0] * v0113) * invDeter),
 			TVec4<T>(
-				-(mat[1][0] * v2312 - mat[2][0] * v1312 + mat[3][0] * v1212) / deter,
-				+(mat[0][0] * v2312 - mat[2][0] * v0312 + mat[3][0] * v0212) / deter,
-				-(mat[0][0] * v1312 - mat[1][0] * v0312 + mat[3][0] * v0112) / deter,
-				+(mat[0][0] * v1212 - mat[1][0] * v0212 + mat[2][0] * v0112) / deter));
+				-(mat[1][0] * v2312 - mat[2][0] * v1312 + mat[3][0] * v1212) * invDeter,
+				+(mat[0][0] * v2312 - mat[2][0] * v0312 + mat[3][0] * v0212) * invDeter,
+				-(mat[0][0] * v1312 - mat[1][0] * v0312 + mat[3][0] * v0112) * invDeter,
+				+(mat[0][0] * v1212 - mat[1][0] * v0212 + mat[2][0] * v0112) * invDeter));
 	}
 
 }
