@@ -4,6 +4,12 @@
 namespace librender
 {
 
+	DrawableBatch::DrawableBatch(uint32_t shapeType)
+	: Drawable(shapeType)
+	, mustResize(true)
+	{
+	}
+
 	DrawableBatch::DrawableBatch()
 	: mustResize(true)
 	{
@@ -44,30 +50,40 @@ namespace librender
 		}
 	}
 
-	void DrawableBatch::updateVertexes()
+	void DrawableBatch::updatePositions()
 	{
 		size_t count = 0;
 		for (size_t i = 0; i < this->childs.size(); ++i)
 		{
 			DrawableBatched *child = this->childs[i];
-			if (this->mustResize || child->getChanges() & DRAWABLE_BUFFER_VERTEXES)
+			if (this->mustResize || child->getChanges() & DRAWABLE_BUFFER_POSITIONS)
 			{
-				std::copy(child->getVertexes().begin(), child->getVertexes().end(), this->vertexes.begin() + count);
-				child->removeChanges(DRAWABLE_BUFFER_VERTEXES);
+				std::copy(child->getPositions().begin(), child->getPositions().end(), this->positions.begin() + count);
+				child->removeChanges(DRAWABLE_BUFFER_POSITIONS);
 				float x = child->getX() - this->getX();
 				float y = child->getY() - this->getY();
 				Vec2 pos(child->getX() - getX(), child->getY() - getY());
-				Vec2 scale(child->getScaleX(), child->getScaleY());
-				if (pos.x || pos.y || scale.x != 1 || scale.y != 1)
+				Vec2 scale(child->getScale());
+				if (pos.x || pos.y)
 				{
-					for (size_t i = count; i < count + child->getVertexes().size(); ++i)
+					if (scale.x != 1 || scale.y != 1)
 					{
-						this->vertexes[i] *= scale;
-						this->vertexes[i] += pos;
+						for (size_t i = count; i < count + child->getPositions().size(); ++i)
+							this->positions[i] = this->positions[i] * scale + pos;
+					}
+					else
+					{
+						for (size_t i = count; i < count + child->getPositions().size(); ++i)
+							this->positions[i] = this->positions[i] + pos;
 					}
 				}
+				else if (scale.x != 1 || scale.y != 1)
+				{
+					for (size_t i = count; i < count + child->getPositions().size(); ++i)
+						this->positions[i] = this->positions[i] * scale;
+				}
 			}
-			count += child->getVertexes().size();
+			count += child->getPositions().size();
 		}
 	}
 
@@ -110,7 +126,7 @@ namespace librender
 		updateVerticesNumber();
 		updateIndicesNumber();
 		this->texCoords.resize(this->verticesNumber);
-		this->vertexes.resize(this->verticesNumber);
+		this->positions.resize(this->verticesNumber);
 		this->indices.resize(this->indicesNumber);
 		this->colors.resize(this->verticesNumber);
 	}
@@ -124,11 +140,11 @@ namespace librender
 		if (!this->verticesNumber)
 			return false;
 		if (this->mustResize)
-			requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
+			requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_POSITIONS | DRAWABLE_BUFFER_COLORS);
 		if (this->updatesRequired & DRAWABLE_BUFFER_TEX_COORDS)
 			updateTexCoords();
-		if (this->updatesRequired & DRAWABLE_BUFFER_VERTEXES)
-			updateVertexes();
+		if (this->updatesRequired & DRAWABLE_BUFFER_POSITIONS)
+			updatePositions();
 		if (this->updatesRequired & DRAWABLE_BUFFER_INDICES)
 			updateIndices();
 		if (this->updatesRequired & DRAWABLE_BUFFER_COLORS)
@@ -144,7 +160,7 @@ namespace librender
 		child->setParent(this);
 		this->childs.push_back(child);
 		this->mustResize = true;
-		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_POSITIONS | DRAWABLE_BUFFER_COLORS);
 	}
 
 	void DrawableBatch::removeChild(DrawableBatched *child)
@@ -156,7 +172,7 @@ namespace librender
 				this->childs.erase(this->childs.begin() + i);
 				child->setParent(nullptr);
 				setMustResize(true);
-				requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
+				requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_POSITIONS | DRAWABLE_BUFFER_COLORS);
 				return;
 			}
 		}
@@ -168,7 +184,7 @@ namespace librender
 			this->childs[i]->setParent(nullptr);
 		this->childs.clear();
 		setMustResize(true);
-		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS);
+		requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_POSITIONS | DRAWABLE_BUFFER_COLORS);
 	}
 
 }

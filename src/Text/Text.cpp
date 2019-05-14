@@ -7,7 +7,6 @@ namespace librender
 
 	Text::Text()
 	: font(nullptr)
-	, lastVerticesNumber(0)
 	{
 	}
 
@@ -26,7 +25,7 @@ namespace librender
 			return;
 		this->font = font;
 		this->lineHeight = this->font->getLineHeight();
-		requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
+		requireUpdates(DRAWABLE_BUFFER_POSITIONS | DRAWABLE_BUFFER_TEX_COORDS);
 		recalcWidth();
 		recalcHeight();
 	}

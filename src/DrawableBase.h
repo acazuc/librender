@@ -15,7 +15,7 @@ namespace librender
 	protected:
 		std::vector<uint32_t> indices;
 		std::vector<Vec2> texCoords;
-		std::vector<Vec2> vertexes;
+		std::vector<Vec2> positions;
 		std::vector<Vec4> colors;
 		Vec2 scale;
 		Vec2 pos;
@@ -24,7 +24,7 @@ namespace librender
 		uint8_t updatesRequired;
 		uint8_t buffers;
 		inline virtual void updateTexCoords() {};
-		inline virtual void updateVertexes() {};
+		inline virtual void updatePositions() {};
 		inline virtual void updateIndices() {};
 		inline virtual void updateColors() {};
 		virtual void updateBuffers();
@@ -36,7 +36,7 @@ namespace librender
 		virtual void requireUpdates(uint8_t updates);
 		inline std::vector<uint32_t> &getIndices() {return this->indices;};
 		inline std::vector<Vec2> &getTexCoords() {return this->texCoords;};
-		inline std::vector<Vec2> &getVertexes() {return this->vertexes;};
+		inline std::vector<Vec2> &getPositions() {return this->positions;};
 		inline std::vector<Vec4> &getColors() {return this->colors;};
 		inline uint32_t getVerticesNumber() {return this->verticesNumber;};
 		inline uint32_t getIndicesNumber() {return this->indicesNumber;};
@@ -46,6 +46,7 @@ namespace librender
 		inline float getScaleY() {return this->scale.y;};
 		inline void setScale(float scaleX, float scaleY) {setScaleX(scaleX);setScaleY(scaleY);};
 		inline void setScale(float scale) {setScaleX(scale);setScaleY(scale);};
+		inline Vec2 getScale() {return this->scale;};
 		inline virtual void setX(float x) {this->pos.x = x;};
 		inline float getX() {return this->pos.x;};
 		inline virtual void setY(float y) {this->pos.y = y;};

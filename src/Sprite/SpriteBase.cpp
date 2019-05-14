@@ -10,60 +10,65 @@ namespace librender
 	{
 		this->verticesNumber = 4;
 		this->texCoords.resize(4);
-		texCoords[0] = Vec2(0, 0);
-		texCoords[1] = Vec2(1, 0);
-		texCoords[2] = Vec2(1, 1);
-		texCoords[3] = Vec2(0, 1);
+		this->texCoords[0] = Vec2(0, 0);
+		this->texCoords[1] = Vec2(1, 0);
+		this->texCoords[2] = Vec2(1, 1);
+		this->texCoords[3] = Vec2(0, 1);
 		this->colors.resize(4, Vec4(1));
-		this->vertexes.resize(4, Vec2(0));
+		this->positions.resize(4, Vec2(0));
 		this->indicesNumber = 6;
-		this->indices.reserve(6);
-		this->indices.push_back(0);
-		this->indices.push_back(1);
-		this->indices.push_back(2);
-		this->indices.push_back(2);
-		this->indices.push_back(3);
-		this->indices.push_back(0);
+		this->indices.resize(6);
+		this->indices[0] = 0;
+		this->indices[1] = 1;
+		this->indices[2] = 2;
+		this->indices[3] = 2;
+		this->indices[4] = 3;
+		this->indices[5] = 0;
 	}
 
-	void SpriteBase::updateVertexes()
+	void SpriteBase::updatePositions()
 	{
-		this->vertexes[0] = Vec2(0, 0);
-		this->vertexes[1] = Vec2(this->size.x, 0);
-		this->vertexes[2] = this->size;
-		this->vertexes[3] = Vec2(0, this->size.y);
+		this->positions[0] = Vec2(0, 0);
+		this->positions[1] = Vec2(this->size.x, 0);
+		this->positions[2] = this->size;
+		this->positions[3] = Vec2(0, this->size.y);
 	}
 
 	void SpriteBase::setColor(Color color)
 	{
-		setTopLeftColor(color);
-		setTopRightColor(color);
-		setBotLeftColor(color);
-		setBotRightColor(color);
+		this->colors[0] = color;
+		this->colors[1] = color;
+		this->colors[2] = color;
+		this->colors[3] = color;
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void SpriteBase::setTopColor(Color color)
 	{
-		setTopLeftColor(color);
-		setTopRightColor(color);
+		this->colors[0] = color;
+		this->colors[1] = color;
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void SpriteBase::setBotColor(Color color)
 	{
-		setBotLeftColor(color);
-		setBotRightColor(color);
+		this->colors[2] = color;
+		this->colors[3] = color;
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void SpriteBase::setLeftColor(Color color)
 	{
-		setTopLeftColor(color);
-		setBotLeftColor(color);
+		this->colors[0] = color;
+		this->colors[3] = color;
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 	
 	void SpriteBase::setRightColor(Color color)
 	{
-		setTopRightColor(color);
-		setBotRightColor(color);
+		this->colors[1] = color;
+		this->colors[2] = color;
+		requireUpdates(DRAWABLE_BUFFER_COLORS);
 	}
 
 	void SpriteBase::setTopLeftColor(Color color)
@@ -204,7 +209,7 @@ namespace librender
 		if (this->size.x == width)
 			return;
 		this->size.x = width;
-		requireUpdates(DRAWABLE_BUFFER_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_POSITIONS);
 	}
 
 	float SpriteBase::getWidth()
@@ -217,12 +222,20 @@ namespace librender
 		if (this->size.y == height)
 			return;
 		this->size.y = height;
-		requireUpdates(DRAWABLE_BUFFER_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_POSITIONS);
 	}
 
 	float SpriteBase::getHeight()
 	{
 		return this->size.y * this->scale.y;
+	}
+
+	void SpriteBase::setSize(Vec2 size)
+	{
+		if (this->size == size)
+			return;
+		this->size = size;
+		requireUpdates(DRAWABLE_BUFFER_POSITIONS);
 	}
 
 	int32_t SpriteBase::getTextureWidth()

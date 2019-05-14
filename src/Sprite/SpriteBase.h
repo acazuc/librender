@@ -12,7 +12,7 @@ namespace librender
 
 	private:
 		Vec2 size;
-		void updateVertexes();
+		void updatePositions();
 
 	public:
 		SpriteBase();
@@ -41,11 +41,12 @@ namespace librender
 		void setTexWidth(float texWidth);
 		void setTexHeight(float texHeight);
 		void setTexSize(float texWidth, float texHeight);
-		virtual void setWidth(float width);
+		void setWidth(float width);
 		float getWidth();
-		virtual void setHeight(float height);
+		void setHeight(float height);
 		float getHeight();
-		inline void setSize(float width, float height) {setWidth(width);setHeight(height);};
+		void setSize(Vec2 size);
+		inline void setSize(float width, float height) {setSize(Vec2(width, height));};
 		int32_t getTextureWidth();
 		int32_t getTextureHeight();
 

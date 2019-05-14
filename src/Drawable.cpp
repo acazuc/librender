@@ -5,6 +5,11 @@
 namespace librender
 {
 
+	Drawable::Drawable(uint32_t shapeType)
+	: shapeType(shapeType)
+	{
+	}
+
 	Drawable::Drawable()
 	: shapeType(GL_TRIANGLES)
 	{
@@ -12,9 +17,9 @@ namespace librender
 
 	void Drawable::draw()
 	{
-		if (this->buffers & DRAWABLE_BUFFER_VERTEXES)
+		if (this->buffers & DRAWABLE_BUFFER_POSITIONS)
 		{
-			glVertexPointer(2, GL_FLOAT, 0, this->vertexes.data());
+			glVertexPointer(2, GL_FLOAT, 0, this->positions.data());
 			glEnableClientState(GL_VERTEX_ARRAY);
 		}
 		else
@@ -42,7 +47,10 @@ namespace librender
 		glPushMatrix();
 		glTranslatef(this->pos.x, this->pos.y, 0);
 		glScalef(this->scale.x, this->scale.y, 0);
-		glDrawElements(this->shapeType, this->indices.size(), GL_UNSIGNED_INT, this->indices.data());
+		if (this->buffers & DRAWABLE_BUFFER_INDICES)
+			glDrawElements(this->shapeType, this->indices.size(), GL_UNSIGNED_INT, this->indices.data());
+		else
+			glDrawArrays(this->shapeType, 0, this->positions.size());
 		glPopMatrix();
 	}
 

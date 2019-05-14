@@ -31,7 +31,7 @@ namespace librender
 		Vec2 dst(pos + size);
 		Vec2 texOrg(texPos);
 		Vec2 texDst(texPos + texSize);
-		uint32_t base = this->vertexes.size();
+		uint32_t base = this->positions.size();
 		addPoint(Vec2(org.x, org.y), Vec2(texOrg.x, texOrg.y), color);
 		addPoint(Vec2(dst.x, org.y), Vec2(texDst.x, texOrg.y), color);
 		addPoint(Vec2(dst.x, dst.y), Vec2(texDst.x, texDst.y), color);

@@ -20,6 +20,7 @@ namespace librender
 		void draw(GLenum buf);
 		void read(GLenum buf);
 		void bind();
+		inline GLuint getId() {return this->id;};
 
 	};
 

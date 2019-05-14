@@ -3,10 +3,19 @@
 namespace librender
 {
 
-	void DrawableTessellator::addPoint(Vec2 vertex, Vec2 texCoords, Vec4 color)
+	DrawableTessellator::DrawableTessellator(uint32_t shapeType)
+	: Drawable(shapeType)
+	{
+	}
+
+	DrawableTessellator::DrawableTessellator()
+	{
+	}
+
+	void DrawableTessellator::addPoint(Vec2 position, Vec2 texCoords, Vec4 color)
 	{
 		this->texCoords.push_back(texCoords);
-		this->vertexes.push_back(vertex);
+		this->positions.push_back(position);
 		this->colors.push_back(color);
 	}
 
@@ -14,10 +23,10 @@ namespace librender
 	{
 		std::vector<uint32_t> emptyIndices;
 		std::vector<Vec2> emptyTexCoords;
-		std::vector<Vec2> emptyVertexes;
+		std::vector<Vec2> emptyPositions;
 		std::vector<Vec4> emptyColors;
 		this->texCoords.swap(emptyTexCoords);
-		this->vertexes.swap(emptyVertexes);
+		this->positions.swap(emptyPositions);
 		this->indices.swap(emptyIndices);
 		this->colors.swap(emptyColors);
 	}

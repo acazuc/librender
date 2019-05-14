@@ -7,15 +7,15 @@ namespace librender
 
 	void TextBatched::setParent(DrawableBatch *parent)
 	{
-		if (this->parent && (!parent || reinterpret_cast<TextBatch*>(this->parent)->getFont() != reinterpret_cast<TextBatch*>(parent)->getFont()))
-			requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
+		if (this->parent && (!parent || static_cast<TextBatch*>(this->parent)->getFont() != static_cast<TextBatch*>(parent)->getFont()))
+			requireUpdates(DRAWABLE_BUFFER_INDICES | DRAWABLE_BUFFER_POSITIONS | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
 		DrawableBatched::setParent(parent);
 	}
 
 	Font *TextBatched::getFont()
 	{
 		if (this->parent)
-			return reinterpret_cast<TextBatch*>(this->parent)->getFont();
+			return static_cast<TextBatch*>(this->parent)->getFont();
 		return nullptr;
 	}
 

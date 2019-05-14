@@ -31,11 +31,11 @@ namespace librender
 	void TextBatch::setFont(Font *font)
 	{
 		this->font = font;
-		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES);
+		requireUpdates(DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_POSITIONS);
 		for (size_t i = 0; i < this->childs.size(); ++i)
 		{
-			TextBatched *child = reinterpret_cast<TextBatched*>(this->childs[i]);
-			child->addChanges(DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_VERTEXES);
+			TextBatched *child = static_cast<TextBatched*>(this->childs[i]);
+			child->addChanges(DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_POSITIONS);
 			child->recalcWidth();
 			child->recalcHeight();
 		}

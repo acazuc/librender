@@ -13,7 +13,6 @@ namespace librender
 
 	protected:
 		Font *font;
-		uint32_t lastVerticesNumber;
 		void resize(uint32_t len);
 
 	public:

@@ -10,7 +10,7 @@ namespace librender
 	, verticesNumber(0)
 	, indicesNumber(0)
 	, updatesRequired(0)
-	, buffers(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_COLORS | DRAWABLE_BUFFER_TEX_COORDS)
+	, buffers(DRAWABLE_BUFFER_POSITIONS | DRAWABLE_BUFFER_COLORS | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_INDICES)
 	{
 	}
 
@@ -20,9 +20,9 @@ namespace librender
 		{
 			this->verticesNumber = vertices;
 			this->texCoords.resize(this->verticesNumber);
-			this->vertexes.resize(this->verticesNumber);
+			this->positions.resize(this->verticesNumber);
 			this->colors.resize(this->verticesNumber);
-			requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
+			requireUpdates(DRAWABLE_BUFFER_POSITIONS | DRAWABLE_BUFFER_TEX_COORDS | DRAWABLE_BUFFER_COLORS);
 		}
 		if (this->indicesNumber != indices)
 		{
@@ -41,8 +41,8 @@ namespace librender
 	{
 		if (this->updatesRequired & DRAWABLE_BUFFER_TEX_COORDS)
 			updateTexCoords();
-		if (this->updatesRequired & DRAWABLE_BUFFER_VERTEXES)
-			updateVertexes();
+		if (this->updatesRequired & DRAWABLE_BUFFER_POSITIONS)
+			updatePositions();
 		if (this->updatesRequired & DRAWABLE_BUFFER_INDICES)
 			updateIndices();
 		if (this->updatesRequired & DRAWABLE_BUFFER_COLORS)

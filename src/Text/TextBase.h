@@ -15,8 +15,6 @@ namespace librender
 		std::string text;
 		Color shadowColor;
 		Color color;
-		uint32_t fontRevision;
-		uint32_t charsNumber;
 		int16_t shadowSize;
 		int32_t lineHeight;
 		int32_t maxWidth;
@@ -24,13 +22,15 @@ namespace librender
 		int32_t shadowY;
 		int32_t height;
 		int32_t width;
+		size_t fontRevision;
+		size_t charsNumber;
 		bool mustCalcHeight;
 		bool mustCalcWidth;
 		void updateTexCoords();
-		void updateVertexes();
+		void updatePositions();
 		void updateIndices();
 		void updateColors();
-		uint32_t getShadowLen();
+		size_t getShadowLen();
 		void updateBuffers();
 
 	public:

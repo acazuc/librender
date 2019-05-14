@@ -31,7 +31,6 @@ namespace librender
 		if (this->texture == texture)
 			return;
 		this->texture = texture;
-		requireUpdates(DRAWABLE_BUFFER_VERTEXES | DRAWABLE_BUFFER_TEX_COORDS);
 	}
 
 }

@@ -16,13 +16,14 @@ namespace librender
 		void updateVerticesNumber();
 		void updateIndicesNumber();
 		void updateTexCoords();
-		void updateVertexes();
+		void updatePositions();
 		void updateIndices();
 		void updateColors();
 		void resize();
 		bool update();
 
 	public:
+		DrawableBatch(uint32_t shapeType);
 		DrawableBatch();
 		~DrawableBatch();
 		virtual void addChild(DrawableBatched *child);

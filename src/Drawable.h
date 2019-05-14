@@ -13,6 +13,7 @@ namespace librender
 		uint32_t shapeType;
 
 	public:
+		Drawable(uint32_t shapeType);
 		Drawable();
 		virtual void draw();
 

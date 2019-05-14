@@ -10,9 +10,11 @@ namespace librender
 	{
 
 	protected:
-		void addPoint(Vec2 vertex, Vec2 texCoords, Vec4 color);
+		void addPoint(Vec2 position, Vec2 texCoords, Vec4 color);
 
 	public:
+		DrawableTessellator(uint32_t shapeType);
+		DrawableTessellator();
 		void clear();
 
 	};
