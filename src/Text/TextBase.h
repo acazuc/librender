@@ -35,13 +35,13 @@ namespace librender
 
 	public:
 		TextBase();
-		void setText(std::string &text);
-		inline std::string &getText() {return this->text;};
+		void setText(const std::string &text);
+		inline const std::string &getText() const {return this->text;};
 		inline void setShadow(int32_t x, int32_t y, int32_t size, Color color) {setShadowPos(x, y);setShadowSize(size);setShadowColor(color);};
 		void setShadowColor(Color color);
-		inline Color &getShadowColor() {return this->shadowColor;};
+		inline Color getShadowColor() const {return this->shadowColor;};
 		void setColor(Color color);
-		inline Color &getColor() {return this->color;};
+		inline Color getColor() const {return this->color;};
 		inline virtual Font *getFont() {return nullptr;};
 		inline void setLineHeight(uint32_t lineHeight) {this->lineHeight = lineHeight;};
 		int32_t getLineHeight();

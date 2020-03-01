@@ -135,4 +135,24 @@ namespace librender
 		glBindTexture(GL_TEXTURE_2D, this->id);
 	}
 
+	void Texture::setWidth(uint32_t width)
+	{
+		this->width = width;
+	}
+
+	int32_t Texture::getWidth() const
+	{
+		return this->width;
+	}
+
+	void Texture::setHeight(uint32_t height)
+	{
+		this->height = height;
+	}
+
+	int32_t Texture::getHeight() const
+	{
+		return this->height;
+	}
+
 }

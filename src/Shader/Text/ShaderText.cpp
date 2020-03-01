@@ -17,7 +17,7 @@ namespace librender
 
 	void ShaderText::draw(Mat4 &viewProj)
 	{
-		if (!this->font || !this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
+		if (!this->font || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
 			return;
 		if (!this->verticesNumber)
 			return;
@@ -48,9 +48,10 @@ namespace librender
 			this->indicesBuffer.setData(GL_ELEMENT_ARRAY_BUFFER, indices, sizeof(*indices) * this->verticesNumber / 4 * 6, GL_DYNAMIC_DRAW);
 			delete[] (indices);
 		}
-		this->program.program->use();
 		glActiveTexture(GL_TEXTURE0);
 		this->font->bind();
+		if (this->program.program)
+			this->program.program->use();
 		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer, 2, GL_FLOAT);
 		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer, 2, GL_FLOAT);
 		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer, 4, GL_FLOAT);

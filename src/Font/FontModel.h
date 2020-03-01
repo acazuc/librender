@@ -22,7 +22,7 @@ namespace librender
 		FontModel(std::string filename);
 		FontModel(char *data, size_t len);
 		~FontModel();
-		Font *derive(uint32_t size);
+		Font *derive(uint32_t size, bool alphaTexture = true);
 		bool setSize(uint32_t size);
 		inline FT_Face &getFtFace() {return this->ftFace;};
 

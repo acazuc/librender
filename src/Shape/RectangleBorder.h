@@ -30,6 +30,7 @@ namespace librender
 		void setHeight(float height);
 		float getHeight();
 		void setSize(Vec2 size);
+		inline void setSize(float width, float height) {setSize(Vec2(width, height));};
 
 	};
 

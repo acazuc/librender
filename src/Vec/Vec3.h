@@ -1,5 +1,5 @@
-#ifndef VEC3_H
-# define VEC3_H
+#ifndef LIBRENDER_VEC3_H
+# define LIBRENDER_VEC3_H
 
 # include "./Vec2.h"
 
@@ -19,7 +19,8 @@ namespace librender
 		TVec3<T>(T xyz);
 		TVec3<T>();
 		T &operator [] (int idx);
-		TVec3<T> operator - ();
+		const T &operator [] (int idx) const;
+		TVec3<T> operator - () const;
 		TVec3<T> operator += (T val);
 		TVec3<T> operator -= (T val);
 		TVec3<T> operator *= (T val);
@@ -28,8 +29,8 @@ namespace librender
 		TVec3<T> operator -= (TVec3<T> vec);
 		TVec3<T> operator *= (TVec3<T> vec);
 		TVec3<T> operator /= (TVec3<T> vec);
-		bool operator == (TVec3<T> vec);
-		bool operator != (TVec3<T> vec);
+		bool operator == (TVec3<T> vec) const;
+		bool operator != (TVec3<T> vec) const;
 
 	};
 
@@ -98,8 +99,6 @@ namespace librender
 	TVec3<T> reflect(TVec3<T> vec1, TVec3<T> vec2);
 	template<typename T>
 	T dot(TVec3<T> vec1, TVec3<T> vec2);
-	template<typename T>
-	T angle(TVec3<T> vec1, TVec3<T> vec2);
 	template<typename T>
 	T length(TVec3<T> vec);
 	template<typename T>

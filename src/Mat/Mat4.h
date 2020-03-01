@@ -28,6 +28,7 @@ namespace librender
 		static TMat4<T> lookAt(TVec3<T> eye, TVec3<T> center, TVec3<T> up);
 		static TMat4<T> ortho(T left, T right, T bottom, T top, T near, T far);
 		TVec4<T> &operator [] (int i);
+		const TVec4<T> &operator [] (int i) const;
 	
 	};
 

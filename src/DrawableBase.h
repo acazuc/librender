@@ -48,9 +48,9 @@ namespace librender
 		inline void setScale(float scale) {setScaleX(scale);setScaleY(scale);};
 		inline Vec2 getScale() {return this->scale;};
 		inline virtual void setX(float x) {this->pos.x = x;};
-		inline float getX() {return this->pos.x;};
+		inline float getX() const {return this->pos.x;};
 		inline virtual void setY(float y) {this->pos.y = y;};
-		inline float getY() {return this->pos.y;};
+		inline float getY() const {return this->pos.y;};
 		inline void setPos(float x, float y) {setX(x);setY(y);};
 
 	};

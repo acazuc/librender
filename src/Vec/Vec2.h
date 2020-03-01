@@ -1,5 +1,5 @@
-#ifndef VEC2_H
-# define VEC2_H
+#ifndef LIBRENDER_VEC2_H
+# define LIBRENDER_VEC2_H
 
 namespace librender
 {
@@ -14,7 +14,8 @@ namespace librender
 		TVec2<T>(T xy);
 		TVec2<T>();
 		T &operator [] (int idx);
-		TVec2<T> operator - ();
+		const T &operator [] (int idx) const;
+		TVec2<T> operator - () const;
 		TVec2<T> operator += (T val);
 		TVec2<T> operator -= (T val);
 		TVec2<T> operator *= (T val);
@@ -23,8 +24,8 @@ namespace librender
 		TVec2<T> operator -= (TVec2<T> vec);
 		TVec2<T> operator *= (TVec2<T> vec);
 		TVec2<T> operator /= (TVec2<T> vec);
-		bool operator == (TVec2<T> vec);
-		bool operator != (TVec2<T> vec);
+		bool operator == (TVec2<T> vec) const;
+		bool operator != (TVec2<T> vec) const;
 
 	};
 
@@ -93,8 +94,6 @@ namespace librender
 	TVec2<T> reflect(TVec2<T> vec1, TVec2<T> vec2);
 	template<typename T>
 	T dot(TVec2<T> vec1, TVec2<T> vec2);
-	template<typename T>
-	T angle(TVec2<T> vec1, TVec2<T> vec2);
 	template<typename T>
 	T length(TVec2<T> vec);
 

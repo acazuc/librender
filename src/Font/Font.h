@@ -52,6 +52,7 @@ namespace librender
 		uint32_t revision;
 		uint32_t height;
 		uint32_t size;
+		bool alphaTexture;
 		Glyph *loadGlyph(uint32_t character);
 		void createCluster();
 		bool findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y);
@@ -59,7 +60,7 @@ namespace librender
 		void glArrayQuad(int32_t texX, int32_t texY, int32_t texWidth, int32_t texHeight, float *texCoords);
 
 	public:
-		Font(FontModel &parent, uint32_t size);
+		Font(FontModel &parent, uint32_t size, bool alphaTexture = true);
 		~Font();
 		Glyph *getGlyph(uint32_t character);
 		int32_t getWidth(std::string &text);

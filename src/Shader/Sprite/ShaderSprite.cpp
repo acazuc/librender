@@ -30,7 +30,8 @@ namespace librender
 			this->texture->bind();
 		else
 			glBindTexture(GL_TEXTURE_2D, 0);
-		this->program.program->use();
+		if (this->program.program)
+			this->program.program->use();
 		if (this->program.texCoordsLocation)
 			this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer, 2, GL_FLOAT);
 		if (this->program.vertexesLocation)

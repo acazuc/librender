@@ -93,6 +93,12 @@ namespace librender
 	}
 
 	template <typename T>
+	const TVec3<T> &TMat3<T>::operator [] (int i) const
+	{
+		return this->data[i];
+	}
+
+	template <typename T>
 	TMat3<T> operator * (TMat3<T> mat1, TMat3<T> mat2)
 	{
 		TMat3<T> result;

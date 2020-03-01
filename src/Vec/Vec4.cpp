@@ -1,5 +1,5 @@
-#ifndef VEC4_CPP
-# define VEC4_CPP
+#ifndef LIBRENDER_VEC4_CPP
+# define LIBRENDER_VEC4_CPP
 
 #include "Vec4.h"
 #include <cmath>
@@ -85,25 +85,25 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec3<T> TVec4<T>::xyz()
+	TVec3<T> TVec4<T>::xyz() const
 	{
 		return TVec3<T>(this->x, this->y, this->z);
 	}
 
 	template <typename T>
-	TVec3<T> TVec4<T>::rgb()
+	TVec3<T> TVec4<T>::rgb() const
 	{
 		return TVec3<T>(this->r, this->g, this->b);
 	}
 
 	template <typename T>
-	TVec2<T> TVec4<T>::xy()
+	TVec2<T> TVec4<T>::xy() const
 	{
 		return TVec2<T>(this->x, this->y);
 	}
 
 	template <typename T>
-	TVec2<T> TVec4<T>::zw()
+	TVec2<T> TVec4<T>::zw() const
 	{
 		return TVec2<T>(this->z, this->w);
 	}
@@ -115,7 +115,13 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec4<T> TVec4<T>::operator - ()
+	const T &TVec4<T>::operator [] (int idx) const
+	{
+		return reinterpret_cast<const T*>(this)[idx];
+	}
+
+	template <typename T>
+	TVec4<T> TVec4<T>::operator - () const
 	{
 		return TVec4<T>(-this->x, -this->y, -this->z, -this->w);
 	}
@@ -169,13 +175,13 @@ namespace librender
 	}
 
 	template <typename T>
-	bool TVec4<T>::operator == (TVec4<T> vec)
+	bool TVec4<T>::operator == (TVec4<T> vec) const
 	{
 		return this->x == vec.x && this->y == vec.y && this->z == vec.z && this->w == vec.w;
 	}
 
 	template <typename T>
-	bool TVec4<T>::operator != (TVec4<T> vec)
+	bool TVec4<T>::operator != (TVec4<T> vec) const
 	{
 		return !(*this == vec);
 	}
@@ -358,12 +364,6 @@ namespace librender
 	T dot(TVec4<T> vec1, TVec4<T> vec2)
 	{
 		return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z + vec1.w * vec2.w;
-	}
-
-	template<typename T>
-	T angle(TVec4<T> vec1, TVec4<T> vec2)
-	{
-		return acos(dot(vec1, vec2) / length(vec1) / length(vec2));
 	}
 
 	template<typename T>

@@ -16,6 +16,7 @@ namespace librender
 		TMat2(T val);
 		TMat2() {};
 		TVec2<T> &operator [] (int i);
+		const TVec2<T> &operator [] (int i) const;
 
 	};
 

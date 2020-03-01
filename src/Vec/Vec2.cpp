@@ -1,5 +1,5 @@
-#ifndef VEC2_CPP
-# define VEC2_CPP
+#ifndef LIBRENDER_VEC2_CPP
+# define LIBRENDER_VEC2_CPP
 
 #include "Vec2.h"
 #include <cmath>
@@ -33,7 +33,13 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec2<T> TVec2<T>::operator - ()
+	const T &TVec2<T>::operator [] (int idx) const
+	{
+		return reinterpret_cast<const T*>(this)[idx];
+	}
+
+	template <typename T>
+	TVec2<T> TVec2<T>::operator - () const
 	{
 		return TVec2<T>(-this->x, -this->y);
 	}
@@ -87,13 +93,13 @@ namespace librender
 	}
 
 	template <typename T>
-	bool TVec2<T>::operator == (TVec2<T> vec)
+	bool TVec2<T>::operator == (TVec2<T> vec) const
 	{
 		return this->x == vec.x && this->y == vec.y;
 	}
 
 	template <typename T>
-	bool TVec2<T>::operator != (TVec2<T> vec)
+	bool TVec2<T>::operator != (TVec2<T> vec) const
 	{
 		return !(*this == vec);
 	}
@@ -276,12 +282,6 @@ namespace librender
 	T dot(TVec2<T> vec1, TVec2<T> vec2)
 	{
 		return vec1.x * vec2.x + vec1.y;
-	}
-
-	template<typename T>
-	T angle(TVec2<T> vec1, TVec2<T> vec2)
-	{
-		return acos(dot(vec1, vec2) / length(vec1) / length(vec2));
 	}
 
 	template<typename T>

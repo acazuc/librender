@@ -12,7 +12,7 @@ namespace librender
 		DrawableBatched::setParent(parent);
 	}
 
-	Texture *SpriteBatched::getTexture()
+	Texture *SpriteBatched::getTexture() const
 	{
 		if (this->parent)
 			return static_cast<SpriteBatch*>(this->parent)->getTexture();

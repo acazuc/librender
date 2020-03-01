@@ -1,5 +1,5 @@
-#ifndef VEC4_H
-# define VEC4_H
+#ifndef LIBRENDER_VEC4_H
+# define LIBRENDER_VEC4_H
 
 # include "./Vec3.h"
 # include "./Vec2.h"
@@ -24,12 +24,13 @@ namespace librender
 		TVec4(T x, T y, T z, T w);
 		TVec4(T xyzw);
 		TVec4();
-		TVec3<T> xyz();
-		TVec3<T> rgb();
-		TVec2<T> xy();
-		TVec2<T> zw();
+		TVec3<T> xyz() const;
+		TVec3<T> rgb() const;
+		TVec2<T> xy() const;
+		TVec2<T> zw() const;
 		T &operator [] (int idx);
-		TVec4<T> operator - ();
+		const T &operator [] (int idx) const;
+		TVec4<T> operator - () const;
 		TVec4<T> operator += (T val);
 		TVec4<T> operator -= (T val);
 		TVec4<T> operator *= (T val);
@@ -38,8 +39,8 @@ namespace librender
 		TVec4<T> operator -= (TVec4<T> vec);
 		TVec4<T> operator *= (TVec4<T> vec);
 		TVec4<T> operator /= (TVec4<T> vec);
-		bool operator == (TVec4<T> vec);
-		bool operator != (TVec4<T> vec);
+		bool operator == (TVec4<T> vec) const;
+		bool operator != (TVec4<T> vec) const;
 
 	};
 
@@ -108,8 +109,6 @@ namespace librender
 	TVec4<T> reflect(TVec4<T> vec1, TVec4<T> vec2);
 	template<typename T>
 	T dot(TVec4<T> vec1, TVec4<T> vec2);
-	template<typename T>
-	T angle(TVec4<T> vec1, TVec4<T> vec2);
 	template<typename T>
 	T length(TVec4<T> vec);
 

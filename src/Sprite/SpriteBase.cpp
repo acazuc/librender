@@ -212,7 +212,7 @@ namespace librender
 		requireUpdates(DRAWABLE_BUFFER_POSITIONS);
 	}
 
-	float SpriteBase::getWidth()
+	float SpriteBase::getWidth() const
 	{
 		return this->size.x * this->scale.x;
 	}
@@ -225,7 +225,7 @@ namespace librender
 		requireUpdates(DRAWABLE_BUFFER_POSITIONS);
 	}
 
-	float SpriteBase::getHeight()
+	float SpriteBase::getHeight() const
 	{
 		return this->size.y * this->scale.y;
 	}
@@ -238,14 +238,14 @@ namespace librender
 		requireUpdates(DRAWABLE_BUFFER_POSITIONS);
 	}
 
-	int32_t SpriteBase::getTextureWidth()
+	int32_t SpriteBase::getTextureWidth() const
 	{
 		if (!getTexture())
 			return 0;
 		return getTexture()->getWidth();
 	}
 
-	int32_t SpriteBase::getTextureHeight()
+	int32_t SpriteBase::getTextureHeight() const
 	{
 		if (!getTexture())
 			return 0;

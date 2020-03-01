@@ -1,5 +1,5 @@
-#ifndef VEC3_CPP
-# define VEC3_CPP
+#ifndef LIBRENDER_VEC3_CPP
+# define LIBRENDER_VEC3_CPP
 
 #include "Vec3.h"
 #include <cmath>
@@ -51,7 +51,13 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec3<T> TVec3<T>::operator - ()
+	const T &TVec3<T>::operator [] (int idx) const
+	{
+		return reinterpret_cast<const T*>(this)[idx];
+	}
+
+	template <typename T>
+	TVec3<T> TVec3<T>::operator - () const
 	{
 		return TVec3<T>(-this->x, -this->y, -this->z);
 	}
@@ -105,13 +111,13 @@ namespace librender
 	}
 
 	template <typename T>
-	bool TVec3<T>::operator == (TVec3<T> vec)
+	bool TVec3<T>::operator == (TVec3<T> vec) const
 	{
 		return this->x == vec.x && this->y == vec.y && this->z == vec.z;
 	}
 
 	template <typename T>
-	bool TVec3<T>::operator != (TVec3<T> vec)
+	bool TVec3<T>::operator != (TVec3<T> vec) const
 	{
 		return !(*this == vec);
 	}
@@ -294,12 +300,6 @@ namespace librender
 	T dot(TVec3<T> vec1, TVec3<T> vec2)
 	{
 		return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
-	}
-
-	template<typename T>
-	T angle(TVec3<T> vec1, TVec3<T> vec2)
-	{
-		return acos(dot(vec1, vec2) / length(vec1) / length(vec2));
 	}
 
 	template<typename T>

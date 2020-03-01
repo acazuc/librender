@@ -45,9 +45,9 @@ namespace librender
 			throw std::exception();
 	}
 
-	Font *FontModel::derive(uint32_t size)
+	Font *FontModel::derive(uint32_t size, bool alphaTexture)
 	{
-		return new Font(*this, size);
+		return new Font(*this, size, alphaTexture);
 	}
 
 	bool FontModel::setSize(uint32_t size)

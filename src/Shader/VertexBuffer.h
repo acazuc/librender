@@ -16,7 +16,7 @@ namespace librender
 		VertexBuffer();
 		~VertexBuffer();
 		void setData(GLenum type, const void *data, GLsizei size, GLenum usage);
-		void bind(GLenum type);
+		void bind(GLenum type) const;
 
 	};
 

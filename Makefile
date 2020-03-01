@@ -1,8 +1,8 @@
 NAME = librender.a
 
-CC = g++
+CXX = g++
 
-override CLFAGS += -std=c++14 -Wall -Wextra -O3 -pipe
+override CXXLFAGS += -std=c++14 -Wall -Wextra -O3 -pipe
 
 AR = ar
 
@@ -54,6 +54,24 @@ SRCS_NAME = Color.cpp \
 	    Shape/Circle.cpp \
 	    Shape/Triangle.cpp \
 	    Shape/TriangleBorder.cpp \
+	    Shader/FragmentShader.cpp \
+	    Shader/GeometryShader.cpp \
+	    Shader/VertexShader.cpp \
+	    Shader/Program.cpp \
+	    Shader/VertexBuffer.cpp \
+	    Shader/VertexArray.cpp \
+	    Shader/RenderBuffer.cpp \
+	    Shader/ProgramLocation.cpp \
+	    Shader/FrameBuffer.cpp \
+	    Shader/Shader.cpp \
+	    Shader/Sprite/ShaderSprite.cpp \
+	    Shader/Sprite/ShaderSpriteBatch.cpp \
+	    Shader/Sprite/ShaderSpriteBatchEntry.cpp \
+	    Shader/Sprite/ShaderSpriteEntry.cpp \
+	    Shader/Text/ShaderText.cpp \
+	    Shader/Text/ShaderTextBatch.cpp \
+	    Shader/Text/ShaderTextBatchEntry.cpp \
+	    Shader/Text/ShaderTextEntry.cpp \
 
 SRCS = $(addprefix $(SRCS_PATH), $(SRCS_NAME))
 

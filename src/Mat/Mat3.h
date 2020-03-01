@@ -20,6 +20,7 @@ namespace librender
 		static TMat3<T> rotateY(TMat3<T> mat, T angle);
 		static TMat3<T> rotateZ(TMat3<T> mat, T angle);
 		TVec3<T> &operator [] (int i);
+		const TVec3<T> &operator [] (int i) const;
 
 	};
 

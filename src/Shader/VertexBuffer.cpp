@@ -19,7 +19,7 @@ namespace librender
 		glBufferData(type, len, data, usage);
 	}
 	
-	void VertexBuffer::bind(GLenum type)
+	void VertexBuffer::bind(GLenum type) const
 	{
 		glBindBuffer(type, this->id);
 	}

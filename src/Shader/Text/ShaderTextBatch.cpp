@@ -106,7 +106,7 @@ namespace librender
 
 	void ShaderTextBatch::draw(Mat4 &viewProj)
 	{
-		if (!this->font || !this->program.program || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
+		if (!this->font || !this->program.texCoordsLocation || !this->program.vertexesLocation || !this->program.colorsLocation || !this->program.mvpLocation)
 			return;
 		for (uint32_t i = 0; i < this->entries.size(); ++i)
 			this->entries[i]->update();
@@ -129,7 +129,8 @@ namespace librender
 			this->mustResize = false;
 		this->changes = 0;
 		this->font->bind();
-		this->program.program->use();
+		if (this->program.program)
+			this->program.program->use();
 		this->program.texCoordsLocation->setVertexBuffer(this->texCoordsBuffer, 2, GL_FLOAT);
 		this->program.vertexesLocation->setVertexBuffer(this->vertexesBuffer, 2, GL_FLOAT);
 		this->program.colorsLocation->setVertexBuffer(this->colorsBuffer, 4, GL_FLOAT);

@@ -25,7 +25,7 @@ namespace librender
 		void setTopRightColor(Color color);
 		void setBotLeftColor(Color color);
 		void setBotRightColor(Color color);
-		virtual Texture *getTexture() {return nullptr;};
+		virtual Texture *getTexture() const {return nullptr;};
 		void setTexTopLeft(Vec2 pos);
 		Vec2 getTexTopLeft();
 		void setTexTopRight(Vec2 pos);
@@ -42,13 +42,13 @@ namespace librender
 		void setTexHeight(float texHeight);
 		void setTexSize(float texWidth, float texHeight);
 		void setWidth(float width);
-		float getWidth();
+		float getWidth() const;
 		void setHeight(float height);
-		float getHeight();
+		float getHeight() const;
 		void setSize(Vec2 size);
 		inline void setSize(float width, float height) {setSize(Vec2(width, height));};
-		int32_t getTextureWidth();
-		int32_t getTextureHeight();
+		int32_t getTextureWidth() const;
+		int32_t getTextureHeight() const;
 
 	};
 

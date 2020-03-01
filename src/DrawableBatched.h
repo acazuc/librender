@@ -23,9 +23,9 @@ namespace librender
 		void update();
 		virtual void setParent(DrawableBatch *parent);
 		void setX(float x);
-		float getX();
+		float getX() const;
 		void setY(float y);
-		float getY();
+		float getY() const;
 		void setScaleX(float scaleX);
 		void setScaleY(float scaleY);
 		inline uint8_t getChanges() {return this->changes;};

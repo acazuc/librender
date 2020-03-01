@@ -13,7 +13,7 @@ namespace librender
 	{
 
 	public:
-		Texture *getTexture();
+		Texture *getTexture() const;
 		void setParent(DrawableBatch *parent);
 
 	};

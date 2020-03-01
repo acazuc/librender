@@ -41,10 +41,10 @@ namespace librender
 		void setXWrap(enum TextureWrapType type);
 		void setYWrap(enum TextureWrapType type);
 		void setWrap(enum TextureWrapType xType, enum TextureWrapType yType);
-		inline void setWidth(uint32_t width) {this->width = width;};
-		inline int32_t getWidth() {return this->width;};
-		inline void setHeight(uint32_t height) {this->height = height;};
-		inline int32_t getHeight() {return this->height;};
+		void setWidth(uint32_t width);
+		int32_t getWidth() const;
+		void setHeight(uint32_t height);
+		int32_t getHeight() const;
 		inline uint32_t getId() {return this->id;};
 
 	};

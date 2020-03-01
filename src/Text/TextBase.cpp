@@ -179,7 +179,7 @@ namespace librender
 		DrawableBase::updateBuffers();
 	}
 
-	void TextBase::setText(std::string &text)
+	void TextBase::setText(const std::string &text)
 	{
 		recalcWidth();
 		recalcHeight();

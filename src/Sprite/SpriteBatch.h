@@ -17,7 +17,7 @@ namespace librender
 		SpriteBatch();
 		void draw();
 		void setTexture(Texture *texture);
-		inline Texture *getTexture() {return this->texture;};
+		inline Texture *getTexture() const {return this->texture;};
 
 	};
 

@@ -55,7 +55,7 @@ namespace librender
 		addChanges(DRAWABLE_BUFFER_POSITIONS);
 	}
 
-	float DrawableBatched::getX()
+	float DrawableBatched::getX() const
 	{
 		if (!this->parent)
 			return 0;
@@ -70,7 +70,7 @@ namespace librender
 		addChanges(DRAWABLE_BUFFER_POSITIONS);
 	}
 
-	float DrawableBatched::getY()
+	float DrawableBatched::getY() const
 	{
 		if (!this->parent)
 			return 0;

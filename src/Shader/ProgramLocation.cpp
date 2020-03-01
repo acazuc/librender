@@ -18,7 +18,7 @@ namespace librender
 		glUniform1i(this->location, val);
 	}
 
-	void ProgramLocation::setVec1iv(GLint *val, GLsizei count)
+	void ProgramLocation::setVec1iv(const GLint *val, GLsizei count)
 	{
 		glUniform1iv(this->location, count, val);
 	}
@@ -33,7 +33,7 @@ namespace librender
 		glUniform2i(this->location, val.x, val.y);
 	}
 
-	void ProgramLocation::setVec2iv(TVec2<GLint> *val, GLsizei count)
+	void ProgramLocation::setVec2iv(const TVec2<GLint> *val, GLsizei count)
 	{
 		glUniform2iv(this->location, count, &val[0][0]);
 	}
@@ -48,7 +48,7 @@ namespace librender
 		glUniform3i(this->location, val.x, val.y, val.z);
 	}
 
-	void ProgramLocation::setVec3iv(TVec3<GLint> *val, GLsizei count)
+	void ProgramLocation::setVec3iv(const TVec3<GLint> *val, GLsizei count)
 	{
 		glUniform3iv(this->location, count, &val[0][0]);
 	}
@@ -63,7 +63,7 @@ namespace librender
 		glUniform4i(this->location, val.x, val.y, val.z, val.w);
 	}
 
-	void ProgramLocation::setVec4iv(TVec4<GLint> *val, GLsizei count)
+	void ProgramLocation::setVec4iv(const TVec4<GLint> *val, GLsizei count)
 	{
 		glUniform4iv(this->location, count, &val[0][0]);
 	}
@@ -73,7 +73,7 @@ namespace librender
 		glUniform1f(this->location, val);
 	}
 
-	void ProgramLocation::setVec1fv(GLfloat *val, GLsizei count)
+	void ProgramLocation::setVec1fv(const GLfloat *val, GLsizei count)
 	{
 		glUniform1fv(this->location, count, val);
 	}
@@ -88,7 +88,7 @@ namespace librender
 		glUniform2f(this->location, val.x, val.y);
 	}
 
-	void ProgramLocation::setVec2fv(TVec2<GLfloat> *val, GLsizei count)
+	void ProgramLocation::setVec2fv(const TVec2<GLfloat> *val, GLsizei count)
 	{
 		glUniform2fv(this->location, count, &val[0][0]);
 	}
@@ -103,7 +103,7 @@ namespace librender
 		glUniform3f(this->location, val.x, val.y, val.z);
 	}
 
-	void ProgramLocation::setVec3fv(TVec3<GLfloat> *val, GLsizei count)
+	void ProgramLocation::setVec3fv(const TVec3<GLfloat> *val, GLsizei count)
 	{
 		glUniform3fv(this->location, count, &val[0][0]);
 	}
@@ -118,7 +118,7 @@ namespace librender
 		glUniform4f(this->location, val.x, val.y, val.z, val.w);
 	}
 
-	void ProgramLocation::setVec4fv(TVec4<GLfloat> *val, GLsizei count)
+	void ProgramLocation::setVec4fv(const TVec4<GLfloat> *val, GLsizei count)
 	{
 		glUniform4fv(this->location, count, &val[0][0]);
 	}
@@ -128,7 +128,7 @@ namespace librender
 		glUniformMatrix3fv(this->location, 1, GL_FALSE, &val[0][0]);
 	}
 
-	void ProgramLocation::setMat3fv(TMat3<GLfloat> *val, GLsizei count)
+	void ProgramLocation::setMat3fv(const TMat3<GLfloat> *val, GLsizei count)
 	{
 		glUniformMatrix3fv(this->location, count, GL_FALSE, &val[0][0][0]);
 	}
@@ -138,12 +138,12 @@ namespace librender
 		glUniformMatrix4fv(this->location, 1, GL_FALSE, &val[0][0]);
 	}
 
-	void ProgramLocation::setMat4fv(TMat4<GLfloat> *val, GLsizei count)
+	void ProgramLocation::setMat4fv(const TMat4<GLfloat> *val, GLsizei count)
 	{
 		glUniformMatrix4fv(this->location, count, GL_FALSE, &val[0][0][0]);
 	}
 
-	void ProgramLocation::setVertexBuffer(VertexBuffer &buffer, GLint nb, GLenum type, GLboolean normalized, GLsizei stride, GLsizei offset)
+	void ProgramLocation::setVertexBuffer(const VertexBuffer &buffer, GLint nb, GLenum type, GLboolean normalized, GLsizei stride, GLsizei offset)
 	{
 		buffer.bind(GL_ARRAY_BUFFER);
 		glVertexAttribPointer(this->location, nb, type, normalized, stride, (void*)(unsigned long)offset);

@@ -9,13 +9,14 @@
 namespace librender
 {
 
-	Font::Font(FontModel &parent, uint32_t size)
+	Font::Font(FontModel &parent, uint32_t size, bool alphaTexture)
 	: parent(parent)
 	, textureHeight(0)
 	, textureWidth(0)
 	, revision(1)
 	, height(0)
 	, size(size)
+	, alphaTexture(alphaTexture)
 	{
 		this->texture.bind();
 		this->texture.setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);
@@ -66,8 +67,21 @@ namespace librender
 
 	void Font::charCopy(char *data, uint32_t x, uint32_t y, uint32_t width, Glyph &glyph, char *glyphData)
 	{
-		for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
-			std::memcpy(&data[(y + tY) * width + x], &glyphData[tY * glyph.getWidth()], glyph.getWidth());
+		if (this->alphaTexture)
+		{
+			for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
+				std::memcpy(&data[(y + tY) * width + x], &glyphData[tY * glyph.getWidth()], glyph.getWidth());
+		}
+		else
+		{
+			for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
+			{
+				for (uint32_t tX = 0; tX < glyph.getWidth(); ++tX)
+				{
+					((uint32_t*)data)[(y + tY) * width + x + tX] = 0xFFFFFF | ((uint32_t)glyphData[tY * glyph.getWidth() + tX] << 24);
+				}
+			}
+		}
 	}
 
 	bool Font::findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y)
@@ -187,9 +201,9 @@ namespace librender
 		if (!this->tmpGlyphs.size())
 			return;
 		bool needUpdate = false;
-		std::vector<char> textureDatas(this->textureWidth * this->textureHeight);
+		std::vector<char> textureDatas(this->textureWidth * this->textureHeight * (this->alphaTexture ? 1 : 4));
 		this->texture.bind();
-		glGetTexImage(GL_TEXTURE_2D, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
+		glGetTexImage(GL_TEXTURE_2D, 0, this->alphaTexture ? GL_ALPHA : GL_RGBA, GL_UNSIGNED_BYTE, textureDatas.data());
 		for (uint32_t i = 0; i < this->tmpGlyphs.size(); ++i)
 		{
 			FontTmpGlyph &tmpGlyph = this->tmpGlyphs[i];
@@ -226,14 +240,14 @@ namespace librender
 			if (this->textureWidth == 0)
 				this->textureWidth = CLUSTER_SIZE;
 			this->textureHeight += CLUSTER_SIZE;
-			textureDatas.resize(this->textureWidth * this->textureHeight, 0);
+			textureDatas.resize(this->textureWidth * this->textureHeight * (this->alphaTexture ? 1 : 4), 0);
 			charCopy(textureDatas.data(), x + 1, y + 1, this->textureWidth, glyph, tmpGlyph.datas.data());
 			needUpdate = true;
 		}
 		this->tmpGlyphs.clear();
 		if (needUpdate)
 		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, this->textureWidth, this->textureHeight, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureDatas.data());
+			glTexImage2D(GL_TEXTURE_2D, 0, this->alphaTexture ? GL_ALPHA : GL_RGBA, this->textureWidth, this->textureHeight, 0, this->alphaTexture ? GL_ALPHA : GL_RGBA, GL_UNSIGNED_BYTE, textureDatas.data());
 			++this->revision;
 		}
 	}
