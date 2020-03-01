@@ -101,6 +101,9 @@ odir:
 	@mkdir -p $(OBJS_PATH)Sprite
 	@mkdir -p $(OBJS_PATH)Texture
 	@mkdir -p $(OBJS_PATH)Shape
+	@mkdir -p $(OBJS_PATH)Shader
+	@mkdir -p $(OBJS_PATH)Shader/Sprite
+	@mkdir -p $(OBJS_PATH)Shader/Text
 
 clean:
 	@rm -f $(OBJS)
