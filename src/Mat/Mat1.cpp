@@ -1,5 +1,5 @@
-#ifndef MAT1_CPP
-# define MAT1_CPP
+#ifndef LIBRENDER_MAT1_CPP
+# define LIBRENDER_MAT1_CPP
 
 #include "Mat1.h"
 

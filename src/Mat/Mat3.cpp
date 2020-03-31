@@ -1,5 +1,5 @@
-#ifndef MAT3_CPP
-# define MAT3_CPP
+#ifndef LIBRENDER_MAT3_CPP
+# define LIBRENDER_MAT3_CPP
 
 #include "Mat3.h"
 #include <cmath>

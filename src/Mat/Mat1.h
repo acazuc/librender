@@ -1,5 +1,5 @@
-#ifndef MAT1_H
-# define MAT1_H
+#ifndef LIBRENDER_MAT1_H
+# define LIBRENDER_MAT1_H
 
 # include "../Vec/Vec1.h"
 

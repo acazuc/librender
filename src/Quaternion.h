@@ -1,5 +1,5 @@
-#ifndef QUATERNION_H
-# define QUATERNION_H
+#ifndef LIBRENDER_QUATERNION_H
+# define LIBRENDER_QUATERNION_H
 
 # include "Mat/Mat4.h"
 # include "Mat/Mat3.h"

@@ -1,5 +1,5 @@
-#ifndef MAT3_H
-# define MAT3_H
+#ifndef LIBRENDER_MAT3_H
+# define LIBRENDER_MAT3_H
 
 # include "../Vec/Vec3.h"
 
