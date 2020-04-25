@@ -1,22 +1,20 @@
 #include "Font.h"
 #include "../GL.h"
 #include <libunicode/utf8.h>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include <cstring>
-#include <cmath>
-
-#define CLUSTER_SIZE 512
 
 namespace librender
 {
 
 	Font::Font(FontModel &parent, uint32_t size, bool alphaTexture)
 	: parent(parent)
-	, textureHeight(0)
-	, textureWidth(0)
+	, atlas(alphaTexture)
+	, lastAtlasRevision(0)
 	, revision(1)
 	, height(0)
 	, size(size)
-	, alphaTexture(alphaTexture)
 	{
 		this->texture.bind();
 		this->texture.setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);
@@ -37,127 +35,47 @@ namespace librender
 		this->texture.bind();
 	}
 
-	Glyph *Font::loadGlyph(uint32_t character)
+	Glyph *Font::loadGlyph(uint32_t codepoint)
 	{
 		if (!this->parent.setSize(this->size))
 			return nullptr;
-		if (character < 0x1f)
+		if (codepoint < 0x1f) /* control code */
 			return nullptr;
-		uint32_t codepoint = FT_Get_Char_Index(this->parent.getFtFace(), character);
-		if (!codepoint)
+		uint32_t index = FT_Get_Char_Index(this->parent.getFtFace(), codepoint);
+		if (!index)
 			return nullptr;
-		if (FT_Load_Glyph(this->parent.getFtFace(), codepoint, FT_LOAD_DEFAULT))
+		if (FT_Load_Glyph(this->parent.getFtFace(), index, FT_LOAD_DEFAULT))
 			return nullptr;
 		if (!this->parent.getFtFace()->glyph->advance.x)
 			return nullptr;
 		if (FT_Render_Glyph(this->parent.getFtFace()->glyph, FT_RENDER_MODE_NORMAL))
 			return nullptr;
-		Glyph tmp(this->parent.getFtFace()->glyph->advance.x >> 6, \
+		Glyph glyph(this->parent.getFtFace()->glyph->advance.x >> 6, \
 				this->parent.getFtFace()->glyph->bitmap.width, this->parent.getFtFace()->glyph->bitmap.rows, \
 				this->parent.getFtFace()->glyph->bitmap_left, this->size - this->parent.getFtFace()->glyph->bitmap_top);
-		if (tmp.getWidth() + 2 > CLUSTER_SIZE || tmp.getHeight() + 2 > CLUSTER_SIZE)
-			return nullptr;
-		this->tmpGlyphs.resize(this->tmpGlyphs.size() + 1);
-		FontTmpGlyph &tmpGlyph = this->tmpGlyphs.back();
-		tmpGlyph.datas.resize(tmp.getWidth() * tmp.getHeight());
-		std::memcpy(tmpGlyph.datas.data(), this->parent.getFtFace()->glyph->bitmap.buffer, tmp.getWidth() * tmp.getHeight());
-		tmpGlyph.character = character;
-		return &this->glyphs.emplace(character, tmp).first->second;
-	}
-
-	void Font::charCopy(char *data, uint32_t x, uint32_t y, uint32_t width, Glyph &glyph, char *glyphData)
-	{
-		if (this->alphaTexture)
+		uint32_t glyphX;
+		uint32_t glyphY;
+		if (this->atlas.findPlace(glyph.getWidth() + 1, glyph.getHeight() + 1, &glyphX, &glyphY))
 		{
-			for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
-				std::memcpy(&data[(y + tY) * width + x], &glyphData[tY * glyph.getWidth()], glyph.getWidth());
+			glyph.setTexX(glyphX + 1);
+			glyph.setTexY(glyphY + 1);
+			return this->atlas.addGlyph(glyphX + 1, glyphY + 1, codepoint, glyph, this->parent.getFtFace()->glyph->bitmap.buffer);
 		}
-		else
+		this->atlas.grow();
+		if (this->atlas.findPlace(glyph.getWidth() + 1, glyph.getHeight() + 1, &glyphX, &glyphY))
 		{
-			for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
-			{
-				for (uint32_t tX = 0; tX < glyph.getWidth(); ++tX)
-				{
-					((uint32_t*)data)[(y + tY) * width + x + tX] = 0xFFFFFF | ((uint32_t)glyphData[tY * glyph.getWidth() + tX] << 24);
-				}
-			}
+			glyph.setTexX(glyphX + 1);
+			glyph.setTexY(glyphY + 1);
+			return this->atlas.addGlyph(glyphX + 1, glyphY + 1, codepoint, glyph, this->parent.getFtFace()->glyph->bitmap.buffer);
 		}
+		glyph.setWidth(0);
+		glyph.setHeight(0);
+		glyph.setTexX(0);
+		glyph.setTexY(0);
+		return this->atlas.addGlyph(0, 0, codepoint, glyph, nullptr);
 	}
 
-	bool Font::findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y)
-	{
-		for (uint32_t i = 0; i < this->clusters.size(); ++i)
-		{
-			if (this->clusters[i].findPlace(width, height, x, y))
-				return true;
-		}
-		return false;
-	}
-
-	bool FontCluster::findPlace(uint32_t width, uint32_t height, uint32_t *x, uint32_t *y)
-	{
-		if (width > this->width || height > this->height)
-			return false;
-		for (uint32_t i = 0; i < this->lines.size(); ++i)
-		{
-			FontClusterLine &line = this->lines[i];
-			if (line.height >= height)
-			{
-				if (this->width - line.width >= width)
-				{
-					*x = this->x + line.width;
-					*y = this->y + line.y;
-					line.width += width;
-					if (height > line.height)
-						line.height = height;
-					return true;
-				}
-				continue;
-			}
-			if (this->width - line.width < width)
-				continue;
-			if (i != this->lines.size() - 1)
-				continue;
-			if (this->height - line.y < height)
-				continue;
-			line.height = height;
-			*x = this->x + line.width;
-			*y = this->y + line.y;
-			line.width += width;
-			if (height > line.height)
-				line.height = height;
-			return true;
-		}
-		uint32_t newY = this->lines.size() ? this->lines.back().y + this->lines.back().height : 0;
-		if (height > this->height - newY)
-			return false;
-		this->lines.resize(this->lines.size() + 1);
-		this->lines.back().y = newY;
-		this->lines.back().width = width;
-		this->lines.back().height = height;
-		*x = this->x;
-		*y = this->y + newY;
-		return true;
-	}
-
-	Glyph *Font::getGlyph(uint32_t character)
-	{
-		std::unordered_map<uint32_t, Glyph>::iterator iter = this->glyphs.find(character);
-		if (iter != this->glyphs.end())
-			return &iter->second;
-		Glyph *glyph = loadGlyph(character);
-		if (glyph)
-			return glyph;
-		if (character != '?')
-			return getGlyph('?');
-		Glyph tmp(0, 0, 0, 0, 0);
-		tmp.setTexX(0);
-		tmp.setTexY(0);
-		this->glyphs.emplace(character, tmp);
-		return nullptr;
-	}
-
-	int32_t Font::getWidth(std::string &text)
+	int32_t Font::getWidth(const std::string &text)
 	{
 		uint32_t maxWidth = 0;
 		uint32_t currentWidth = 0;
@@ -184,7 +102,7 @@ namespace librender
 		return maxWidth;
 	}
 
-	int32_t Font::getHeight(std::string &text)
+	int32_t Font::getHeight(const std::string &text)
 	{
 		uint32_t nlNb = 1;
 		size_t pos = 0;
@@ -198,66 +116,19 @@ namespace librender
 
 	void Font::glUpdate()
 	{
-		if (!this->tmpGlyphs.size())
+		if (this->atlas.getRevision() == this->lastAtlasRevision)
 			return;
-		bool needUpdate = false;
-		std::vector<char> textureDatas(this->textureWidth * this->textureHeight * (this->alphaTexture ? 1 : 4));
-		this->texture.bind();
-		glGetTexImage(GL_TEXTURE_2D, 0, this->alphaTexture ? GL_ALPHA : GL_RGBA, GL_UNSIGNED_BYTE, textureDatas.data());
-		for (uint32_t i = 0; i < this->tmpGlyphs.size(); ++i)
-		{
-			FontTmpGlyph &tmpGlyph = this->tmpGlyphs[i];
-			std::unordered_map<uint32_t, Glyph>::iterator iter = this->glyphs.find(tmpGlyph.character);
-			if (iter == this->glyphs.end())
-				continue;
-			Glyph &glyph = iter->second;
-			uint32_t x;
-			uint32_t y;
-			if (findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
-			{
-				glyph.setTexX(x + 1);
-				glyph.setTexY(y + 1);
-				charCopy(textureDatas.data(), x + 1, y + 1, this->textureWidth, glyph, tmpGlyph.datas.data());
-				needUpdate = true;
-				continue;
-			}
-			this->clusters.resize(this->clusters.size() + 1);
-			FontCluster &cluster = this->clusters.back();
-			cluster.width = CLUSTER_SIZE;
-			cluster.height = CLUSTER_SIZE;
-			cluster.x = 0;
-			cluster.y = this->textureHeight;
-			if (!cluster.findPlace(glyph.getWidth() + 2, glyph.getHeight() + 2, &x, &y))
-			{
-				glyph.setWidth(0);
-				glyph.setHeight(0);
-				glyph.setTexX(0);
-				glyph.setTexY(0);
-				continue;
-			}
-			glyph.setTexX(x + 1);
-			glyph.setTexY(y + 1);
-			if (this->textureWidth == 0)
-				this->textureWidth = CLUSTER_SIZE;
-			this->textureHeight += CLUSTER_SIZE;
-			textureDatas.resize(this->textureWidth * this->textureHeight * (this->alphaTexture ? 1 : 4), 0);
-			charCopy(textureDatas.data(), x + 1, y + 1, this->textureWidth, glyph, tmpGlyph.datas.data());
-			needUpdate = true;
-		}
-		this->tmpGlyphs.clear();
-		if (needUpdate)
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, this->alphaTexture ? GL_ALPHA : GL_RGBA, this->textureWidth, this->textureHeight, 0, this->alphaTexture ? GL_ALPHA : GL_RGBA, GL_UNSIGNED_BYTE, textureDatas.data());
-			++this->revision;
-		}
+		bind();
+		glTexImage2D(GL_TEXTURE_2D, 0, this->atlas.isAlphaTexture() ? GL_ALPHA : GL_RGBA, this->atlas.getWidth(), this->atlas.getHeight(), 0, this->atlas.isAlphaTexture() ? GL_ALPHA : GL_RGBA, GL_UNSIGNED_BYTE, this->atlas.getData());
+		this->revision++;
 	}
 
 	void Font::glArrayQuad(int32_t texX, int32_t texY, int32_t texWidth, int32_t texHeight, float *texCoords)
 	{
-		float textureSrcX = static_cast<float>(texX) / this->textureWidth;
-		float textureSrcY = static_cast<float>(texY) / this->textureHeight;
-		float renderWidth = static_cast<float>(texWidth) / this->textureWidth;
-		float renderHeight = static_cast<float>(texHeight) / this->textureHeight;
+		float textureSrcX = static_cast<float>(texX) / this->atlas.getWidth();
+		float textureSrcY = static_cast<float>(texY) / this->atlas.getHeight();
+		float renderWidth = static_cast<float>(texWidth) / this->atlas.getWidth();
+		float renderHeight = static_cast<float>(texHeight) / this->atlas.getHeight();
 		texCoords[0] = textureSrcX;
 		texCoords[1] = textureSrcY;
 		texCoords[2] = textureSrcX + renderWidth;
@@ -268,9 +139,23 @@ namespace librender
 		texCoords[7] = textureSrcY + renderHeight;
 	}
 
-	void Font::glChar(uint32_t character, float *texCoords)
+	Glyph *Font::getGlyph(uint32_t codepoint)
 	{
-		glGlyph(getGlyph(character), texCoords);
+		Glyph *glyph = this->atlas.getGlyph(codepoint);
+		if (glyph)
+			return glyph;
+		glyph = loadGlyph(codepoint);
+		if (glyph)
+			return glyph;
+		Glyph tmp(0, 0, 0, 0, 0);
+		tmp.setTexX(0);
+		tmp.setTexY(0);
+		return this->atlas.addGlyph(0, 0, codepoint, tmp, nullptr);
+	}
+
+	void Font::glChar(uint32_t codepoint, float *texCoords)
+	{
+		glGlyph(getGlyph(codepoint), texCoords);
 	}
 
 	void Font::glGlyph(Glyph *glyph, float *texCoords)
