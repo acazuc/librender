@@ -91,9 +91,9 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec3<T> TVec4<T>::rgb() const
+	TVec2<T> TVec4<T>::xx() const
 	{
-		return TVec3<T>(this->r, this->g, this->b);
+		return TVec2<T>(this->x, this->x);
 	}
 
 	template <typename T>
@@ -103,9 +103,87 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec2<T> TVec4<T>::xz() const
+	{
+		return TVec2<T>(this->x, this->z);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::xw() const
+	{
+		return TVec2<T>(this->x, this->w);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::yx() const
+	{
+		return TVec2<T>(this->y, this->x);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::yy() const
+	{
+		return TVec2<T>(this->y, this->y);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::yz() const
+	{
+		return TVec2<T>(this->y, this->z);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::yw() const
+	{
+		return TVec2<T>(this->y, this->w);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::zx() const
+	{
+		return TVec2<T>(this->z, this->x);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::zy() const
+	{
+		return TVec2<T>(this->z, this->y);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::zz() const
+	{
+		return TVec2<T>(this->z, this->z);
+	}
+
+	template <typename T>
 	TVec2<T> TVec4<T>::zw() const
 	{
 		return TVec2<T>(this->z, this->w);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::wx() const
+	{
+		return TVec2<T>(this->w, this->x);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::wy() const
+	{
+		return TVec2<T>(this->w, this->y);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::wz() const
+	{
+		return TVec2<T>(this->w, this->z);
+	}
+
+	template <typename T>
+	TVec2<T> TVec4<T>::ww() const
+	{
+		return TVec2<T>(this->w, this->w);
 	}
 
 	template <typename T>

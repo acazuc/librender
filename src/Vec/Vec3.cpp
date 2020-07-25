@@ -45,9 +45,33 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec2<T> TVec3<T>::xx() const
+	{
+		return TVec2<T>(this->x, this->x);
+	}
+
+	template <typename T>
 	TVec2<T> TVec3<T>::xy() const
 	{
 		return TVec2<T>(this->x, this->y);
+	}
+
+	template <typename T>
+	TVec2<T> TVec3<T>::xz() const
+	{
+		return TVec2<T>(this->x, this->z);
+	}
+
+	template <typename T>
+	TVec2<T> TVec3<T>::yx() const
+	{
+		return TVec2<T>(this->y, this->x);
+	}
+
+	template <typename T>
+	TVec2<T> TVec3<T>::yy() const
+	{
+		return TVec2<T>(this->y, this->y);
 	}
 
 	template <typename T>
@@ -57,9 +81,21 @@ namespace librender
 	}
 
 	template <typename T>
-	TVec2<T> TVec3<T>::xz() const
+	TVec2<T> TVec3<T>::zx() const
 	{
-		return TVec2<T>(this->x, this->z);
+		return TVec2<T>(this->z, this->x);
+	}
+
+	template <typename T>
+	TVec2<T> TVec3<T>::zy() const
+	{
+		return TVec2<T>(this->z, this->y);
+	}
+
+	template <typename T>
+	TVec2<T> TVec3<T>::zz() const
+	{
+		return TVec2<T>(this->z, this->z);
 	}
 
 	template <typename T>

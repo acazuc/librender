@@ -38,10 +38,11 @@ namespace librender
 	{
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = iter + this->text.length();
+		Font *font = getFont();
 		for (size_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t character = utf8::next(iter, end);
-			getFont()->glChar(character, reinterpret_cast<float*>(&this->texCoords[i * 4]));
+			font->charTexCoords(character, reinterpret_cast<float*>(&this->texCoords[i * 4]));
 		}
 		size_t shadowLen = getShadowLen();
 		size_t copyCount = this->charsNumber * 4;
@@ -57,6 +58,7 @@ namespace librender
 		char *iter = const_cast<char*>(this->text.c_str());
 		char *end = iter + this->text.length();
 		int32_t index = (shadowLen * this->charsNumber) * 4;
+		Font *font = getFont();
 		for (size_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t character = utf8::next(iter, end);
@@ -68,7 +70,7 @@ namespace librender
 				index += 4;
 				continue;
 			}
-			Glyph *glyph = getFont()->getGlyph(character);
+			Glyph *glyph = font->getGlyph(character);
 			if (!glyph)
 			{
 				std::fill(this->positions.begin() + index, this->positions.begin() + index + 4, 0);

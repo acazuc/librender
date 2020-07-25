@@ -27,6 +27,30 @@ namespace librender
 	}
 
 	template <typename T>
+	TVec2<T> TVec2<T>::xx() const
+	{
+		return TVec2<T>(this->x, this->x);
+	}
+
+	template <typename T>
+	TVec2<T> TVec2<T>::xy() const
+	{
+		return TVec2<T>(this->x, this->y);
+	}
+
+	template <typename T>
+	TVec2<T> TVec2<T>::yx() const
+	{
+		return TVec2<T>(this->y, this->x);
+	}
+
+	template <typename T>
+	TVec2<T> TVec2<T>::yy() const
+	{
+		return TVec2<T>(this->y, this->y);
+	}
+
+	template <typename T>
 	T &TVec2<T>::operator [] (int idx)
 	{
 		return reinterpret_cast<T*>(this)[idx];

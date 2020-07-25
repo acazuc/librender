@@ -41,6 +41,7 @@ namespace librender
 		inline uint32_t getWidth() const {return this->width;};
 		inline bool isAlphaTexture() const {return this->alphaTexture;};
 		inline const uint8_t *getData() const {return this->data.data();};
+		inline size_t getDataSize() const {return this->data.size();};
 
 	};
 

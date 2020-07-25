@@ -44,12 +44,12 @@ namespace librender
 
 	void ShaderTextEntry::fillTexCoords(Vec2 *texCoords)
 	{
-		char *iter = const_cast<char*>(this->text.c_str());
-		char *end = iter + this->text.length();
+		const char *iter = this->text.c_str();
+		const char *end = iter + this->text.length();
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
 			uint32_t character = utf8::next(iter, end);
-			getFont()->glChar(character, reinterpret_cast<float*>(&texCoords[i * 4]));
+			getFont()->charTexCoords(character, reinterpret_cast<float*>(&texCoords[i * 4]));
 		}
 		uint32_t shadowLen = getShadowLen();
 		uint32_t copyCount = this->charsNumber * 4 * sizeof(*texCoords);
@@ -62,8 +62,8 @@ namespace librender
 		uint32_t shadowLen = getShadowLen();
 		float x = 0;
 		float y = 0;
-		char *iter = const_cast<char*>(this->text.c_str());
-		char *end = iter + this->text.length();
+		const char *iter = this->text.c_str();
+		const char *end = iter + this->text.length();
 		int32_t index = (shadowLen * this->charsNumber) * 4;
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{
@@ -282,8 +282,8 @@ namespace librender
 		if (!getFont())
 			return this->height * this->scale.y;
 		this->height = getLineHeight();
-		char *iter = const_cast<char*>(this->text.c_str());
-		char *end = iter + this->text.length();
+		const char *iter = this->text.c_str();
+		const char *end = iter + this->text.length();
 		float x = 0;
 		for (uint32_t i = 0; i < this->charsNumber; ++i)
 		{

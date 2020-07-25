@@ -33,8 +33,12 @@ namespace librender
 			return nullptr;
 		if (this->alphaTexture)
 		{
+			size_t idx = y * this->width + x;
 			for (uint32_t tY = 0; tY < glyph.getHeight(); ++tY)
-				std::memcpy(&this->data[(y + tY) * this->width + x], &bitmap[tY * glyph.getWidth()], glyph.getWidth());
+			{
+				std::memcpy(&this->data[idx], &bitmap[tY * glyph.getWidth()], glyph.getWidth());
+				idx += this->width;
+			}
 		}
 		else
 		{

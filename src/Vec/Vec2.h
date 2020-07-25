@@ -13,6 +13,10 @@ namespace librender
 		TVec2<T>(T x, T y);
 		TVec2<T>(T xy);
 		TVec2<T>();
+		TVec2<T> xx() const;
+		TVec2<T> xy() const;
+		TVec2<T> yx() const;
+		TVec2<T> yy() const;
 		T &operator [] (int idx);
 		const T &operator [] (int idx) const;
 		TVec2<T> operator - () const;

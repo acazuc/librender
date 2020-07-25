@@ -37,6 +37,7 @@ SRCS_NAME = Color.cpp \
 	    Font/Font.cpp \
 	    Font/Glyph.cpp \
 	    Font/FontAtlas.cpp \
+	    Font/FontBase.cpp \
 	    Window/EventsManager.cpp \
 	    Window/Window.cpp \
 	    Window/Monitor.cpp \

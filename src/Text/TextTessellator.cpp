@@ -24,7 +24,7 @@ namespace librender
 		if (!glyph)
 			return;
 		Vec2 tmp[4];
-		this->font->glGlyph(glyph, &tmp[0].x);
+		this->font->glyphTexCoords(glyph, &tmp[0].x);
 		Vec2 org(pos);
 		Vec2 dst(pos + Vec2(glyph->getWidth(), glyph->getHeight()));
 		uint32_t base = this->positions.size();
