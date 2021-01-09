@@ -8,26 +8,26 @@ namespace librender
 
 	template <typename T>
 	TMat1<T>::TMat1(TVec1<T> vec1)
-	: data{vec1}
+	: x(vec1)
 	{
 	}
 
 	template <typename T>
 	TMat1<T>::TMat1(T value)
-	: data{{value}}
+	: x(value)
 	{
 	}
 
 	template <typename T>
 	TVec1<T> &TMat1<T>::operator [] (int i)
 	{
-		return this->data[i];
+		return (&this->x)[i];
 	}
 
 	template <typename T>
 	const TVec1<T> &TMat1<T>::operator [] (int i) const
 	{
-		return this->data[i];
+		return (&this->x)[i];
 	}
 
 	template <typename T>

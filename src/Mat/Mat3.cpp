@@ -9,19 +9,25 @@ namespace librender
 
 	template <typename T>
 	TMat3<T>::TMat3(TVec3<T> vec1, TVec3<T> vec2, TVec3<T> vec3)
-	: data{vec1, vec2, vec3}
+	: x(vec1)
+	, y(vec2)
+	, z(vec3)
 	{
 	}
 
 	template <typename T>
 	TMat3<T>::TMat3(TVec3<T> vec)
-	: data{{vec.x, T(0), T(0)}, {T(0), vec.y, T(0)}, {T(0), T(0), T(0), vec.z}}
+	: x(vec.x, T(0), T(0))
+	, y(T(0), vec.y, T(0))
+	, z(T(0), T(0), vec.z)
 	{
 	}
 
 	template <typename T>
 	TMat3<T>::TMat3(T value)
-	: data{{value, T(0), T(0)}, {T(0), value, T(0)}, {T(0), T(0), value}}
+	: x(value, T(0), T(0))
+	, y(T(0), value, T(0))
+	, z(T(0), T(0), value)
 	{
 	}
 
@@ -89,13 +95,13 @@ namespace librender
 	template <typename T>
 	TVec3<T> &TMat3<T>::operator [] (int i)
 	{
-		return this->data[i];
+		return (&this->x)[i];
 	}
 
 	template <typename T>
 	const TVec3<T> &TMat3<T>::operator [] (int i) const
 	{
-		return this->data[i];
+		return (&this->x)[i];
 	}
 
 	template <typename T>

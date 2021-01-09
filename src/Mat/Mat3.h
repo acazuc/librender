@@ -10,7 +10,9 @@ namespace librender
 	{
 
 	public:
-		TVec3<T> data[3];
+		TVec3<T> x;
+		TVec3<T> y;
+		TVec3<T> z;
 		TMat3<T>(TVec3<T> vec1, TVec3<T> vec2, TVec3<T> vec3);
 		TMat3<T>(TVec3<T> vec);
 		TMat3<T>(T val);

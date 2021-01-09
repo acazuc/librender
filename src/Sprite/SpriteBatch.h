@@ -18,6 +18,8 @@ namespace librender
 		void draw();
 		void setTexture(Texture *texture);
 		inline Texture *getTexture() const {return this->texture;};
+		int32_t getTextureWidth() const;
+		int32_t getTextureHeight() const;
 
 	};
 

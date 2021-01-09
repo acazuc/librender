@@ -12,7 +12,10 @@ namespace librender
 	{
 	
 	public:
-		TVec4<T> data[4];
+		TVec4<T> x;
+		TVec4<T> y;
+		TVec4<T> z;
+		TVec4<T> w;
 		TMat4(TVec4<T> vec1, TVec4<T> vec2, TVec4<T> vec3, TVec4<T> vec4);
 		TMat4(TMat3<T> vec);
 		TMat4(TVec4<T> vec);

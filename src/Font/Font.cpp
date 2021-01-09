@@ -9,6 +9,7 @@ namespace librender
 	Font::Font(FontModel &parent, uint32_t size, bool alphaTexture)
 	: FontBase(parent, size, alphaTexture)
 	, revision(1)
+	, lastAtlasRevision(0)
 	{
 		this->texture.bind();
 		this->texture.setFilter(TEXTURE_FILTER_LINEAR, TEXTURE_FILTER_LINEAR);

@@ -10,25 +10,37 @@ namespace librender
 
 	template <typename T>
 	TMat4<T>::TMat4(TVec4<T> vec1, TVec4<T> vec2, TVec4<T> vec3, TVec4<T> vec4)
-	: data{vec1, vec2, vec3, vec4}
+	: x(vec1)
+	, y(vec2)
+	, z(vec3)
+	, w(vec4)
 	{
 	}
 
 	template <typename T>
 	TMat4<T>::TMat4(TMat3<T> mat)
-	: data{TVec4<T>(mat[0], T(0)), TVec4<T>(mat[1], T(0)), TVec4<T>(mat[2], T(0)), TVec4<T>(T(0), T(0), T(0), T(1))}
+	: x(mat[0], T(0))
+	, y(mat[1], T(0))
+	, z(mat[2], T(0))
+	, w(T(0), T(0), T(0), T(1))
 	{
 	}
 
 	template <typename T>
 	TMat4<T>::TMat4(TVec4<T> vec)
-	: data{{vec.x, T(0), T(0), T(0)}, {T(0), vec.y, T(0), T(0)}, {T(0), T(0), vec.z, T(0)}, {T(0), T(0), T(0), vec.w}}
+	: x(vec.x, T(0), T(0), T(0))
+	, y(T(0), vec.y, T(0), T(0))
+	, z(T(0), T(0), vec.z, T(0))
+	, w(T(0), T(0), T(0), vec.w)
 	{
 	}
 
 	template <typename T>
 	TMat4<T>::TMat4(T value)
-	: data{{value, T(0), T(0), T(0)}, {T(0), value, T(0), T(0)}, {T(0), T(0), value, T(0)}, {T(0), T(0), T(0), value}}
+	: x(value, T(0), T(0), T(0))
+	, y(T(0), value, T(0), T(0))
+	, z(T(0), T(0), value, T(0))
+	, w(T(0), T(0), T(0), value)
 	{
 	}
 
@@ -153,13 +165,13 @@ namespace librender
 	template <typename T>
 	TVec4<T> &TMat4<T>::operator [] (int i)
 	{
-		return this->data[i];
+		return (&this->x)[i];
 	}
 
 	template <typename T>
 	const TVec4<T> &TMat4<T>::operator [] (int i) const
 	{
-		return this->data[i];
+		return (&this->x)[i];
 	}
 
 	template <typename T>

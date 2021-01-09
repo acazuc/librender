@@ -33,4 +33,18 @@ namespace librender
 		this->texture = texture;
 	}
 
+	int32_t SpriteBatch::getTextureWidth() const
+	{
+		if (!getTexture())
+			return 0;
+		return getTexture()->getWidth();
+	}
+
+	int32_t SpriteBatch::getTextureHeight() const
+	{
+		if (!getTexture())
+			return 0;
+		return getTexture()->getHeight();
+	}
+
 }

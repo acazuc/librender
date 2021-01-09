@@ -2,7 +2,7 @@ NAME = librender.a
 
 CXX = g++
 
-override CXXLFAGS += -std=c++14 -Wall -Wextra -O3 -pipe
+override CXXLFAGS += -std=c++14 -Wall -Wextra -O3 -pipe -g
 
 AR = ar
 
